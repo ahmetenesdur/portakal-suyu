@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+	--background: #ffffff;
+	--foreground: #171717;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
+
+	/* Custom Colors */
+	--color-orange-rift-50: #fff7ed;
+	--color-orange-rift-100: #ffedd5;
+	--color-orange-rift-200: #fed7aa;
+	--color-orange-rift-300: #fdba74;
+	--color-orange-rift-400: #fb923c;
+	--color-orange-rift-500: #f97316;
+	--color-orange-rift-600: #ea580c;
+	--color-orange-rift-700: #c2410c;
+	--color-orange-rift-800: #9a3412;
+	--color-orange-rift-900: #7c2d12;
+	--color-orange-rift: #f97316;
+
+	--color-lol-gold-100: #fbf6d9;
+	--color-lol-gold-200: #f5e8a3;
+	--color-lol-gold-300: #edd269;
+	--color-lol-gold-400: #c8aa6e;
+	--color-lol-gold-500: #a08348;
+	--color-lol-gold-600: #785a28;
+	--color-lol-gold: #c8aa6e;
+
+	--color-mlp-pink-100: #fce7f3;
+	--color-mlp-pink-200: #fbcfe8;
+	--color-mlp-pink-300: #f9a8d4;
+	--color-mlp-pink-400: #f472b6;
+	--color-mlp-pink-500: #ec4899;
+	--color-mlp-pink-600: #db2777;
+	--color-mlp-pink: #ec4899;
+
+	/* Animations */
+	--animate-bounce-slow: bounce 3s infinite;
+	--animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes float {
+	0% {
+		transform: translateY(0) rotate(0deg);
+	}
+	100% {
+		transform: translateY(-100vh) rotate(360deg);
+	}
+}
