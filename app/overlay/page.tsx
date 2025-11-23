@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { GAME_CONFIG } from "@/lib/constants";
@@ -343,7 +343,7 @@ function OverlayContent() {
 	const searchParams = useSearchParams();
 	const isTestMode = searchParams.get("test") === "true";
 
-	const supabase = useMemo(() => createClient(), []);
+	const [supabase] = useState(() => createClient());
 
 	useEffect(() => {
 		const timer = setTimeout(() => setIsClient(true), 0);

@@ -18,7 +18,7 @@ export function useClickerGame({ user, multiplier }: UseClickerGameProps) {
 		{ id: number; x: number; y: number; angle: number; velocity: number }[]
 	>([]);
 	const [currentFace, setCurrentFace] = useState(0);
-	const supabase = createClient();
+	const [supabase] = useState(() => createClient());
 
 	const clickAmount = GAME_CONFIG.CLICK_AMOUNT * multiplier;
 
