@@ -376,7 +376,6 @@ function OverlayContent() {
 					filter: "id=eq.1",
 				},
 				(payload) => {
-					console.log("Realtime update received:", payload);
 					const newCount = payload.new.total_clicks;
 					const newLevel = Math.floor(newCount / GAME_CONFIG.GOAL);
 
@@ -392,9 +391,7 @@ function OverlayContent() {
 					}
 				}
 			)
-			.subscribe((status) => {
-				console.log("Subscription status:", status);
-			});
+			.subscribe();
 
 		return () => {
 			supabase.removeChannel(channel);
@@ -440,7 +437,7 @@ function OverlayContent() {
 
 			{/* --- TEST CONTROLS PANEL --- */}
 			{isTestMode && (
-				<div className="fixed top-4 right-4 z-[100] bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
+				<div className="fixed top-4 right-4 z-100 bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
 					<h3 className="font-bold text-orange-400 mb-2">
 						Test Controls
 					</h3>

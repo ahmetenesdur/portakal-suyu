@@ -30,8 +30,6 @@ export async function POST(request: Request) {
 	);
 	const discordId = user.user_metadata.provider_id || discordIdentity?.id;
 
-	console.log("Syncing roles for user:", user.id, "Discord ID:", discordId);
-
 	if (!discordId) {
 		console.error("No Discord ID found for user:", user.id);
 		return NextResponse.json(
