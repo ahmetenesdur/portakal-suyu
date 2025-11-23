@@ -12,13 +12,13 @@ export const SOCIAL_LINKS = [
 	{
 		name: "Instagram",
 		icon: "simple-icons:instagram",
-		url: "#",
+		url: "https://www.instagram.com/portakallsuyuu0",
 		color: "text-[#E1306C] hover:bg-[#E1306C]/10",
 	},
 	{
 		name: "Kick",
 		icon: "simple-icons:kick",
-		url: "#",
+		url: "https://kick.com/portakalsuyu0",
 		color: "text-[#53FC18] hover:bg-[#53FC18]/10",
 	},
 	{
