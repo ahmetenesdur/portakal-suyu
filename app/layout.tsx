@@ -10,16 +10,16 @@ const baloo2 = Baloo_2({
 
 export const metadata: Metadata = {
 	title: {
-		default: "Sihirli Portakal Vadisi | Azra",
+		default: "Sihirli Portakal Vadisi",
 		template: "%s | Sihirli Portakal Vadisi",
 	},
 	description:
-		"Azra (Portakal Suyu) için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur ve sürprizleri keşfet!",
+		"Portakal Suyu için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur ve sürprizleri keşfet!",
 	metadataBase: new URL("https://portakal-suyu.vercel.app"),
 	keywords: [
 		"Portakal Suyu",
-		"Azra",
 		"Twitch",
+		"Kick",
 		"Yayıncı",
 		"Clicker Game",
 		"Topluluk Oyunu",
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
 		type: "website",
 		locale: "tr_TR",
 		url: "https://portakal-suyu.vercel.app",
-		title: "Sihirli Portakal Vadisi | Azra",
+		title: "Sihirli Portakal Vadisi",
 		description:
-			"Azra (Portakal Suyu) için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur!",
+			"Portakal Suyu için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur!",
 		siteName: "Sihirli Portakal Vadisi",
 		images: [
 			{
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Sihirli Portakal Vadisi | Azra",
+		title: "Sihirli Portakal Vadisi",
 		description:
-			"Azra (Portakal Suyu) için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur!",
+			"Portakal Suyu için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur!",
 		images: ["/og-image.png"],
 		creator: "@portakalsuyu", // Placeholder
 	},
