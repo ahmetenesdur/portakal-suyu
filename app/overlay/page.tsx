@@ -587,7 +587,7 @@ function OverlayContent() {
 			{/* --- WIDGETS --- */}
 
 			{/* Progress Bar */}
-			<div className="w-[600px] h-24 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
+			<div className="w-[400px] h-16 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
 				{/* Liquid Fill */}
 				<motion.div
 					className="h-full bg-linear-to-r from-orange-600 via-orange-500 to-yellow-400 relative"
@@ -602,22 +602,22 @@ function OverlayContent() {
 				</motion.div>
 
 				{/* Text */}
-				<div className="absolute inset-0 flex items-center justify-center gap-4">
-					<span className="text-5xl font-black text-white font-mono tracking-tighter drop-shadow-lg">
+				<div className="absolute inset-0 flex items-center justify-center gap-3">
+					<span className="text-3xl font-black text-white font-mono tracking-tighter drop-shadow-lg">
 						{count.toLocaleString()}
 					</span>
-					<span className="text-2xl font-bold text-orange-200 uppercase tracking-widest opacity-80 mt-2">
+					<span className="text-lg font-bold text-orange-200 uppercase tracking-widest opacity-80 mt-1">
 						Litre
 					</span>
 				</div>
 			</div>
 
 			{/* Goal Badge */}
-			<div className="flex items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl z-10 transform -skew-x-12">
-				<div className="w-4 h-4 rounded-full bg-orange-500 animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
-				<span className="text-white/90 font-bold text-xl tracking-wide transform skew-x-12">
+			<div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl z-10 transform -skew-x-12">
+				<div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
+				<span className="text-white/90 font-bold text-lg tracking-wide transform skew-x-12">
 					HEDEF:{" "}
-					<span className="text-white text-2xl">
+					<span className="text-white text-xl">
 						{(
 							(Math.floor(count / GAME_CONFIG.GOAL) + 1) *
 							GAME_CONFIG.GOAL
