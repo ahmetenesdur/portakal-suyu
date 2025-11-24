@@ -1,5 +1,3 @@
-import { createClient } from "@/lib/supabase";
-
 const BATCH_INTERVAL = 2000; // 2 seconds
 const MAX_BATCH_SIZE = 50;
 
@@ -31,6 +29,7 @@ const flushClicks = async () => {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ count }),
+			keepalive: true,
 		});
 	} catch (error) {
 		console.error("Failed to sync clicks:", error);

@@ -10,11 +10,7 @@ import {
 import { createClient } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 
-type Profile = {
-	role: string;
-	multiplier: number;
-	score: number;
-};
+import { Profile } from "@/types";
 
 type AuthContextType = {
 	user: User | null;
@@ -36,7 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		async (userId: string) => {
 			const { data } = await supabase
 				.from("profiles")
-				.select("role, multiplier, score")
+				.select(
+					"id, username, avatar_url, role, multiplier, score, score_weekly, score_daily"
+				)
 				.eq("id", userId)
 				.single();
 

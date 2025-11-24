@@ -121,55 +121,64 @@ const WaveSVG = () => (
 
 // --- COMPONENTS ---
 
-const FloatingParticle = () => {
-	const [config, setConfig] = useState<{
-		left: number;
-		delay: number;
-		duration: number;
-		scale: number;
-		rotation: number;
-		isSlice: boolean;
-	} | null>(null);
+const FloatingParticles = ({ count = 25 }: { count?: number }) => {
+	const [particles, setParticles] = useState<
+		{
+			id: number;
+			left: number;
+			delay: number;
+			duration: number;
+			scale: number;
+			rotation: number;
+			isSlice: boolean;
+		}[]
+	>([]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			setConfig({
-				left: Math.random() * 100,
-				delay: Math.random() * 2,
-				duration: 3 + Math.random() * 4,
-				scale: 0.5 + Math.random() * 1,
-				rotation: Math.random() * 360,
-				isSlice: Math.random() > 0.5,
-			});
+			setParticles(
+				Array.from({ length: count }).map((_, i) => ({
+					id: i,
+					left: Math.random() * 100,
+					delay: Math.random() * 2,
+					duration: 3 + Math.random() * 4,
+					scale: 0.5 + Math.random() * 1,
+					rotation: Math.random() * 360,
+					isSlice: Math.random() > 0.5,
+				}))
+			);
 		}, 0);
 		return () => clearTimeout(timer);
-	}, []);
-
-	if (!config) return null;
+	}, [count]);
 
 	return (
-		<motion.div
-			className="absolute bottom-0"
-			style={{ left: `${config.left}%` }}
-			initial={{ y: 100, opacity: 0, rotate: 0 }}
-			animate={{
-				y: -1000, // Move up off screen
-				opacity: [0, 1, 1, 0],
-				rotate: config.rotation + 360,
-			}}
-			transition={{
-				duration: config.duration,
-				delay: config.delay,
-				repeat: Infinity,
-				ease: "linear",
-			}}
-		>
-			{config.isSlice ? (
-				<OrangeSliceSVG className="w-12 h-12 opacity-80" />
-			) : (
-				<DropletSVG className="w-6 h-6 opacity-60" />
-			)}
-		</motion.div>
+		<>
+			{particles.map((p) => (
+				<motion.div
+					key={p.id}
+					className="absolute bottom-0"
+					style={{ left: `${p.left}%` }}
+					initial={{ y: 100, opacity: 0, rotate: 0 }}
+					animate={{
+						y: -1000, // Move up off screen
+						opacity: [0, 1, 1, 0],
+						rotate: p.rotation + 360,
+					}}
+					transition={{
+						duration: p.duration,
+						delay: p.delay,
+						repeat: Infinity,
+						ease: "linear",
+					}}
+				>
+					{p.isSlice ? (
+						<OrangeSliceSVG className="w-12 h-12 opacity-80" />
+					) : (
+						<DropletSVG className="w-6 h-6 opacity-60" />
+					)}
+				</motion.div>
+			))}
+		</>
 	);
 };
 
@@ -526,14 +535,7 @@ function OverlayContent() {
 
 						{/* 2. Floating Particles (Slices & Droplets) */}
 						<div className="absolute inset-0 z-50 pointer-events-none">
-							{[...Array(25)].map(
-								(
-									_,
-									i // Increased count
-								) => (
-									<FloatingParticle key={i} />
-								)
-							)}
+							<FloatingParticles count={25} />
 						</div>
 
 						{/* 3. Splash Burst Effect (Updated to use Droplets) */}

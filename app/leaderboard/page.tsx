@@ -9,15 +9,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import InfoModal from "@/components/InfoModal";
 
-interface Profile {
-	id: string;
-	username: string | null;
-	avatar_url: string | null;
-	score: number;
-	score_weekly: number;
-	score_daily: number;
-	role: string | null;
-}
+import { Profile } from "@/types";
 
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -25,11 +17,16 @@ export default function LeaderboardPage() {
 	const [timeframe, setTimeframe] = useState<"all" | "weekly" | "daily">(
 		"all"
 	);
+	const [limit, setLimit] = useState(50);
+	const [hasMore, setHasMore] = useState(true);
 	const { user } = useAuth();
 	const [supabase] = useState(() => createClient());
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
 	useEffect(() => {
+		const controller = new AbortController();
+		const signal = controller.signal;
+
 		async function fetchLeaderboard() {
 			setLoading(true);
 			try {
@@ -40,22 +37,43 @@ export default function LeaderboardPage() {
 				const { data, error } = await supabase
 					.from("profiles")
 					.select(
-						"id, username, avatar_url, score, score_weekly, score_daily, role"
+						"id, username, avatar_url, score, score_weekly, score_daily, role, multiplier"
 					)
 					.order(sortColumn, { ascending: false })
-					.limit(50);
+					.limit(limit + 1) // Fetch one more to check if there are more
+					.abortSignal(signal);
 
 				if (error) throw error;
-				setProfiles(data || []);
-			} catch (error) {
-				console.error("Error fetching leaderboard:", error);
+
+				if (data && data.length > limit) {
+					setHasMore(true);
+					setProfiles(data.slice(0, limit));
+				} else {
+					setHasMore(false);
+					setProfiles(data || []);
+				}
+			} catch (error: unknown) {
+				if (
+					typeof error === "object" &&
+					error !== null &&
+					"name" in error &&
+					(error as { name: string }).name !== "AbortError"
+				) {
+					console.error("Error fetching leaderboard:", error);
+				}
 			} finally {
-				setLoading(false);
+				if (!signal.aborted) {
+					setLoading(false);
+				}
 			}
 		}
 
 		fetchLeaderboard();
-	}, [supabase, timeframe]);
+
+		return () => {
+			controller.abort();
+		};
+	}, [supabase, timeframe, limit]);
 
 	const getRankStyle = (rank: number) => {
 		switch (rank) {
@@ -145,7 +163,10 @@ export default function LeaderboardPage() {
 						{(["daily", "weekly", "all"] as const).map((t) => (
 							<button
 								key={t}
-								onClick={() => setTimeframe(t)}
+								onClick={() => {
+									setTimeframe(t);
+									setLimit(50);
+								}}
 								className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
 									timeframe === t
 										? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
@@ -175,7 +196,7 @@ export default function LeaderboardPage() {
 
 					{/* List */}
 					<div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
-						{loading ? (
+						{loading && profiles.length === 0 ? (
 							<div className="flex flex-col items-center justify-center py-20 gap-4">
 								<div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin" />
 								<span className="text-orange-800/50 font-medium animate-pulse">
@@ -187,113 +208,134 @@ export default function LeaderboardPage() {
 								Henüz kimse portakal suyu sıkmamış. İlk sen ol!
 							</div>
 						) : (
-							profiles.map((profile, index) => {
-								const rank = index + 1;
-								const isCurrentUser = user?.id === profile.id;
-								const score = getScore(profile);
+							<>
+								{profiles.map((profile, index) => {
+									const rank = index + 1;
+									const isCurrentUser =
+										user?.id === profile.id;
+									const score = getScore(profile);
 
-								return (
-									<div
-										key={profile.id}
-										className={`grid grid-cols-12 gap-4 p-4 items-center transition-colors border-b border-orange-50/50 last:border-0 ${
-											isCurrentUser
-												? "bg-orange-500/10 hover:bg-orange-500/15"
-												: "hover:bg-white/40"
-										}`}
-									>
-										{/* Rank */}
-										<div className="col-span-2 md:col-span-1 flex justify-center">
-											<div
-												className={`font-black text-lg md:text-xl flex items-center justify-center w-8 h-8 ${getRankStyle(
-													rank
-												)}`}
-											>
-												{rank <= 3 ? (
-													<Icon
-														icon={
-															getRankIcon(rank)!
-														}
-														width="24"
-														height="24"
-													/>
-												) : (
-													rank
-												)}
-											</div>
-										</div>
-
-										{/* User */}
-										<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4 overflow-hidden">
-											<div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
-												<NextImage
-													src={
-														profile.avatar_url ||
-														`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.id}`
-													}
-													alt={
-														profile.username ||
-														"User"
-													}
-													fill
-													sizes="(max-width: 768px) 32px, 40px"
-													className={`rounded-full object-cover border-2 shadow-sm ${
-														rank === 1
-															? "border-yellow-400"
-															: rank === 2
-															? "border-gray-300"
-															: rank === 3
-															? "border-amber-600"
-															: "border-white"
-													}`}
-												/>
-												{rank <= 3 && (
-													<div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+									return (
+										<div
+											key={profile.id}
+											className={`grid grid-cols-12 gap-4 p-4 items-center transition-colors border-b border-orange-50/50 last:border-0 ${
+												isCurrentUser
+													? "bg-orange-500/10 hover:bg-orange-500/15"
+													: "hover:bg-white/40"
+											}`}
+										>
+											{/* Rank */}
+											<div className="col-span-2 md:col-span-1 flex justify-center">
+												<div
+													className={`font-black text-lg md:text-xl flex items-center justify-center w-8 h-8 ${getRankStyle(
+														rank
+													)}`}
+												>
+													{rank <= 3 ? (
 														<Icon
-															icon="ph:star-fill"
-															className="w-3 h-3 text-yellow-400"
+															icon={
+																getRankIcon(
+																	rank
+																)!
+															}
+															width="24"
+															height="24"
 														/>
-													</div>
-												)}
+													) : (
+														rank
+													)}
+												</div>
 											</div>
-											<div className="flex flex-col min-w-0">
+
+											{/* User */}
+											<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4 overflow-hidden">
+												<div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
+													<NextImage
+														src={
+															profile.avatar_url ||
+															`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.id}`
+														}
+														alt={
+															profile.username ||
+															"User"
+														}
+														fill
+														sizes="(max-width: 768px) 32px, 40px"
+														className={`rounded-full object-cover border-2 shadow-sm ${
+															rank === 1
+																? "border-yellow-400"
+																: rank === 2
+																? "border-gray-300"
+																: rank === 3
+																? "border-amber-600"
+																: "border-white"
+														}`}
+													/>
+													{rank <= 3 && (
+														<div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+															<Icon
+																icon="ph:star-fill"
+																className="w-3 h-3 text-yellow-400"
+															/>
+														</div>
+													)}
+												</div>
+												<div className="flex flex-col min-w-0">
+													<span
+														className={`font-bold text-sm md:text-base truncate ${
+															isCurrentUser
+																? "text-orange-700"
+																: "text-orange-900"
+														}`}
+													>
+														{profile.username ||
+															"İsimsiz Sihirdar"}
+														{isCurrentUser && (
+															<span className="ml-2 text-[10px] bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded-full uppercase tracking-wide align-middle">
+																Sen
+															</span>
+														)}
+													</span>
+													<span className="text-xs text-orange-800/40 font-medium truncate">
+														{profile.role ||
+															"Sihirdar"}
+													</span>
+												</div>
+											</div>
+
+											{/* Score */}
+											<div className="col-span-3 text-right">
 												<span
-													className={`font-bold text-sm md:text-base truncate ${
-														isCurrentUser
-															? "text-orange-700"
-															: "text-orange-900"
+													className={`font-black text-sm md:text-lg tracking-tight ${
+														rank <= 3
+															? "text-orange-600"
+															: "text-orange-900/60"
 													}`}
 												>
-													{profile.username ||
-														"İsimsiz Sihirdar"}
-													{isCurrentUser && (
-														<span className="ml-2 text-[10px] bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded-full uppercase tracking-wide align-middle">
-															Sen
-														</span>
-													)}
-												</span>
-												<span className="text-xs text-orange-800/40 font-medium truncate">
-													{profile.role || "Sihirdar"}
+													{new Intl.NumberFormat(
+														"tr-TR"
+													).format(score)}
 												</span>
 											</div>
 										</div>
-
-										{/* Score */}
-										<div className="col-span-3 text-right">
-											<span
-												className={`font-black text-sm md:text-lg tracking-tight ${
-													rank <= 3
-														? "text-orange-600"
-														: "text-orange-900/60"
-												}`}
-											>
-												{new Intl.NumberFormat(
-													"tr-TR"
-												).format(score)}
-											</span>
-										</div>
+									);
+								})}
+								{hasMore && (
+									<div className="p-4 text-center">
+										<button
+											onClick={() =>
+												setLimit((prev) => prev + 50)
+											}
+											disabled={loading}
+											className="px-6 py-2 bg-orange-100 text-orange-700 rounded-xl font-bold hover:bg-orange-200 transition-colors disabled:opacity-50"
+										>
+											{loading
+												? "Yükleniyor..."
+												: "Daha Fazla Yükle"}
+										</button>
 									</div>
-								);
-							})
+								)}
+							</>
 						)}
 					</div>
 				</div>
