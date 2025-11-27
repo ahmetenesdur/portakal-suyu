@@ -17,7 +17,7 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	return (
-		<header className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center z-50 pointer-events-none">
+		<header className="sticky top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center z-50 pointer-events-none">
 			{/* Logo Area */}
 			<Link
 				href="/"

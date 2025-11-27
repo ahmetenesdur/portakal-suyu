@@ -108,7 +108,7 @@ export default function LeaderboardPage() {
 	};
 
 	return (
-		<main className="min-h-screen w-full bg-[#FFFAF5] overflow-hidden relative selection:bg-orange-200">
+		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
 			<Navbar onOpenInfo={() => setIsInfoModalOpen(true)} />
 			<InfoModal
 				isOpen={isInfoModalOpen}
@@ -121,9 +121,9 @@ export default function LeaderboardPage() {
 				<div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-yellow-300/20 rounded-full blur-[120px]" />
 			</div>
 
-			<div className="relative z-10 container mx-auto px-4 pt-28 pb-12 max-w-4xl">
+			<div className="z-10 flex flex-col items-center justify-start flex-1 w-full max-w-4xl px-4 pt-8 md:pt-0">
 				{/* Header Section */}
-				<div className="relative mb-8 flex flex-col items-center text-center">
+				<div className="relative mb-8 flex flex-col items-center text-center w-full">
 					{/* Back Button - Desktop (Absolute Left) & Mobile (Top Left of Container) */}
 					<Link
 						href="/"
@@ -184,7 +184,7 @@ export default function LeaderboardPage() {
 				</div>
 
 				{/* Leaderboard Card */}
-				<div className="bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-orange-500/5 overflow-hidden">
+				<div className="w-full bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-orange-500/5 overflow-hidden">
 					{/* Table Header */}
 					<div className="grid grid-cols-12 gap-4 p-4 md:p-6 border-b border-orange-100/50 bg-white/30 text-xs md:text-sm font-bold text-orange-900/50 uppercase tracking-wider">
 						<div className="col-span-2 md:col-span-1 text-center">

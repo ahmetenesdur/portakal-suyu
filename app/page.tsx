@@ -40,7 +40,7 @@ export default function Home() {
 	}, []);
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-start pt-32 xl:pt-0 pb-16 xl:pb-0 px-4 relative overflow-hidden bg-orange-50 md:justify-center">
+		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
 			{/* Dynamic Background */}
 			<div className="absolute inset-0 pointer-events-none overflow-hidden">
 				{/* Gradient Blobs */}
@@ -69,7 +69,7 @@ export default function Home() {
 			<Navbar onOpenInfo={() => setIsInfoModalOpen(true)} />
 
 			{/* Main Game Area */}
-			<div className="z-10 flex flex-col items-center gap-12 w-full max-w-4xl">
+			<div className="z-10 flex flex-col items-center justify-center flex-1 gap-12 w-full max-w-4xl px-4 pt-8 md:pt-0">
 				<HeroSection loading={loading} user={user} />
 
 				<GameArea profile={profile} playPop={playPop} />
