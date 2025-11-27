@@ -5,6 +5,4 @@ export interface Profile {
 	role: string | null;
 	multiplier: number;
 	score: number;
-	score_weekly: number;
-	score_daily: number;
 }

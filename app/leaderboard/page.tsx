@@ -30,27 +30,79 @@ export default function LeaderboardPage() {
 		async function fetchLeaderboard() {
 			setLoading(true);
 			try {
-				let sortColumn = "score";
-				if (timeframe === "weekly") sortColumn = "score_weekly";
-				if (timeframe === "daily") sortColumn = "score_daily";
+				let query;
 
-				const { data, error } = await supabase
-					.from("profiles")
-					.select(
-						"id, username, avatar_url, score, score_weekly, score_daily, role, multiplier"
-					)
-					.order(sortColumn, { ascending: false })
-					.limit(limit + 1) // Fetch one more to check if there are more
+				if (timeframe === "daily") {
+					query = supabase
+						.from("leaderboard_daily")
+						.select(
+							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
+						)
+						.eq("date", new Date().toISOString().split("T")[0])
+						.order("score", { ascending: false });
+				} else if (timeframe === "weekly") {
+					// Calculate Monday of current week
+					const today = new Date();
+					const day = today.getDay(); // 0 is Sunday
+					const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+					const monday = new Date(today.setDate(diff));
+					const mondayStr = monday.toISOString().split("T")[0];
+
+					query = supabase
+						.from("leaderboard_weekly")
+						.select(
+							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
+						)
+						.eq("week_start", mondayStr)
+						.order("score", { ascending: false });
+				} else {
+					// All Time
+					query = supabase
+						.from("profiles")
+						.select(
+							"id, username, avatar_url, score, role, multiplier"
+						)
+						.order("score", { ascending: false });
+				}
+
+				const { data, error } = await query
+					.limit(limit + 1)
 					.abortSignal(signal);
 
 				if (error) throw error;
 
 				if (data && data.length > limit) {
 					setHasMore(true);
-					setProfiles(data.slice(0, limit));
+					// Normalize data structure
+					const formattedData = data
+						.slice(0, limit)
+						.map((item: unknown) => {
+							if (timeframe === "all") return item as Profile;
+							// Flatten structure for daily/weekly
+							const entry = item as {
+								score: number;
+								profiles: Profile;
+							};
+							return {
+								...entry.profiles,
+								score: entry.score,
+							};
+						});
+					setProfiles(formattedData);
 				} else {
 					setHasMore(false);
-					setProfiles(data || []);
+					const formattedData = (data || []).map((item: unknown) => {
+						if (timeframe === "all") return item as Profile;
+						const entry = item as {
+							score: number;
+							profiles: Profile;
+						};
+						return {
+							...entry.profiles,
+							score: entry.score,
+						};
+					});
+					setProfiles(formattedData);
 				}
 			} catch (error: unknown) {
 				if (
@@ -99,12 +151,6 @@ export default function LeaderboardPage() {
 			default:
 				return null;
 		}
-	};
-
-	const getScore = (profile: Profile) => {
-		if (timeframe === "weekly") return profile.score_weekly;
-		if (timeframe === "daily") return profile.score_daily;
-		return profile.score;
 	};
 
 	return (
@@ -213,7 +259,7 @@ export default function LeaderboardPage() {
 									const rank = index + 1;
 									const isCurrentUser =
 										user?.id === profile.id;
-									const score = getScore(profile);
+									const score = profile.score;
 
 									return (
 										<div
