@@ -74,8 +74,17 @@ export function useClickerGame({ user, multiplier }: UseClickerGameProps) {
 			}
 
 			const rect = e.currentTarget.getBoundingClientRect();
-			const clickX = e.clientX - rect.left;
-			const clickY = e.clientY - rect.top;
+			let clickX, clickY;
+
+			// Check if triggered by keyboard (detail === 0) or if coordinates are 0
+			if (e.detail === 0) {
+				// Center of the element
+				clickX = rect.width / 2;
+				clickY = rect.height / 2;
+			} else {
+				clickX = e.clientX - rect.left;
+				clickY = e.clientY - rect.top;
+			}
 
 			// Add click text effect
 			const id = Date.now();
