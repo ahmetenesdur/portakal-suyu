@@ -75,7 +75,7 @@ export default function LoginPromptModal({
 									</h2>
 									<p className="text-orange-800/70 font-medium">
 										{isJoin
-											? "Skorunun kaydedilmesi için Portakal Vadisi Discord sunucumuza katılman gerekiyor."
+											? "Skorunun kaydedilmesi için Portakal Suyu Discord sunucumuza katılman gerekiyor."
 											: "Misafir olarak oynuyorsun. Giriş yaparak daha fazlasına erişebilirsin:"}
 									</p>
 
