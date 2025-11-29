@@ -39,6 +39,8 @@ export default function LeaderboardPage() {
 							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
 						)
 						.eq("date", new Date().toISOString().split("T")[0])
+						.gt("score", 0)
+						.neq("profiles.role", "Misafir")
 						.order("score", { ascending: false });
 				} else if (timeframe === "weekly") {
 					// Calculate Monday of current week
@@ -54,6 +56,8 @@ export default function LeaderboardPage() {
 							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
 						)
 						.eq("week_start", mondayStr)
+						.gt("score", 0)
+						.neq("profiles.role", "Misafir")
 						.order("score", { ascending: false });
 				} else {
 					// All Time
@@ -62,6 +66,8 @@ export default function LeaderboardPage() {
 						.select(
 							"id, username, avatar_url, score, role, multiplier"
 						)
+						.gt("score", 0)
+						.neq("role", "Misafir")
 						.order("score", { ascending: false });
 				}
 

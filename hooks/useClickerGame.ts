@@ -7,9 +7,14 @@ import { User } from "@supabase/supabase-js";
 type UseClickerGameProps = {
 	user: User | null;
 	multiplier: number;
+	role?: string;
 };
 
-export function useClickerGame({ user, multiplier }: UseClickerGameProps) {
+export function useClickerGame({
+	user,
+	multiplier,
+	role,
+}: UseClickerGameProps) {
 	const [count, setCount] = useState(0);
 	const [clicks, setClicks] = useState<
 		{ id: number; x: number; y: number }[]
@@ -68,8 +73,8 @@ export function useClickerGame({ user, multiplier }: UseClickerGameProps) {
 			}
 			setCurrentFace(nextFace);
 
-			// Add to batch queue
-			if (user) {
+			// Add to batch queue - ONLY if user exists AND is not a guest (Misafir)
+			if (user && role !== "Misafir") {
 				addClick(clickAmount);
 			}
 
@@ -113,7 +118,7 @@ export function useClickerGame({ user, multiplier }: UseClickerGameProps) {
 				);
 			}, 1000);
 		},
-		[clickAmount, currentFace, user]
+		[clickAmount, currentFace, user, role]
 	);
 
 	return {

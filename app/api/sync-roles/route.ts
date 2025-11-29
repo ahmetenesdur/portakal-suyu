@@ -69,7 +69,13 @@ export async function POST(request: Request) {
 			);
 			// If user is not in the guild, they are a guest
 			if (response.status === 404) {
-				await updateUserProfile(supabase, user.id, "Misafir", 1);
+				await updateUserProfile(
+					supabase,
+					user.id,
+					"Misafir",
+					1,
+					user.user_metadata
+				);
 				return NextResponse.json({ role: "Misafir", multiplier: 1 });
 			}
 			return NextResponse.json(
@@ -87,7 +93,13 @@ export async function POST(request: Request) {
 		const newMultiplier = isSubscriber ? 2 : 1;
 
 		// 5. Update Supabase Profile
-		await updateUserProfile(supabase, user.id, newRole, newMultiplier);
+		await updateUserProfile(
+			supabase,
+			user.id,
+			newRole,
+			newMultiplier,
+			user.user_metadata
+		);
 
 		return NextResponse.json({ role: newRole, multiplier: newMultiplier });
 	} catch (error) {
@@ -99,16 +111,54 @@ export async function POST(request: Request) {
 	}
 }
 
+interface ProfileUpdates {
+	id: string;
+	role: string;
+	multiplier: number;
+	last_active_at: string;
+	username?: string;
+	avatar_url?: string;
+}
+
+interface UserMetadata {
+	full_name?: string;
+	name?: string;
+	avatar_url?: string;
+	picture?: string;
+	[key: string]: unknown;
+}
+
 async function updateUserProfile(
 	supabase: SupabaseClient,
 	userId: string,
 	role: string,
-	multiplier: number
+	multiplier: number,
+	userMetadata?: UserMetadata
 ) {
-	const { error } = await supabase
-		.from("profiles")
-		.update({ role, multiplier })
-		.eq("id", userId);
+	const updates: ProfileUpdates = {
+		id: userId,
+		role,
+		multiplier,
+		last_active_at: new Date().toISOString(),
+	};
+
+	if (userMetadata) {
+		if (
+			typeof userMetadata.full_name === "string" ||
+			typeof userMetadata.name === "string"
+		) {
+			updates.username = userMetadata.full_name || userMetadata.name;
+		}
+		if (
+			typeof userMetadata.avatar_url === "string" ||
+			typeof userMetadata.picture === "string"
+		) {
+			updates.avatar_url =
+				userMetadata.avatar_url || userMetadata.picture;
+		}
+	}
+
+	const { error } = await supabase.from("profiles").upsert(updates);
 
 	if (error) {
 		console.error("Supabase Update Error:", error);
