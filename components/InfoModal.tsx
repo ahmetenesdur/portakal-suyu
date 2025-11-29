@@ -90,6 +90,28 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 										</div>
 									</div>
 
+									{/* Stream Interaction */}
+									<div className="flex gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-pink-50/50 border border-pink-100/50 hover:bg-pink-50 transition-colors group">
+										<div className="shrink-0 mt-1">
+											<div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 group-hover:scale-110 transition-transform">
+												<Icon
+													icon="lucide:party-popper"
+													className="w-4 h-4 md:w-5 md:h-5"
+												/>
+											</div>
+										</div>
+										<div>
+											<h3 className="font-bold text-pink-900 mb-1 text-base md:text-lg">
+												Yayını Coştur
+											</h3>
+											<p className="text-xs md:text-sm text-pink-800/70 leading-relaxed font-medium">
+												Tıklamalarınla canlı yayındaki
+												hedefi tamamla ve görsel şöleni
+												başlat!
+											</p>
+										</div>
+									</div>
+
 									{/* Role Multipliers */}
 									<div className="flex gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-orange-50/50 border border-orange-100/50 hover:bg-orange-50 transition-colors group">
 										<div className="shrink-0 mt-1">

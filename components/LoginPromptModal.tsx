@@ -83,6 +83,25 @@ export default function LoginPromptModal({
 										<div className="flex gap-3 items-start">
 											<div className="p-2 bg-white rounded-lg shadow-sm text-orange-500 shrink-0">
 												<Icon
+													icon="lucide:party-popper"
+													className="w-5 h-5"
+												/>
+											</div>
+											<div>
+												<h3 className="font-bold text-orange-900 text-sm">
+													Yayını Coştur
+												</h3>
+												<p className="text-xs text-orange-800/60 leading-relaxed">
+													Tıklamalarınla canlı
+													yayındaki hedefi tamamla ve
+													görsel şöleni başlat!
+												</p>
+											</div>
+										</div>
+
+										<div className="flex gap-3 items-start">
+											<div className="p-2 bg-white rounded-lg shadow-sm text-orange-500 shrink-0">
+												<Icon
 													icon="lucide:zap"
 													className="w-5 h-5"
 												/>
@@ -115,25 +134,6 @@ export default function LoginPromptModal({
 													Günlük ve haftalık
 													sıralamalarda yerini al,
 													rekabete katıl.
-												</p>
-											</div>
-										</div>
-
-										<div className="flex gap-3 items-start">
-											<div className="p-2 bg-white rounded-lg shadow-sm text-orange-500 shrink-0">
-												<Icon
-													icon="lucide:party-popper"
-													className="w-5 h-5"
-												/>
-											</div>
-											<div>
-												<h3 className="font-bold text-orange-900 text-sm">
-													Yayını Coştur
-												</h3>
-												<p className="text-xs text-orange-800/60 leading-relaxed">
-													Tıklamalarınla canlı
-													yayındaki hedefi tamamla ve
-													görsel şöleni başlat!
 												</p>
 											</div>
 										</div>
