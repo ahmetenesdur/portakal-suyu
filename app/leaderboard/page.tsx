@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import InfoModal from "@/components/InfoModal";
 
 import { Profile } from "@/types";
+import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
 
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -38,17 +39,13 @@ export default function LeaderboardPage() {
 						.select(
 							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
 						)
-						.eq("date", new Date().toISOString().split("T")[0])
+						.eq("date", getTurkeyDateString())
 						.gt("score", 0)
 						.neq("profiles.role", "Misafir")
 						.order("score", { ascending: false });
 				} else if (timeframe === "weekly") {
-					// Calculate Monday of current week
-					const today = new Date();
-					const day = today.getDay(); // 0 is Sunday
-					const diff = today.getDate() - day + (day === 0 ? -6 : 1);
-					const monday = new Date(today.setDate(diff));
-					const mondayStr = monday.toISOString().split("T")[0];
+					// Calculate Monday of current week in Turkey
+					const mondayStr = getTurkeyWeekStart();
 
 					query = supabase
 						.from("leaderboard_weekly")
