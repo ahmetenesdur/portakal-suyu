@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import Navbar from "@/components/Navbar";
 import InfoModal from "@/components/InfoModal";
+import LoginPromptModal from "@/components/LoginPromptModal";
 import { useSound } from "@/hooks/useSound";
 import SoundToggle from "@/components/SoundToggle";
 import HeroSection from "@/components/HeroSection";
@@ -14,6 +15,7 @@ export default function Home() {
 	const { user, profile, loading } = useAuth();
 	const { playPop, isMuted, toggleMute } = useSound();
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+	const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 	const [particles, setParticles] = useState<
 		{ id: number; style: React.CSSProperties }[]
 	>([]);
@@ -38,6 +40,14 @@ export default function Home() {
 		}, 0);
 		return () => clearTimeout(timer);
 	}, []);
+
+	const handleLoginPrompt = () => {
+		setIsLoginPromptOpen(true);
+	};
+
+	// We need access to signInWithDiscord here or pass it down.
+	// useAuth provides signInWithDiscord.
+	const { signInWithDiscord } = useAuth();
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
@@ -65,6 +75,19 @@ export default function Home() {
 				onClose={() => setIsInfoModalOpen(false)}
 			/>
 
+			<LoginPromptModal
+				isOpen={isLoginPromptOpen}
+				onClose={() => setIsLoginPromptOpen(false)}
+				onLogin={() => {
+					if (profile?.role === "Misafir") {
+						window.open("https://discord.gg/NdEfduN4nU", "_blank");
+					} else {
+						signInWithDiscord();
+					}
+				}}
+				variant={profile?.role === "Misafir" ? "join" : "login"}
+			/>
+
 			{/* Header */}
 			<Navbar onOpenInfo={() => setIsInfoModalOpen(true)} />
 
@@ -72,7 +95,11 @@ export default function Home() {
 			<div className="z-10 flex flex-col items-center justify-center flex-1 gap-12 w-full max-w-4xl px-4 pt-8 md:pt-0">
 				<HeroSection loading={loading} user={user} />
 
-				<GameArea profile={profile} playPop={playPop} />
+				<GameArea
+					profile={profile}
+					playPop={playPop}
+					onShowLoginPrompt={handleLoginPrompt}
+				/>
 
 				<SocialDock />
 			</div>

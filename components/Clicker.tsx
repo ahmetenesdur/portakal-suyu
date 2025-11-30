@@ -4,15 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "./AuthProvider";
 import { useClickerGame } from "@/hooks/useClickerGame";
 import OrangeCharacter from "./OrangeCharacter";
-import LoginPromptModal from "./LoginPromptModal";
 import { useState } from "react";
 
 type ClickerProps = {
 	onPop?: () => void;
+	onShowLoginPrompt?: () => void;
 };
 
-export default function Clicker({ onPop }: ClickerProps) {
-	const { user, profile, signInWithDiscord } = useAuth();
+export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
+	const { user, profile } = useAuth();
 	const multiplier = profile?.multiplier || 1;
 
 	const {
@@ -25,7 +25,6 @@ export default function Clicker({ onPop }: ClickerProps) {
 	} = useClickerGame({ user, multiplier, role: profile?.role ?? undefined });
 
 	const [localClicks, setLocalClicks] = useState(0);
-	const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		onPop?.();
@@ -36,18 +35,8 @@ export default function Clicker({ onPop }: ClickerProps) {
 			const newClicks = localClicks + 1;
 			setLocalClicks(newClicks);
 			if (newClicks === 10) {
-				setShowLoginPrompt(true);
+				onShowLoginPrompt?.();
 			}
-		}
-	};
-
-	const handleModalAction = () => {
-		if (profile?.role === "Misafir") {
-			// Redirect to Discord server
-			window.open("https://discord.gg/NdEfduN4nU", "_blank");
-		} else {
-			// Login flow
-			signInWithDiscord();
 		}
 	};
 
@@ -117,12 +106,6 @@ export default function Clicker({ onPop }: ClickerProps) {
 					Litre Portakal Suyu
 				</p>
 			</div>
-			<LoginPromptModal
-				isOpen={showLoginPrompt}
-				onClose={() => setShowLoginPrompt(false)}
-				onLogin={handleModalAction}
-				variant={profile?.role === "Misafir" ? "join" : "login"}
-			/>
 		</div>
 	);
 }

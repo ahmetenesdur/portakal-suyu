@@ -49,7 +49,7 @@ export default function LoginPromptModal({
 							animate={{ scale: 1, opacity: 1 }}
 							exit={{ scale: 0.95, opacity: 0 }}
 							transition={{ duration: 0.2, ease: "easeOut" }}
-							className="relative w-full max-w-md mx-auto bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden"
+							className="relative w-full max-w-md mx-auto bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden max-h-[90vh] overflow-y-auto"
 							onClick={(e) => e.stopPropagation()}
 						>
 							{/* Decorative Header Background */}
