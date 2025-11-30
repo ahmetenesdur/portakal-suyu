@@ -300,7 +300,7 @@ export default function LeaderboardPage() {
 											</div>
 
 											{/* User */}
-											<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4 overflow-hidden">
+											<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4">
 												<div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
 													<NextImage
 														src={
