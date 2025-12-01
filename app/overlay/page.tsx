@@ -349,6 +349,14 @@ function OverlayContent() {
 	const [showSpill, setShowSpill] = useState(false);
 	const [prevLevel, setPrevLevel] = useState(0);
 	const [isClient, setIsClient] = useState(false);
+	interface MilestoneUser {
+		username: string;
+		avatar_url: string;
+		id: string;
+	}
+
+	const [lastMilestoneUser, setLastMilestoneUser] =
+		useState<MilestoneUser | null>(null);
 
 	const searchParams = useSearchParams();
 	const isTestMode = searchParams.get("test") === "true";
@@ -364,12 +372,17 @@ function OverlayContent() {
 		const fetchStats = async () => {
 			const { data } = await supabase
 				.from("global_stats")
-				.select("total_clicks")
+				.select("total_clicks, last_milestone_user")
 				.eq("id", 1)
 				.single();
 			if (data) {
 				setCount(data.total_clicks);
 				setPrevLevel(Math.floor(data.total_clicks / GAME_CONFIG.GOAL));
+				if (data.last_milestone_user) {
+					setLastMilestoneUser(
+						data.last_milestone_user as unknown as MilestoneUser
+					);
+				}
 			}
 		};
 
@@ -388,8 +401,14 @@ function OverlayContent() {
 				(payload) => {
 					const newCount = payload.new.total_clicks;
 					const newLevel = Math.floor(newCount / GAME_CONFIG.GOAL);
+					const newUser = payload.new.last_milestone_user;
 
 					setCount(newCount);
+					if (newUser) {
+						setLastMilestoneUser(
+							newUser as unknown as MilestoneUser
+						);
+					}
 
 					if (newLevel > prevLevel) {
 						setShowSpill(true);
@@ -558,9 +577,9 @@ function OverlayContent() {
 								stiffness: 200, // Reduced from 300 for less wobble
 								damping: 20, // Increased from 15 for more stability
 							}}
-							className="absolute inset-0 z-70 flex items-center justify-center"
+							className="absolute inset-0 z-70 flex flex-col items-center justify-center gap-8"
 						>
-							<div className="relative group">
+							<div className="relative group text-center">
 								<h1 className="text-9xl font-black text-white text-center drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] tracking-tighter italic transform">
 									HEDEF
 									<br />
@@ -580,6 +599,41 @@ function OverlayContent() {
 									</span>
 								</h1>
 							</div>
+
+							{/* Winner User Display */}
+							{lastMilestoneUser && (
+								<motion.div
+									initial={{ opacity: 0, y: 50, scale: 0.8 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ delay: 0.5, type: "spring" }}
+									className="flex flex-col items-center gap-4 bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl transform rotate-6"
+								>
+									<div className="relative">
+										<div className="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.6)]">
+											<img
+												src={
+													lastMilestoneUser.avatar_url ||
+													"https://api.dicebear.com/7.x/avataaars/svg?seed=" +
+														lastMilestoneUser.username
+												}
+												alt={lastMilestoneUser.username}
+												className="w-full h-full object-cover"
+											/>
+										</div>
+										<div className="absolute -bottom-2 -right-2 bg-yellow-400 text-orange-900 font-bold px-3 py-1 rounded-full text-sm shadow-lg">
+											MVP
+										</div>
+									</div>
+									<div className="text-center">
+										<div className="text-orange-200 text-sm font-bold uppercase tracking-widest mb-1">
+											Hedefi Tamamlayan
+										</div>
+										<div className="text-3xl font-black text-white drop-shadow-md">
+											{lastMilestoneUser.username}
+										</div>
+									</div>
+								</motion.div>
+							)}
 						</motion.div>
 					</>
 				)}
