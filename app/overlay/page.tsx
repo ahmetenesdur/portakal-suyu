@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { GAME_CONFIG } from "@/lib/constants";
 import { useSearchParams } from "next/navigation";
+import LeaderboardWidget from "./LeaderboardWidget";
 
 // --- SVG ASSETS (High Fidelity) ---
 
@@ -625,6 +626,9 @@ function OverlayContent() {
 					</span>
 				</span>
 			</div>
+
+			{/* Leaderboard Widget */}
+			<LeaderboardWidget />
 		</div>
 	);
 }
