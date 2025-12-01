@@ -25,8 +25,7 @@ export default function LeaderboardPage() {
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
 	useEffect(() => {
-		const controller = new AbortController();
-		const signal = controller.signal;
+		let isMounted = true;
 
 		async function fetchLeaderboard() {
 			setLoading(true);
@@ -68,9 +67,9 @@ export default function LeaderboardPage() {
 						.order("score", { ascending: false });
 				}
 
-				const { data, error } = await query
-					.limit(limit + 1)
-					.abortSignal(signal);
+				const { data, error } = await query.limit(limit + 1);
+
+				if (!isMounted) return;
 
 				if (error) throw error;
 
@@ -108,16 +107,11 @@ export default function LeaderboardPage() {
 					setProfiles(formattedData);
 				}
 			} catch (error: unknown) {
-				if (
-					typeof error === "object" &&
-					error !== null &&
-					"name" in error &&
-					(error as { name: string }).name !== "AbortError"
-				) {
+				if (isMounted) {
 					console.error("Error fetching leaderboard:", error);
 				}
 			} finally {
-				if (!signal.aborted) {
+				if (isMounted) {
 					setLoading(false);
 				}
 			}
@@ -126,7 +120,7 @@ export default function LeaderboardPage() {
 		fetchLeaderboard();
 
 		return () => {
-			controller.abort();
+			isMounted = false;
 		};
 	}, [supabase, timeframe, limit]);
 
