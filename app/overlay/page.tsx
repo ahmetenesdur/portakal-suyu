@@ -466,7 +466,7 @@ function OverlayContent() {
 
 			{/* --- TEST CONTROLS PANEL --- */}
 			{isTestMode && (
-				<div className="fixed top-4 right-4 z-100 bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
+				<div className="fixed bottom-4 left-4 z-100 bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
 					<h3 className="font-bold text-orange-400 mb-2">
 						Test Controls
 					</h3>
