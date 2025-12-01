@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { GAME_CONFIG } from "@/lib/constants";
 
 export async function POST(request: Request) {
 	const { count } = await request.json();
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
 	// Call the RPC function we created in schema.sql
 	const { error } = await supabase.rpc("increment_clicks", {
 		click_count: count,
-		milestone_step: 100, // Hardcoded for now, should match GAME_CONFIG.GOAL
+		milestone_step: GAME_CONFIG.GOAL,
 		user_info: {
 			username:
 				user.user_metadata.full_name ||
