@@ -21,7 +21,7 @@ export default function LeaderboardWidget() {
 	const [supabase] = useState(() => createClient());
 	const searchParams = useSearchParams();
 	const mode =
-		(searchParams.get("lb_mode") as "daily" | "weekly" | "all") || "all";
+		(searchParams.get("lb_mode") as "daily" | "weekly" | "all") || "daily";
 
 	const getTitle = () => {
 		switch (mode) {
