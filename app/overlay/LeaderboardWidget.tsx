@@ -212,12 +212,12 @@ export default function LeaderboardWidget() {
 									ease: "easeInOut",
 								},
 							}}
-							className={`relative flex items-center gap-3 p-3 rounded-xl border backdrop-blur-md shadow-lg overflow-hidden group ${
+							className={`relative flex items-center gap-3 p-3 rounded-xl border backdrop-blur-md shadow-lg overflow-hidden group bg-black/20 ${
 								index === 0
-									? "bg-linear-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30"
+									? "bg-linear-to-r from-yellow-500/60 to-orange-500/60 border-yellow-500/30"
 									: index === 1
-									? "bg-linear-to-r from-slate-300/10 to-slate-400/10 border-slate-300/20"
-									: "bg-linear-to-r from-orange-800/10 to-amber-900/10 border-orange-800/20"
+									? "bg-linear-to-r from-slate-300/40 to-slate-400/40 border-slate-300/20"
+									: "bg-linear-to-r from-orange-800/40 to-amber-900/40 border-orange-800/20"
 							}`}
 						>
 							{/* Rank Badge */}
@@ -285,12 +285,12 @@ export default function LeaderboardWidget() {
 									{leader.username}
 								</span>
 								<span
-									className={`text-xs font-mono ${
+									className={`text-xs font-mono font-bold ${
 										index === 0
-											? "text-yellow-200/60"
+											? "text-yellow-200"
 											: index === 1
-											? "text-slate-300/60"
-											: "text-orange-200/60"
+											? "text-slate-300"
+											: "text-orange-200"
 									}`}
 								>
 									{new Intl.NumberFormat("tr-TR").format(
