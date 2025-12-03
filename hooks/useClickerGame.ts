@@ -16,6 +16,7 @@ export function useClickerGame({
 	role,
 }: UseClickerGameProps) {
 	const [count, setCount] = useState(0);
+	const [isLoading, setIsLoading] = useState(true);
 	const [clicks, setClicks] = useState<
 		{ id: number; x: number; y: number }[]
 	>([]);
@@ -30,12 +31,16 @@ export function useClickerGame({
 	// Fetch initial stats and subscribe to updates
 	useEffect(() => {
 		const fetchStats = async () => {
-			const { data } = await supabase
-				.from("global_stats")
-				.select("total_clicks")
-				.eq("id", 1)
-				.single();
-			if (data) setCount(data.total_clicks);
+			try {
+				const { data } = await supabase
+					.from("global_stats")
+					.select("total_clicks")
+					.eq("id", 1)
+					.single();
+				if (data) setCount(data.total_clicks);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 
 		fetchStats();
@@ -123,6 +128,7 @@ export function useClickerGame({
 
 	return {
 		count,
+		isLoading,
 		clicks,
 		particles,
 		currentFace,

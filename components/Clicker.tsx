@@ -17,6 +17,7 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 
 	const {
 		count,
+		isLoading,
 		clicks,
 		particles,
 		currentFace,
@@ -100,7 +101,11 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 					TOPLAM SIKILAN
 				</h2>
 				<div className="text-7xl font-black text-transparent bg-clip-text bg-linear-to-b from-orange-500 to-orange-700 drop-shadow-sm font-mono tracking-tight">
-					{count.toLocaleString()}
+					{isLoading ? (
+						<div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mx-auto" />
+					) : (
+						count.toLocaleString()
+					)}
 				</div>
 				<p className="text-lg text-orange-800/80 mt-2 font-medium">
 					Litre Portakal Suyu
