@@ -8,8 +8,33 @@ import { GAME_CONFIG } from "@/lib/constants";
 export async function POST(request: Request) {
 	const { count } = await request.json();
 
-	if (!count || count <= 0) {
-		return NextResponse.json({ error: "Invalid count" }, { status: 400 });
+	// Security: Strict validation to prevent score manipulation
+	// 1. Must be a number and an integer
+	if (typeof count !== "number" || !Number.isInteger(count)) {
+		return NextResponse.json(
+			{ error: "Invalid count format" },
+			{ status: 400 }
+		);
+	}
+
+	// 2. Must be positive
+	if (count <= 0) {
+		return NextResponse.json(
+			{ error: "Count must be positive" },
+			{ status: 400 }
+		);
+	}
+
+	// 3. Rate Limit / Batch Size Cap (MAX_BATCH_SIZE is 50 in frontend)
+	// We allow a small buffer (e.g. 50) but 50 is the hard limit for a single batch
+	if (count > 50) {
+		console.warn(
+			`Suspicious activity detected: Request with ${count} clicks rejected.`
+		);
+		return NextResponse.json(
+			{ error: "Batch size limit exceeded" },
+			{ status: 400 }
+		);
 	}
 
 	const cookieStore = await cookies();

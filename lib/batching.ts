@@ -25,14 +25,21 @@ const flushClicks = async () => {
 	}
 
 	try {
-		await fetch("/api/click", {
+		const response = await fetch("/api/click", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ count }),
 			keepalive: true,
 		});
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			// User requested console-only logging for errors
+			console.error("Click sync failed:", response.status, errorData);
+			return; // Don't retry if it's a validation error (400)
+		}
 	} catch (error) {
-		console.error("Failed to sync clicks:", error);
-		// Simple retry logic: put them back in queue (optional, keeping it simple for now)
+		console.error("Network error syncing clicks:", error);
+		// Simple retry logic could go here, but for security rejections we shouldn't retry
 	}
 };
