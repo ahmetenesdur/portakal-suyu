@@ -45,22 +45,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		[supabase]
 	);
 
-	const syncRoles = useCallback(async (sessionToken: string) => {
-		try {
-			const res = await fetch("/api/sync-roles", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${sessionToken}`,
-				},
-			});
-			if (res.ok) {
+	const signOut = useCallback(async () => {
+		await supabase.auth.signOut();
+		setUser(null);
+		setProfile(null);
+	}, [supabase.auth]);
+
+	const syncRoles = useCallback(
+		async (sessionToken: string) => {
+			try {
+				const res = await fetch("/api/sync-roles", {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${sessionToken}`,
+					},
+				});
+
 				const data = await res.json();
-				setProfile((prev) => (prev ? { ...prev, ...data } : data));
+
+				if (res.ok) {
+					// Handle Session Migration (Legacy -> Identity)
+					if (data.action === "relogin") {
+						console.log(
+							"Legacy session detected, forcing re-login..."
+						);
+						await signOut();
+						return;
+					}
+
+					setProfile((prev) => (prev ? { ...prev, ...data } : data));
+				}
+			} catch (error) {
+				console.error("Failed to sync roles:", error);
 			}
-		} catch (error) {
-			console.error("Failed to sync roles:", error);
-		}
-	}, []);
+		},
+		[signOut]
+	);
 
 	useEffect(() => {
 		const checkUser = async () => {
@@ -104,12 +124,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			},
 		});
 	}, [supabase.auth]);
-
-	const signOut = async () => {
-		await supabase.auth.signOut();
-		setUser(null);
-		setProfile(null);
-	};
 
 	return (
 		<AuthContext.Provider

@@ -30,6 +30,15 @@ export async function POST(request: Request) {
 	);
 	const discordId = discordIdentity?.id;
 
+	// Check for Legacy Session (Has metadata but no identity)
+	if (!discordId && user.user_metadata.provider_id) {
+		console.warn("Legacy session detected for user:", user.id);
+		return NextResponse.json(
+			{ action: "relogin", error: "Session upgrade required" },
+			{ status: 200 } // Return 200 to let frontend handle it gracefully
+		);
+	}
+
 	if (!discordId) {
 		console.error("No Discord ID found for user:", user.id);
 		return NextResponse.json(
