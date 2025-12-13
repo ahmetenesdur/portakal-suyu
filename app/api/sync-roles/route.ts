@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 	const discordIdentity = user.identities?.find(
 		(id) => id.provider === "discord"
 	);
-	const discordId = user.user_metadata.provider_id || discordIdentity?.id;
+	const discordId = discordIdentity?.id;
 
 	if (!discordId) {
 		console.error("No Discord ID found for user:", user.id);
