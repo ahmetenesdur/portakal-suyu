@@ -137,7 +137,7 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 						</div>
 
 						{/* Mobile View */}
-						<div className="md:hidden relative">
+						<div className="md:hidden relative flex items-center justify-center ">
 							<button
 								onClick={() => setIsMenuOpen(!isMenuOpen)}
 								className="relative w-9 h-9 rounded-full border-2 border-white/50 shadow-sm overflow-hidden transition-transform active:scale-95"
