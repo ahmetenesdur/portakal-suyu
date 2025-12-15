@@ -72,9 +72,9 @@ export function useClickerGame({
 			setCount((prev) => prev + clickAmount);
 
 			// Change face randomly (but not same as current)
-			let nextFace = Math.floor(Math.random() * 5);
+			let nextFace = Math.floor(Math.random() * 7);
 			while (nextFace === currentFace) {
-				nextFace = Math.floor(Math.random() * 5);
+				nextFace = Math.floor(Math.random() * 7);
 			}
 			setCurrentFace(nextFace);
 

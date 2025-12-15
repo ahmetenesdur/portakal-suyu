@@ -86,6 +86,34 @@ export default function OrangeCharacter({
 								<div className="absolute top-12 left-1/2 -translate-x-1/2 w-12 h-8 bg-black/60 rounded-b-full" />
 							</>
 						)}
+						{currentFace === 5 && (
+							// Dead: X X
+							<>
+								<div className="flex gap-10 items-center">
+									<div className="text-4xl font-black text-black/80 select-none">
+										X
+									</div>
+									<div className="text-4xl font-black text-black/80 select-none">
+										X
+									</div>
+								</div>
+								<div className="absolute top-12 left-1/2 -translate-x-1/2 w-10 h-2 bg-black/80 rounded-full mt-2" />
+							</>
+						)}
+						{currentFace === 6 && (
+							// Dizzy: @ @
+							<>
+								<div className="flex gap-10 items-center">
+									<div className="text-4xl font-black text-black/80 select-none">
+										@
+									</div>
+									<div className="text-4xl font-black text-black/80 select-none">
+										@
+									</div>
+								</div>
+								<div className="absolute top-14 left-1/2 -translate-x-1/2 w-10 h-6 border-4 border-black/80 rounded-[50%] border-t-transparent animate-pulse" />
+							</>
+						)}
 					</div>
 				</div>
 
