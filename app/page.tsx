@@ -12,7 +12,7 @@ import GameArea from "@/components/GameArea";
 import SocialDock from "@/components/SocialDock";
 
 export default function Home() {
-	const { user, profile, loading } = useAuth();
+	const { user, profile, loading, signInWithDiscord } = useAuth();
 	const { playPop, isMuted, toggleMute } = useSound();
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 	const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
@@ -44,10 +44,6 @@ export default function Home() {
 	const handleLoginPrompt = () => {
 		setIsLoginPromptOpen(true);
 	};
-
-	// We need access to signInWithDiscord here or pass it down.
-	// useAuth provides signInWithDiscord.
-	const { signInWithDiscord } = useAuth();
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
