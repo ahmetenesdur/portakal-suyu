@@ -6,8 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { GAME_CONFIG } from "@/lib/constants";
 import { useSearchParams } from "next/navigation";
 import LeaderboardWidget from "./LeaderboardWidget";
-
-// --- SVG ASSETS (High Fidelity) ---
+import Image from "next/image";
 
 const OrangeSliceSVG = ({ className }: { className?: string }) => (
 	<svg
@@ -16,7 +15,6 @@ const OrangeSliceSVG = ({ className }: { className?: string }) => (
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 	>
-		{/* Outer Rind (Skin) with slight gradient feel via stroke */}
 		<circle
 			cx="50"
 			cy="50"
@@ -25,20 +23,17 @@ const OrangeSliceSVG = ({ className }: { className?: string }) => (
 			stroke="#C2410C"
 			strokeWidth="1"
 		/>
-		{/* Inner Pith (White) */}
+
 		<circle cx="50" cy="50" r="44" fill="#FFF7ED" />
 
-		{/* Juicy Segments */}
 		{[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
 			<g key={angle} transform={`rotate(${angle} 50 50)`}>
-				{/* Segment Shape - Organic Kernel */}
 				<path
 					d="M50 44 L36 16 Q50 8 64 16 L50 44 Z"
 					fill="#F97316"
 					stroke="#FB923C"
 					strokeWidth="0.5"
 				/>
-				{/* Juice Sacs / Texture Details */}
 				<circle
 					cx="50"
 					cy="18"
@@ -70,7 +65,6 @@ const OrangeSliceSVG = ({ className }: { className?: string }) => (
 			</g>
 		))}
 
-		{/* Center Core */}
 		<circle cx="50" cy="50" r="3" fill="#FFF7ED" />
 	</svg>
 );
@@ -82,12 +76,11 @@ const DropletSVG = ({ className }: { className?: string }) => (
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 	>
-		{/* Main Body */}
 		<path
 			d="M12 2C12 2 18 8 18 14C18 17.3137 15.3137 20 12 20C8.68629 20 6 17.3137 6 14C6 8 12 2 12 2Z"
 			fill="#F97316"
 		/>
-		{/* Volume Shadow (Bottom Right) */}
+
 		<path
 			d="M12 18C15 18 17 16 17 14C17 11 14 6 14 6"
 			stroke="#C2410C"
@@ -95,7 +88,7 @@ const DropletSVG = ({ className }: { className?: string }) => (
 			fill="#C2410C"
 			fillOpacity="0.2"
 		/>
-		{/* Highlight (Top Left) */}
+
 		<path
 			d="M10 8C10 8 8.5 10 8.5 12.5"
 			stroke="white"
@@ -119,8 +112,6 @@ const WaveSVG = () => (
 		/>
 	</svg>
 );
-
-// --- COMPONENTS ---
 
 const FloatingParticles = ({ count = 25 }: { count?: number }) => {
 	const [particles, setParticles] = useState<
@@ -161,7 +152,7 @@ const FloatingParticles = ({ count = 25 }: { count?: number }) => {
 					style={{ left: `${p.left}%` }}
 					initial={{ y: 100, opacity: 0, rotate: 0 }}
 					animate={{
-						y: -1000, // Move up off screen
+						y: -1000,
 						opacity: [0, 1, 1, 0],
 						rotate: p.rotation + 360,
 					}}
@@ -242,7 +233,7 @@ const GodRays = () => {
 	const [isVisible, setIsVisible] = useState(true);
 
 	useEffect(() => {
-		const timer = setTimeout(() => setIsVisible(false), 4000); // Fade out after 4s (was 3s)
+		const timer = setTimeout(() => setIsVisible(false), 4000);
 		return () => clearTimeout(timer);
 	}, []);
 
@@ -254,7 +245,7 @@ const GodRays = () => {
 				rotate: 360,
 			}}
 			transition={{
-				opacity: { duration: 2 }, // Slower fade (was 1s)
+				opacity: { duration: 2 },
 				rotate: { duration: 20, ease: "linear", repeat: Infinity },
 			}}
 			className="absolute inset-0 z-40 pointer-events-none flex items-center justify-center"
@@ -305,7 +296,7 @@ const Sparkles = () => {
 			);
 		}, 0);
 
-		const fadeTimer = setTimeout(() => setIsVisible(false), 4000); // Fade out after 4s (was 3s)
+		const fadeTimer = setTimeout(() => setIsVisible(false), 4000);
 
 		return () => {
 			clearTimeout(timer);
@@ -317,7 +308,7 @@ const Sparkles = () => {
 		<motion.div
 			className="absolute inset-0 z-50 pointer-events-none"
 			animate={{ opacity: isVisible ? 1 : 0 }}
-			transition={{ duration: 2 }} // Slower fade (was 1s)
+			transition={{ duration: 2 }}
 		>
 			{sparkles.map((s) => (
 				<motion.div
@@ -464,7 +455,6 @@ function OverlayContent() {
 				}
 			`}</style>
 
-			{/* --- TEST CONTROLS PANEL --- */}
 			{isTestMode && (
 				<div className="fixed bottom-4 left-4 z-100 bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
 					<h3 className="font-bold text-orange-400 mb-2">
@@ -491,7 +481,6 @@ function OverlayContent() {
 				</div>
 			)}
 
-			{/* --- SPILL ANIMATION --- */}
 			<AnimatePresence>
 				{showSpill && (
 					<>
@@ -505,7 +494,7 @@ function OverlayContent() {
 							}}
 							transition={{ duration: 0.5, ease: "easeInOut" }}
 						>
-							{/* White Flash Impact */}
+							{/* Flash Impact */}
 							<motion.div
 								initial={{ opacity: 0 }}
 								animate={{ opacity: [0, 1, 0] }}
@@ -528,7 +517,6 @@ function OverlayContent() {
 							}} // Custom easing for "heavy" liquid feel
 							className="absolute inset-0 z-40 flex flex-col justify-end"
 						>
-							{/* Back Wave */}
 							<div
 								className="absolute top-0 left-0 w-[200%] h-48 -mt-12 flex animate-wave-slide opacity-60"
 								style={{ animationDuration: "15s" }}
@@ -537,36 +525,28 @@ function OverlayContent() {
 								<WaveSVG />
 							</div>
 
-							{/* Front Wave */}
 							<div className="w-[200%] h-32 -mb-1 flex animate-wave-slide relative z-10">
 								<WaveSVG />
 								<WaveSVG />
 							</div>
 
-							{/* Solid Body */}
 							<div className="w-full flex-1 bg-orange-500 relative overflow-hidden z-10">
-								{/* Bubbles Pattern */}
 								<div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-white via-transparent to-transparent bg-size-[40px_40px]" />
 							</div>
 						</motion.div>
 
-						{/* 1.5 God Rays (Background for Text) */}
 						<GodRays />
 
-						{/* 2. Floating Particles (Slices & Droplets) */}
 						<div className="absolute inset-0 z-50 pointer-events-none">
 							<FloatingParticles count={25} />
 						</div>
 
-						{/* 3. Splash Burst Effect (Updated to use Droplets) */}
 						<div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
 							<SplashBurst />
 						</div>
 
-						{/* 3.5 Sparkles */}
 						<Sparkles />
 
-						{/* 4. Celebration Text (Slam Effect) */}
 						<motion.div
 							initial={{ scale: 0.2, opacity: 0, rotate: -15 }}
 							animate={{ scale: 1, opacity: 1, rotate: -6 }}
@@ -574,8 +554,8 @@ function OverlayContent() {
 							transition={{
 								delay: 0.2,
 								type: "spring",
-								stiffness: 200, // Reduced from 300 for less wobble
-								damping: 20, // Increased from 15 for more stability
+								stiffness: 200,
+								damping: 20,
 							}}
 							className="absolute inset-0 z-70 flex flex-col items-center justify-center gap-8"
 						>
@@ -585,7 +565,6 @@ function OverlayContent() {
 									<br />
 									<span className="text-yellow-300 relative inline-block">
 										TAMAMLANDI!
-										{/* Shine Effect on Text */}
 										<motion.span
 											className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent skew-x-12"
 											initial={{ x: "-100%" }}
@@ -600,7 +579,6 @@ function OverlayContent() {
 								</h1>
 							</div>
 
-							{/* Winner User Display */}
 							{lastMilestoneUser && (
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -610,14 +588,15 @@ function OverlayContent() {
 								>
 									<div className="relative">
 										<div className="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.6)]">
-											<img
+											<Image
 												src={
 													lastMilestoneUser.avatar_url ||
 													"https://api.dicebear.com/7.x/avataaars/svg?seed=" +
 														lastMilestoneUser.username
 												}
 												alt={lastMilestoneUser.username}
-												className="w-full h-full object-cover"
+												fill
+												className="object-cover"
 											/>
 										</div>
 										<div className="absolute -bottom-2 -right-2 bg-yellow-400 text-orange-900 font-bold px-3 py-1 rounded-full text-sm shadow-lg">
@@ -639,24 +618,18 @@ function OverlayContent() {
 				)}
 			</AnimatePresence>
 
-			{/* --- WIDGETS --- */}
-
-			{/* Progress Bar */}
 			<div className="w-[400px] h-16 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
-				{/* Liquid Fill */}
 				<motion.div
 					className="h-full bg-linear-to-r from-orange-600 via-orange-500 to-yellow-400 relative"
 					initial={{ width: "0%" }}
 					animate={{ width: `${progress}%` }}
 					transition={{ type: "spring", stiffness: 40, damping: 15 }}
 				>
-					{/* Glossy Shine */}
 					<div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-full" />
-					{/* Wave Pattern Overlay */}
+
 					<div className="absolute inset-0 opacity-30 bg-[url('/bubbles.svg')] animate-pulse" />
 				</motion.div>
 
-				{/* Text */}
 				<div className="absolute inset-0 flex items-center justify-center gap-3">
 					<span className="text-3xl font-black text-white font-mono tracking-tighter drop-shadow-lg">
 						{count.toLocaleString()}
@@ -667,7 +640,6 @@ function OverlayContent() {
 				</div>
 			</div>
 
-			{/* Goal Badge */}
 			<div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl z-10 transform -skew-x-12">
 				<div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
 				<span className="text-white/90 font-bold text-lg tracking-wide transform skew-x-12">
@@ -681,7 +653,6 @@ function OverlayContent() {
 				</span>
 			</div>
 
-			{/* Leaderboard Widget */}
 			<LeaderboardWidget />
 		</div>
 	);
