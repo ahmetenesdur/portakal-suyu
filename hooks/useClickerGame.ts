@@ -1,19 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase";
 import { addClick } from "@/lib/batching";
-import { GAME_CONFIG } from "@/lib/constants";
 import { User } from "@supabase/supabase-js";
 
 type UseClickerGameProps = {
 	user: User | null;
-	multiplier: number;
 	role?: string;
+	basePower: number;
+	activeBuffs: { id: string; expires_at: number; multiplier?: number }[];
+	unlockedFaces?: number[];
 };
 
 export function useClickerGame({
 	user,
-	multiplier,
 	role,
+	basePower,
+	activeBuffs,
+	unlockedFaces = [0, 1, 2, 3, 4, 5, 6],
 }: UseClickerGameProps) {
 	const [count, setCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
@@ -26,9 +29,35 @@ export function useClickerGame({
 	const [currentFace, setCurrentFace] = useState(0);
 	const [supabase] = useState(() => createClient());
 
-	const clickAmount = GAME_CONFIG.CLICK_AMOUNT * multiplier;
+	// Buff Logic (Lazy Evaluation)
 
-	// Fetch initial stats and subscribe to updates
+	// Timer State (Single Source of Truth for Time)
+	const [now, setNow] = useState(() => Date.now());
+	const [currentBuffMultiplier, setCurrentBuffMultiplier] = useState(1);
+
+	// Calculate multiplier based on active buffs
+	// We memoize the calculation to run only when activeBuffs or time changes
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setNow(Date.now());
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	useEffect(() => {
+		const currentBuffMultiplierCalc = activeBuffs
+			.filter((b) => Number(b.expires_at) > now)
+			.reduce((acc, b) => acc * (b.multiplier || 1), 1);
+
+		setCurrentBuffMultiplier(currentBuffMultiplierCalc);
+	}, [activeBuffs, now]);
+
+	const roleMultiplier = role === "Abone" ? 2 : 1;
+	const clickAmount = Math.floor(
+		(basePower || 1) * roleMultiplier * currentBuffMultiplier
+	);
+
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
@@ -72,15 +101,26 @@ export function useClickerGame({
 			setCount((prev) => prev + clickAmount);
 
 			// Change face randomly (but not same as current)
-			let nextFace = Math.floor(Math.random() * 7);
-			while (nextFace === currentFace) {
-				nextFace = Math.floor(Math.random() * 7);
+			let nextFace =
+				unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
+			// Retries if it picks the same face, but with a failsafe count to avoid infinite loops if only 1 face exists
+			let attempts = 0;
+			while (
+				nextFace === currentFace &&
+				unlockedFaces.length > 1 &&
+				attempts < 5
+			) {
+				nextFace =
+					unlockedFaces[
+						Math.floor(Math.random() * unlockedFaces.length)
+					];
+				attempts++;
 			}
 			setCurrentFace(nextFace);
 
 			// Add to batch queue - ONLY if user exists AND is not a guest (Misafir)
 			if (user && role !== "Misafir") {
-				addClick(clickAmount);
+				addClick(1); // Send RAW click count, server calculates value
 			}
 
 			const rect = e.currentTarget.getBoundingClientRect();
@@ -96,11 +136,9 @@ export function useClickerGame({
 				clickY = e.clientY - rect.top;
 			}
 
-			// Add click text effect
 			const id = Date.now();
 			setClicks((prev) => [...prev, { id, x: clickX, y: clickY }]);
 
-			// Add juice particles
 			const newParticles = Array.from({ length: 6 }).map((_, i) => ({
 				id: Date.now() + i,
 				x: clickX,
@@ -110,7 +148,6 @@ export function useClickerGame({
 			}));
 			setParticles((prev) => [...prev, ...newParticles]);
 
-			// Cleanup effects
 			setTimeout(() => {
 				setClicks((prev) => prev.filter((c) => c.id !== id));
 			}, 1000);
@@ -123,7 +160,7 @@ export function useClickerGame({
 				);
 			}, 1000);
 		},
-		[clickAmount, currentFace, user, role]
+		[clickAmount, currentFace, user, role, unlockedFaces]
 	);
 
 	return {
@@ -134,5 +171,7 @@ export function useClickerGame({
 		currentFace,
 		clickAmount,
 		handleGameClick,
+		currentBuffMultiplier,
+		now,
 	};
 }
