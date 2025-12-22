@@ -7,6 +7,7 @@ import { GAME_CONFIG } from "@/lib/constants";
 import { useSearchParams } from "next/navigation";
 import LeaderboardWidget from "./LeaderboardWidget";
 import Image from "next/image";
+import Snowfall from "react-snowfall";
 
 const OrangeSliceSVG = ({ className }: { className?: string }) => (
 	<svg
@@ -441,6 +442,19 @@ function OverlayContent() {
 
 	return (
 		<div className="p-8 flex flex-col items-start gap-4 relative w-full h-screen overflow-hidden font-sans">
+			<Snowfall
+				snowflakeCount={200}
+				radius={[0.5, 2.5]}
+				speed={[0.5, 2.0]}
+				wind={[-0.5, 1.5]}
+				color="#fff"
+				style={{
+					position: "fixed",
+					width: "100vw",
+					height: "100vh",
+					zIndex: 0,
+				}}
+			/>
 			<style jsx global>{`
 				@keyframes wave-slide {
 					0% {
