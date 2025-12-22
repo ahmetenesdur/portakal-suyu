@@ -34,12 +34,20 @@ const flushClicks = async () => {
 
 		if (!response.ok) {
 			const errorData = await response.json().catch(() => ({}));
-			// User requested console-only logging for errors
 			console.error("Click sync failed:", response.status, errorData);
-			return; // Don't retry if it's a validation error (400)
+			// Retry logic: Add back to queue if it's a server error (5xx) or network error
+			// We do NOT retry 4xx errors (client errors) as they will likely fail again
+			if (response.status >= 500) {
+				clickQueue += count; // Add back to queue
+				// Exponential backoff or simple retry could be added here,
+				// but adding back to queue ensures it gets picked up in next batch (or immediately if queue > max)
+				if (!timer) timer = setTimeout(flushClicks, BATCH_INTERVAL * 2); // Slow down next retry
+			}
+			return;
 		}
 	} catch (error) {
 		console.error("Network error syncing clicks:", error);
-		// Simple retry logic could go here, but for security rejections we shouldn't retry
+		clickQueue += count; // Add back to queue on network failure
+		if (!timer) timer = setTimeout(flushClicks, BATCH_INTERVAL * 2);
 	}
 };
