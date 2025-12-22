@@ -38,7 +38,7 @@ export default function BaseModal({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.2 }}
-						className="fixed inset-0 z-100 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+						className="fixed inset-0 z-100 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-6"
 						onClick={onClose}
 					>
 						{/* Modal Content */}
@@ -48,7 +48,7 @@ export default function BaseModal({
 							exit={{ scale: 0.95, opacity: 0, y: 20 }}
 							transition={{ duration: 0.2, ease: "easeOut" }}
 							className={cn(
-								"relative w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden",
+								"relative w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden flex flex-col",
 								className
 							)}
 							onClick={(e) => e.stopPropagation()}

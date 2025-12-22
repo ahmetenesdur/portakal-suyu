@@ -13,7 +13,7 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 		<BaseModal
 			isOpen={isOpen}
 			onClose={onClose}
-			className="max-w-lg mx-auto max-h-[90vh] overflow-y-auto"
+			className="max-w-lg mx-auto max-h-[85dvh] md:max-h-[90vh] overflow-y-auto custom-scrollbar"
 		>
 			<div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-orange-100 to-transparent pointer-events-none" />
 

@@ -96,7 +96,7 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 			<BaseModal
 				isOpen={isOpen}
 				onClose={onClose}
-				className="max-w-2xl flex flex-col max-h-[85vh] overflow-hidden"
+				className="max-w-2xl flex flex-col max-h-[80dvh] md:max-h-[85vh] overflow-hidden"
 			>
 				<div className="p-6 pb-2 relative z-10 bg-white/50">
 					<div className="flex items-center justify-between mb-6">
