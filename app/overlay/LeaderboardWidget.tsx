@@ -12,6 +12,7 @@ interface LeaderboardEntry {
 	username: string;
 	avatar_url: string;
 	score: number;
+	total_clicks?: number;
 	id: string;
 }
 
@@ -42,28 +43,30 @@ export default function LeaderboardWidget() {
 				query = supabase
 					.from("leaderboard_daily")
 					.select(
-						"score, profiles!inner(id, username, avatar_url, role)"
+						"score, total_clicks, profiles!inner(id, username, avatar_url, role)"
 					)
 					.eq("date", getTurkeyDateString());
 			} else if (mode === "weekly") {
 				query = supabase
 					.from("leaderboard_weekly")
 					.select(
-						"score, profiles!inner(id, username, avatar_url, role)"
+						"score, total_clicks, profiles!inner(id, username, avatar_url, role)"
 					)
 					.eq("week_start", getTurkeyWeekStart());
 			} else {
-				// All Time
 				query = supabase
 					.from("profiles")
-					.select("id, username, avatar_url, score, role");
+					.select(
+						"id, username, avatar_url, lifetime_score, role, total_clicks"
+					);
 			}
 
-			// Common filters
+			const sortColumn = mode === "all" ? "lifetime_score" : "score";
+
 			query = query
-				.gt("score", 0)
+				.gt(sortColumn, 0)
 				.neq(mode === "all" ? "role" : "profiles.role", "Misafir")
-				.order("score", { ascending: false })
+				.order(sortColumn, { ascending: false })
 				.limit(3);
 
 			const { data, error } = await query;
@@ -73,7 +76,9 @@ export default function LeaderboardWidget() {
 			if (data) {
 				const formattedData = data.map(
 					(item: {
-						score: number;
+						score?: number;
+						lifetime_score?: number;
+						total_clicks?: number;
 						profiles?:
 							| {
 									id: string;
@@ -95,18 +100,21 @@ export default function LeaderboardWidget() {
 								id: string;
 								username: string;
 								avatar_url: string;
-								score: number;
+								lifetime_score: number; // Use lifetime score
+								total_clicks: number;
 							};
 							return {
 								id: profileItem.id,
 								username: profileItem.username,
 								avatar_url: profileItem.avatar_url,
-								score: profileItem.score,
+								score: profileItem.lifetime_score, // Display lifetime score as 'score'
+								total_clicks: profileItem.total_clicks,
 							};
 						} else {
 							// Daily/Weekly structure
 							const itemWithProfile = item as {
 								score: number;
+								total_clicks: number;
 								profiles:
 									| {
 											id: string;
@@ -130,6 +138,7 @@ export default function LeaderboardWidget() {
 								username: profile.username,
 								avatar_url: profile.avatar_url,
 								score: itemWithProfile.score,
+								total_clicks: itemWithProfile.total_clicks,
 							};
 						}
 					}
@@ -162,7 +171,6 @@ export default function LeaderboardWidget() {
 			animate={{ opacity: 1, x: 0 }}
 			className="fixed top-8 right-8 z-50 flex flex-col gap-3 w-72"
 		>
-			{/* Header */}
 			<div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 shadow-lg transform -skew-x-6 self-end">
 				<Icon
 					icon="ph:trophy-fill"
@@ -173,7 +181,6 @@ export default function LeaderboardWidget() {
 				</span>
 			</div>
 
-			{/* List */}
 			<motion.div
 				className="flex flex-col gap-2"
 				variants={{
@@ -200,7 +207,7 @@ export default function LeaderboardWidget() {
 							animate={{
 								opacity: 1,
 								x: 0,
-								y: index === 0 ? [0, -2, 0] : 0, // Subtle float for #1
+								y: index === 0 ? [0, -2, 0] : 0,
 							}}
 							transition={{
 								type: "spring",
@@ -220,7 +227,6 @@ export default function LeaderboardWidget() {
 									: "bg-linear-to-r from-orange-800/40 to-amber-900/40 border-orange-800/20"
 							}`}
 						>
-							{/* Rank Badge */}
 							<div
 								className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full ${
 									index === 0
@@ -231,7 +237,6 @@ export default function LeaderboardWidget() {
 								}`}
 							/>
 
-							{/* Avatar */}
 							<div className="relative w-10 h-10 shrink-0 ml-2">
 								<NextImage
 									src={
@@ -248,7 +253,7 @@ export default function LeaderboardWidget() {
 											: "border-amber-700"
 									}`}
 								/>
-								{/* Rank Icon */}
+
 								<div className="absolute -top-2 -right-1">
 									{index === 0 && (
 										<Icon
@@ -271,7 +276,6 @@ export default function LeaderboardWidget() {
 								</div>
 							</div>
 
-							{/* Info */}
 							<div className="flex flex-col min-w-0 flex-1">
 								<span
 									className={`font-bold text-sm truncate ${
@@ -284,23 +288,33 @@ export default function LeaderboardWidget() {
 								>
 									{leader.username}
 								</span>
-								<span
-									className={`text-xs font-mono font-bold ${
-										index === 0
-											? "text-yellow-200"
-											: index === 1
-											? "text-slate-300"
-											: "text-orange-200"
-									}`}
-								>
-									{new Intl.NumberFormat("tr-TR").format(
-										leader.score
-									)}{" "}
-									lt
-								</span>
+								<div className="flex items-center gap-2">
+									<span
+										className={`text-xs font-mono font-bold ${
+											index === 0
+												? "text-yellow-200"
+												: index === 1
+												? "text-slate-300"
+												: "text-orange-200"
+										}`}
+									>
+										{new Intl.NumberFormat("tr-TR").format(
+											leader.score
+										)}{" "}
+										lt
+									</span>
+									{leader.total_clicks && (
+										<span className="text-[10px] text-white/50 font-medium">
+											•{" "}
+											{new Intl.NumberFormat(
+												"tr-TR"
+											).format(leader.total_clicks)}{" "}
+											Tık
+										</span>
+									)}
+								</div>
 							</div>
 
-							{/* Shine Effect */}
 							<motion.div
 								className={`absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12`}
 								animate={{
@@ -309,7 +323,7 @@ export default function LeaderboardWidget() {
 								transition={{
 									duration: 2,
 									repeat: Infinity,
-									repeatDelay: 3 + index, // Staggered shine
+									repeatDelay: 3 + index,
 									ease: "easeInOut",
 								}}
 							/>
