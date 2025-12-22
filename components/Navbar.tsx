@@ -39,7 +39,7 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 			<div className="pointer-events-auto flex items-center gap-3 md:gap-4 relative">
 				<button
 					onClick={onOpenShop}
-					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					className="hidden md:flex w-9 h-9 md:w-10 md:h-10 items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
 					title="Portakal Pazarı"
 				>
 					<Icon
@@ -52,7 +52,7 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 
 				<Link
 					href="/leaderboard"
-					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					className="hidden md:flex w-9 h-9 md:w-10 md:h-10 items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
 					title="Liderlik Tablosu"
 				>
 					<Icon
@@ -65,7 +65,7 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 
 				<button
 					onClick={onOpenInfo}
-					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					className="hidden md:flex w-9 h-9 md:w-10 md:h-10 items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
 					title="Bilgi"
 				>
 					<Icon
@@ -147,16 +147,26 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 							</button>
 						</div>
 
-						<div className="md:hidden relative flex items-center justify-center ">
+						<div className="md:hidden relative flex items-center justify-center">
 							<button
 								onClick={() => setIsMenuOpen(!isMenuOpen)}
-								className="relative w-9 h-9 rounded-full border-2 border-white/50 shadow-sm overflow-hidden transition-transform active:scale-95"
+								className="flex items-center gap-1.5 bg-white/20 pl-1 pr-2.5 py-1 rounded-full border border-white/40 backdrop-blur-md shadow-sm transition-all active:scale-95 group"
 							>
-								<NextImage
-									src={user.user_metadata.avatar_url}
-									alt={user.user_metadata.full_name}
-									fill
-									className="object-cover"
+								<div className="relative w-8 h-8 rounded-full border border-white/50 overflow-hidden shrink-0">
+									<NextImage
+										src={user.user_metadata.avatar_url}
+										alt={user.user_metadata.full_name}
+										fill
+										className="object-cover"
+									/>
+								</div>
+								<Icon
+									icon="lucide:chevron-down"
+									width="14"
+									height="14"
+									className={`text-orange-600/70 transition-transform duration-300 ${
+										isMenuOpen ? "rotate-180" : ""
+									}`}
 								/>
 							</button>
 
@@ -196,6 +206,53 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 											</div>
 										</div>
 
+										<div className="md:hidden flex flex-col gap-1 py-1 border-b border-orange-100/50">
+											<button
+												onClick={() => {
+													if (onOpenShop)
+														onOpenShop();
+													setIsMenuOpen(false);
+												}}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:store"
+													width="16"
+													height="16"
+												/>
+												Portakal Pazarı
+											</button>
+											<Link
+												href="/leaderboard"
+												onClick={() =>
+													setIsMenuOpen(false)
+												}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:medal"
+													width="16"
+													height="16"
+												/>
+												Liderlik Tablosu
+											</Link>
+											<button
+												onClick={() => {
+													if (onOpenInfo)
+														onOpenInfo();
+													setIsMenuOpen(false);
+												}}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:info"
+													width="16"
+													height="16"
+												/>
+												Bilgi
+											</button>
+										</div>
+
 										{profile?.role === "Misafir" && (
 											<a
 												href="https://discord.gg/NdEfduN4nU"
@@ -229,21 +286,106 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 						</div>
 					</>
 				) : (
-					<button
-						onClick={() => signInWithDiscord()}
-						className="px-4 py-2 md:px-6 md:py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-xl md:rounded-2xl shadow-lg shadow-[#5865F2]/30 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer text-sm md:text-base"
-					>
-						<Icon
-							icon="simple-icons:discord"
-							width="16"
-							height="16"
-							className="md:w-5 md:h-5"
-						/>
-						<span className="hidden md:inline">
-							Discord ile Giriş
-						</span>
-						<span className="md:hidden">Giriş</span>
-					</button>
+					<>
+						<button
+							onClick={() => signInWithDiscord()}
+							className="hidden md:flex px-4 py-2 md:px-6 md:py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-xl md:rounded-2xl shadow-lg shadow-[#5865F2]/30 items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer text-sm md:text-base"
+						>
+							<Icon
+								icon="simple-icons:discord"
+								width="16"
+								height="16"
+								className="md:w-5 md:h-5"
+							/>
+							<span className="hidden md:inline">
+								Discord ile Giriş
+							</span>
+							<span className="md:hidden">Giriş</span>
+						</button>
+
+						<div className="md:hidden relative flex items-center justify-center">
+							<button
+								onClick={() => setIsMenuOpen(!isMenuOpen)}
+								className="w-9 h-9 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer"
+							>
+								<Icon
+									icon="lucide:menu"
+									width="20"
+									height="20"
+								/>
+							</button>
+
+							{isMenuOpen && (
+								<>
+									<div
+										className="fixed inset-0 z-40"
+										onClick={() => setIsMenuOpen(false)}
+									/>
+									<div className="absolute right-0 top-full mt-2 w-56 bg-white/90 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl p-3 z-50 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+										<div className="flex flex-col gap-1 py-1 border-b border-orange-100/50">
+											<button
+												onClick={() =>
+													signInWithDiscord()
+												}
+												className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#5865F2]/10 text-[#5865F2] hover:bg-[#5865F2]/20 transition-colors text-sm font-bold mb-2"
+											>
+												<Icon
+													icon="simple-icons:discord"
+													width="16"
+													height="16"
+												/>
+												Giriş Yap
+											</button>
+											<button
+												onClick={() => {
+													if (onOpenShop)
+														onOpenShop();
+													setIsMenuOpen(false);
+												}}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:store"
+													width="16"
+													height="16"
+												/>
+												Portakal Pazarı
+											</button>
+											<Link
+												href="/leaderboard"
+												onClick={() =>
+													setIsMenuOpen(false)
+												}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:medal"
+													width="16"
+													height="16"
+												/>
+												Liderlik Tablosu
+											</Link>
+											<button
+												onClick={() => {
+													if (onOpenInfo)
+														onOpenInfo();
+													setIsMenuOpen(false);
+												}}
+												className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-orange-50 text-orange-700 transition-colors text-sm font-bold"
+											>
+												<Icon
+													icon="lucide:info"
+													width="16"
+													height="16"
+												/>
+												Bilgi
+											</button>
+										</div>
+									</div>
+								</>
+							)}
+						</div>
+					</>
 				)}
 			</div>
 		</header>
