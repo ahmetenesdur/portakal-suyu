@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 		siteName: "Sihirli Portakal Vadisi",
 		images: [
 			{
-				url: "/og-image.png", // We should probably create this or use a placeholder
+				url: "/og-image.png",
 				width: 1200,
 				height: 630,
 				alt: "Sihirli Portakal Vadisi",
@@ -52,11 +52,12 @@ export const metadata: Metadata = {
 		description:
 			"Portakal Suyu için hazırlanmış interaktif topluluk oyunu. Portakalları sık, vadiyi enerjiyle doldur!",
 		images: ["/og-image.png"],
-		creator: "@portakalsuyu", // Placeholder
+		creator: "@portakalsuyu",
 	},
 };
 
 import { AuthProvider } from "@/components/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
 	children,
@@ -71,7 +72,28 @@ export default function RootLayout({
 					"antialiased min-h-screen bg-linear-to-b from-orange-rift-50 to-white text-foreground overflow-x-hidden selection:bg-orange-rift-200 selection:text-orange-rift-900"
 				)}
 			>
-				<AuthProvider>{children}</AuthProvider>
+				<AuthProvider>
+					{children}
+					<Toaster
+						position="bottom-right"
+						toastOptions={{
+							className:
+								"bg-white/90 backdrop-blur-md text-orange-900 border-2 border-orange-100 shadow-xl !rounded-2xl font-bold font-baloo",
+							success: {
+								iconTheme: {
+									primary: "#f97316",
+									secondary: "#fff",
+								},
+							},
+							error: {
+								iconTheme: {
+									primary: "#ef4444",
+									secondary: "#fff",
+								},
+							},
+						}}
+					/>
+				</AuthProvider>
 			</body>
 		</html>
 	);
