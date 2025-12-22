@@ -10,7 +10,7 @@ import {
 import { createClient } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 
-import { Profile } from "@/types";
+import { Profile, ShopItem, InventoryItem } from "@/types";
 
 type AuthContextType = {
 	user: User | null;
@@ -18,6 +18,7 @@ type AuthContextType = {
 	signInWithDiscord: () => Promise<void>;
 	signOut: () => Promise<void>;
 	loading: boolean;
+	unlockedFaceIndices: number[];
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +26,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
 	const [profile, setProfile] = useState<Profile | null>(null);
+	const [unlockedFaceIndices, setUnlockedFaceIndices] = useState<number[]>(
+		[]
+	);
 	const [loading, setLoading] = useState(true);
 	const [supabase] = useState(() => createClient());
 
@@ -33,13 +37,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			const { data } = await supabase
 				.from("profiles")
 				.select(
-					"id, username, avatar_url, role, multiplier, score, score_weekly, score_daily"
+					"id, username, avatar_url, role, multiplier, score, total_spent, base_power, active_buffs"
 				)
 				.eq("id", userId)
 				.single();
 
 			if (data) {
 				setProfile(data as Profile);
+			}
+
+			// Fetch Inventory for Faces
+			const { data: inventoryData } = await supabase
+				.from("user_inventory")
+				.select(
+					`
+                    item_id,
+                    shop_items!inner (
+                        type,
+                        effect_value
+                    )
+                `
+				)
+				.eq("user_id", userId)
+				.eq("shop_items.type", "face");
+
+			if (inventoryData) {
+				type InventoryWithFace = InventoryItem & {
+					shop_items: Pick<ShopItem, "type" | "effect_value"> | null;
+				};
+
+				const indices = (
+					inventoryData as unknown as InventoryWithFace[]
+				)
+					.map((item) => item.shop_items?.effect_value)
+					.filter(
+						(val): val is number =>
+							val !== null && val !== undefined
+					);
+				setUnlockedFaceIndices(indices);
 			}
 		},
 		[supabase]
@@ -83,38 +118,91 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	);
 
 	useEffect(() => {
-		const checkUser = async () => {
+		let channel: ReturnType<typeof supabase.channel> | null = null;
+		let authListener: { subscription: { unsubscribe: () => void } } | null =
+			null;
+
+		const initAuth = async () => {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
 
 			setUser(session?.user ?? null);
+			setLoading(true);
 
 			if (session?.user) {
 				await fetchProfile(session.user.id);
-				// Sync roles in background
 				syncRoles(session.access_token);
+
+				// Initial Realtime Subscription
+				channel = supabase
+					.channel("realtime-profile")
+					.on(
+						"postgres_changes",
+						{
+							event: "UPDATE",
+							schema: "public",
+							table: "profiles",
+							filter: `id=eq.${session.user.id}`,
+						},
+						(payload) => {
+							setProfile((prev) =>
+								prev
+									? { ...prev, ...payload.new }
+									: (payload.new as Profile)
+							);
+						}
+					)
+					.subscribe();
 			}
 
 			setLoading(false);
 
-			const {
-				data: { subscription },
-			} = supabase.auth.onAuthStateChange(async (_event, session) => {
-				setUser(session?.user ?? null);
-				if (session?.user) {
-					await fetchProfile(session.user.id);
-					syncRoles(session.access_token);
-				} else {
-					setProfile(null);
-				}
-			});
+			const { data } = supabase.auth.onAuthStateChange(
+				async (_event, session) => {
+					setUser(session?.user ?? null);
+					if (session?.user) {
+						await fetchProfile(session.user.id);
+						syncRoles(session.access_token);
 
-			return () => subscription.unsubscribe();
+						// Re-subscribe Realtime if user changed
+						if (channel) supabase.removeChannel(channel);
+						channel = supabase
+							.channel("realtime-profile")
+							.on(
+								"postgres_changes",
+								{
+									event: "UPDATE",
+									schema: "public",
+									table: "profiles",
+									filter: `id=eq.${session.user.id}`,
+								},
+								(payload) => {
+									setProfile((prev) =>
+										prev
+											? { ...prev, ...payload.new }
+											: (payload.new as Profile)
+									);
+								}
+							)
+							.subscribe();
+					} else {
+						setProfile(null);
+						if (channel) supabase.removeChannel(channel);
+						channel = null;
+					}
+				}
+			);
+			authListener = data;
 		};
 
-		checkUser();
-	}, [supabase.auth, fetchProfile, syncRoles]);
+		initAuth();
+
+		return () => {
+			if (authListener) authListener.subscription.unsubscribe();
+			if (channel) supabase.removeChannel(channel);
+		};
+	}, [supabase, fetchProfile, syncRoles]);
 
 	const signInWithDiscord = useCallback(async () => {
 		await supabase.auth.signInWithOAuth({
@@ -127,7 +215,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<AuthContext.Provider
-			value={{ user, profile, signInWithDiscord, signOut, loading }}
+			value={{
+				user,
+				profile,
+				signInWithDiscord,
+				signOut,
+				loading,
+				unlockedFaceIndices,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>
