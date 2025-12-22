@@ -2,14 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
-import { GAME_CONFIG } from "@/lib/constants";
-
 export async function POST(request: Request) {
 	const { count } = await request.json();
 
 	// Security: Strict validation to prevent score manipulation
-	// 1. Must be a number and an integer
 	if (typeof count !== "number" || !Number.isInteger(count)) {
 		return NextResponse.json(
 			{ error: "Invalid count format" },
@@ -17,7 +13,6 @@ export async function POST(request: Request) {
 		);
 	}
 
-	// 2. Must be positive
 	if (count <= 0) {
 		return NextResponse.json(
 			{ error: "Count must be positive" },
@@ -25,8 +20,7 @@ export async function POST(request: Request) {
 		);
 	}
 
-	// 3. Rate Limit / Batch Size Cap (MAX_BATCH_SIZE is 50 in frontend)
-	// We allow a small buffer (e.g. 50) but 50 is the hard limit for a single batch
+	// Rate Limit / Batch Size Cap (MAX_BATCH_SIZE is 50 in frontend)
 	if (count > 50) {
 		console.warn(
 			`Suspicious activity detected: Request with ${count} clicks rejected.`
@@ -67,20 +61,8 @@ export async function POST(request: Request) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
-	// Call the RPC function we created in schema.sql
-	const { error } = await supabase.rpc("increment_clicks", {
-		click_count: count,
-		milestone_step: GAME_CONFIG.GOAL,
-		user_info: {
-			username:
-				user.user_metadata.full_name ||
-				user.email?.split("@")[0] ||
-				"Anonymous",
-			avatar_url: user.user_metadata.avatar_url || "",
-			id: user.id,
-		},
-		current_date_str: getTurkeyDateString(),
-		current_week_str: getTurkeyWeekStart(),
+	const { error } = await supabase.rpc("secure_increment_clicks", {
+		p_count: count,
 	});
 
 	if (error) {
