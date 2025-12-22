@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "./AuthProvider";
 import { useClickerGame } from "@/hooks/useClickerGame";
 import OrangeCharacter from "./OrangeCharacter";
+import BuffHUD from "./BuffHUD";
 import { useState } from "react";
 
 type ClickerProps = {
@@ -12,9 +13,14 @@ type ClickerProps = {
 };
 
 export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
-	const { user, profile } = useAuth();
-	const multiplier = profile?.multiplier || 1;
+	const { user, profile, unlockedFaceIndices } = useAuth(); // Consume unlockedFaceIndices
 
+	const activeBuffs = profile?.active_buffs || [];
+
+	// Combine default faces (0-6) with unlocked ones
+	const allUnlockedFaces = [0, 1, 2, 3, 4, 5, 6, ...unlockedFaceIndices];
+
+	// Consuming 'now' from the hook (Single Source of Truth)
 	const {
 		count,
 		isLoading,
@@ -23,7 +29,15 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 		currentFace,
 		clickAmount,
 		handleGameClick,
-	} = useClickerGame({ user, multiplier, role: profile?.role ?? undefined });
+		currentBuffMultiplier,
+		now, // Using centralized timer
+	} = useClickerGame({
+		user,
+		role: profile?.role ?? undefined,
+		basePower: profile?.base_power || 1,
+		activeBuffs: profile?.active_buffs || [],
+		unlockedFaces: allUnlockedFaces,
+	});
 
 	const [localClicks, setLocalClicks] = useState(0);
 
@@ -49,7 +63,12 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 					onClick={handleClick}
 				/>
 
-				{/* Juice Particles */}
+				<BuffHUD
+					activeBuffs={activeBuffs}
+					currentBuffMultiplier={currentBuffMultiplier}
+					now={now}
+				/>
+
 				<AnimatePresence>
 					{particles.map((p) => (
 						<motion.div
@@ -67,7 +86,6 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 					))}
 				</AnimatePresence>
 
-				{/* Click Effects (+1) */}
 				<AnimatePresence>
 					{clicks.map((click) => (
 						<motion.span
@@ -94,7 +112,6 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 				</AnimatePresence>
 			</div>
 
-			{/* Counter */}
 			<div className="text-center relative">
 				<div className="absolute inset-0 bg-white/50 blur-2xl -z-10 rounded-full" />
 				<h2 className="text-2xl font-bold text-orange-900/60 mb-2 tracking-widest">
