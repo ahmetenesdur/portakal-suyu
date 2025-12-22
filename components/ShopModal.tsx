@@ -42,7 +42,7 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 			}
 		} catch (error) {
 			console.error("Failed to fetch shop items", error);
-			toast.error("Mağaza verileri yüklenemedi.");
+			toast.error("Pazar verileri yüklenemedi.");
 		} finally {
 			setLoading(false);
 		}

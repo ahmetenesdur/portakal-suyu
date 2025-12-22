@@ -68,7 +68,7 @@ export default function LoginPromptModal({
 							</div>
 							<div>
 								<h3 className="font-bold text-orange-900 text-sm">
-									Daha Hızlı Sık
+									Daha Çok Litre
 								</h3>
 								<p className="text-xs text-orange-800/60 leading-relaxed">
 									Discord rollerinle (Abone/Üye) yaptığın her
@@ -84,10 +84,10 @@ export default function LoginPromptModal({
 							</div>
 							<div>
 								<h3 className="font-bold text-orange-900 text-sm">
-									Markete Erişim
+									Pazar&apos;a Erişim
 								</h3>
 								<p className="text-xs text-orange-800/60 leading-relaxed">
-									Sadece Discord üyeleri marketten özel
+									Sadece Discord üyeleri Pazar&apos;dan özel
 									eşyalar satın alabilir ve avantaj
 									sağlayabilir.
 								</p>
@@ -104,7 +104,7 @@ export default function LoginPromptModal({
 								</h3>
 								<p className="text-xs text-orange-800/60 leading-relaxed">
 									Günlük ve haftalık sıralamalarda yerini al.
-									Markette harcadığın litreler sıralamanı
+									Pazar&apos;da harcadığın litreler sıralamanı
 									düşürmez!
 								</p>
 							</div>

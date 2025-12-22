@@ -89,8 +89,9 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 								Portakal Pazarı
 							</h3>
 							<p className="text-xs md:text-sm text-violet-800/70 leading-relaxed font-medium">
-								Güçlendiriciler ve kozmetiklerle öne geç.
-								Harcadığın litreler sıralama puanını etkilemez!
+								Geliştirmeler, buff&apos;lar ve kozmetiklerle
+								öne geç. Harcadığın litreler sıralama puanını
+								etkilemez!
 							</p>
 						</div>
 					</div>
@@ -122,7 +123,7 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 										</span>
 									</div>
 									<div className="px-2 md:px-3 py-1 bg-orange-100 text-orange-700 rounded-lg font-black text-xs md:text-sm">
-										2x Hız
+										2x Boost
 									</div>
 								</div>
 								<div className="flex items-center justify-between p-2 md:p-3 rounded-xl bg-white/60 border border-orange-100/60 shadow-sm hover:shadow-md transition-shadow">
@@ -138,15 +139,15 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 										</span>
 									</div>
 									<div className="px-2 md:px-3 py-1 bg-orange-50 text-orange-600 rounded-lg font-bold text-xs md:text-sm">
-										Standart Hız
+										Standart
 									</div>
 								</div>
 							</div>
 							<p className="text-[10px] md:text-xs text-orange-800/50 mt-3 font-medium leading-relaxed">
 								* Bu çarpanlar, <b>Temel Gücün (Base)</b> ve
-								aktif Güçlendirmelerinle (Buff) çarpılarak
-								toplam <b>Litre</b> kazancını belirler. (Örn: 2
-								Base * 2x Abone * 2x Buff = 8x Hız)
+								aktif <b>buff&apos;larınla</b> çarpılarak toplam{" "}
+								<b>Litre</b> kazancını belirler. (Örn: 2x Base *
+								2x Abone * 2x Buff = 8x Boost)
 							</p>
 						</div>
 					</div>
