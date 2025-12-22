@@ -8,9 +8,15 @@ import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import InfoModal from "@/components/InfoModal";
+import ShopModal from "@/components/ShopModal";
 
-import { Profile } from "@/types";
+import { Profile, LeaderboardDaily, LeaderboardWeekly } from "@/types";
 import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+
+type LeaderboardItem =
+	| (Partial<Profile> & { lifetime_score?: number })
+	| LeaderboardDaily
+	| LeaderboardWeekly;
 
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -23,6 +29,7 @@ export default function LeaderboardPage() {
 	const { user } = useAuth();
 	const [supabase] = useState(() => createClient());
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+	const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -36,7 +43,7 @@ export default function LeaderboardPage() {
 					query = supabase
 						.from("leaderboard_daily")
 						.select(
-							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
+							"score, total_clicks, profiles!inner(id, username, avatar_url, role, multiplier)"
 						)
 						.eq("date", getTurkeyDateString())
 						.gt("score", 0)
@@ -49,22 +56,21 @@ export default function LeaderboardPage() {
 					query = supabase
 						.from("leaderboard_weekly")
 						.select(
-							"score, profiles!inner(id, username, avatar_url, role, multiplier)"
+							"score, total_clicks, profiles!inner(id, username, avatar_url, role, multiplier)"
 						)
 						.eq("week_start", mondayStr)
 						.gt("score", 0)
 						.neq("profiles.role", "Misafir")
 						.order("score", { ascending: false });
 				} else {
-					// All Time
 					query = supabase
 						.from("profiles")
 						.select(
-							"id, username, avatar_url, score, role, multiplier"
+							"id, username, avatar_url, lifetime_score, role, multiplier, total_clicks"
 						)
-						.gt("score", 0)
+						.gt("lifetime_score", 0)
 						.neq("role", "Misafir")
-						.order("score", { ascending: false });
+						.order("lifetime_score", { ascending: false });
 				}
 
 				const { data, error } = await query.limit(limit + 1);
@@ -73,37 +79,37 @@ export default function LeaderboardPage() {
 
 				if (error) throw error;
 
+				// Normalize data structure
+				const mapLeaderboardItem = (item: LeaderboardItem) => {
+					if (timeframe === "all") {
+						const entry = item as Profile & {
+							lifetime_score: number;
+						};
+						return {
+							...entry,
+							score: entry.lifetime_score, // Use lifetime_score for all-time
+						};
+					}
+					// Flatten structure for daily/weekly
+					const entry = item as LeaderboardDaily | LeaderboardWeekly;
+					return {
+						...(entry.profiles as Profile),
+						score: entry.score,
+						total_clicks: entry.total_clicks,
+					};
+				};
+
 				if (data && data.length > limit) {
 					setHasMore(true);
 					// Normalize data structure
+
 					const formattedData = data
 						.slice(0, limit)
-						.map((item: unknown) => {
-							if (timeframe === "all") return item as Profile;
-							// Flatten structure for daily/weekly
-							const entry = item as {
-								score: number;
-								profiles: Profile;
-							};
-							return {
-								...entry.profiles,
-								score: entry.score,
-							};
-						});
+						.map(mapLeaderboardItem);
 					setProfiles(formattedData);
 				} else {
 					setHasMore(false);
-					const formattedData = (data || []).map((item: unknown) => {
-						if (timeframe === "all") return item as Profile;
-						const entry = item as {
-							score: number;
-							profiles: Profile;
-						};
-						return {
-							...entry.profiles,
-							score: entry.score,
-						};
-					});
+					const formattedData = (data || []).map(mapLeaderboardItem);
 					setProfiles(formattedData);
 				}
 			} catch (error: unknown) {
@@ -152,29 +158,34 @@ export default function LeaderboardPage() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
-			<Navbar onOpenInfo={() => setIsInfoModalOpen(true)} />
+			<Navbar
+				onOpenInfo={() => setIsInfoModalOpen(true)}
+				onOpenShop={() => setIsShopModalOpen(true)}
+			/>
 			<InfoModal
 				isOpen={isInfoModalOpen}
 				onClose={() => setIsInfoModalOpen(false)}
 			/>
+			<ShopModal
+				isOpen={isShopModalOpen}
+				onClose={() => setIsShopModalOpen(false)}
+			/>
 
-			{/* Background Elements */}
 			<div className="fixed inset-0 pointer-events-none">
 				<div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-300/20 rounded-full blur-[120px]" />
 				<div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-yellow-300/20 rounded-full blur-[120px]" />
 			</div>
 
 			<div className="z-10 flex flex-col items-center justify-start flex-1 w-full max-w-4xl px-4 pt-8 md:pt-0">
-				{/* Header Section */}
 				<div className="relative mb-8 flex flex-col items-center text-center w-full">
-					{/* Back Button - Desktop (Absolute Left) & Mobile (Top Left of Container) */}
+					{/* Back Button */}
 					<Link
 						href="/"
 						className="absolute left-0 top-0 md:top-1/2 md:-translate-y-1/2 p-3 md:px-5 md:py-2.5 bg-white/40 hover:bg-white/60 text-orange-700 rounded-2xl transition-all hover:scale-105 hover:shadow-lg hover:shadow-orange-500/10 border border-white/50 backdrop-blur-md group flex items-center gap-2 z-20"
 						title="Ana Sayfaya Dön"
 					>
 						<Icon
-							icon="ph:arrow-left-bold"
+							icon="lucide:arrow-left"
 							className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform"
 						/>
 						<span className="hidden md:inline font-bold text-lg">
@@ -182,10 +193,9 @@ export default function LeaderboardPage() {
 						</span>
 					</Link>
 
-					{/* Title Icon */}
 					<div className="inline-flex items-center justify-center p-4 bg-linear-to-br from-orange-100 to-white/50 backdrop-blur-xl rounded-3xl shadow-xl shadow-orange-500/10 mb-6 border border-white/60 mt-12 md:mt-0">
 						<Icon
-							icon="ph:trophy-fill"
+							icon="lucide:medal"
 							className="w-10 h-10 text-orange-500 drop-shadow-sm"
 						/>
 					</div>
@@ -200,7 +210,6 @@ export default function LeaderboardPage() {
 					</p>
 				</div>
 
-				{/* Timeframe Tabs */}
 				<div className="flex justify-center mb-8">
 					<div className="flex p-1 bg-white/40 backdrop-blur-xl rounded-2xl border border-white/60 shadow-sm">
 						{(["daily", "weekly", "all"] as const).map((t) => (
@@ -226,9 +235,7 @@ export default function LeaderboardPage() {
 					</div>
 				</div>
 
-				{/* Leaderboard Card */}
 				<div className="w-full bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-orange-500/5 overflow-hidden">
-					{/* Table Header */}
 					<div className="grid grid-cols-12 gap-4 p-4 md:p-6 border-b border-orange-100/50 bg-white/30 text-xs md:text-sm font-bold text-orange-900/50 uppercase tracking-wider">
 						<div className="col-span-2 md:col-span-1 text-center">
 							#
@@ -237,7 +244,6 @@ export default function LeaderboardPage() {
 						<div className="col-span-3 text-right">Litre</div>
 					</div>
 
-					{/* List */}
 					<div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
 						{loading && profiles.length === 0 ? (
 							<div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -267,7 +273,6 @@ export default function LeaderboardPage() {
 													: "hover:bg-white/40"
 											}`}
 										>
-											{/* Rank */}
 											<div className="col-span-2 md:col-span-1 flex justify-center">
 												<div
 													className={`font-black text-lg md:text-xl flex items-center justify-center w-8 h-8 ${getRankStyle(
@@ -290,7 +295,6 @@ export default function LeaderboardPage() {
 												</div>
 											</div>
 
-											{/* User */}
 											<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4">
 												<div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
 													<NextImage
@@ -346,8 +350,7 @@ export default function LeaderboardPage() {
 												</div>
 											</div>
 
-											{/* Score */}
-											<div className="col-span-3 text-right">
+											<div className="col-span-3 text-right flex flex-col items-end justify-center">
 												<span
 													className={`font-black text-sm md:text-lg tracking-tight ${
 														rank <= 3
@@ -359,6 +362,16 @@ export default function LeaderboardPage() {
 														"tr-TR"
 													).format(score)}
 												</span>
+												{profile.total_clicks && (
+													<span className="text-[10px] md:text-xs text-orange-900/30 font-semibold">
+														{new Intl.NumberFormat(
+															"tr-TR"
+														).format(
+															profile.total_clicks
+														)}{" "}
+														Tık
+													</span>
+												)}
 											</div>
 										</div>
 									);
