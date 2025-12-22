@@ -10,15 +10,15 @@ import Link from "next/link";
 
 interface NavbarProps {
 	onOpenInfo?: () => void;
+	onOpenShop?: () => void;
 }
 
-export default function Navbar({ onOpenInfo }: NavbarProps) {
+export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 	const { user, profile, signInWithDiscord, signOut, loading } = useAuth();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	return (
 		<header className="sticky top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center z-50 pointer-events-none">
-			{/* Logo Area */}
 			<Link
 				href="/"
 				className="pointer-events-auto flex items-center gap-2 md:gap-3 bg-white/20 px-3 py-2 md:px-4 md:py-2 rounded-2xl backdrop-blur-md border border-white/30 shadow-sm transition-all hover:bg-white/30 group cursor-pointer"
@@ -36,15 +36,27 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 				</div>
 			</Link>
 
-			{/* User Area */}
 			<div className="pointer-events-auto flex items-center gap-3 md:gap-4 relative">
+				<button
+					onClick={onOpenShop}
+					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					title="Portakal Pazarı"
+				>
+					<Icon
+						icon="lucide:store"
+						width="18"
+						height="18"
+						className="group-hover:rotate-12 transition-transform md:w-5 md:h-5"
+					/>
+				</button>
+
 				<Link
 					href="/leaderboard"
-					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-110 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
 					title="Liderlik Tablosu"
 				>
 					<Icon
-						icon="ph:trophy-fill"
+						icon="lucide:medal"
 						width="18"
 						height="18"
 						className="group-hover:rotate-12 transition-transform md:w-5 md:h-5"
@@ -53,7 +65,7 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 
 				<button
 					onClick={onOpenInfo}
-					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-110 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
+					className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-orange-600 rounded-full transition-all hover:scale-105 active:scale-95 border border-white/30 backdrop-blur-md shadow-sm cursor-pointer group"
 					title="Bilgi"
 				>
 					<Icon
@@ -68,7 +80,6 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 					<Loading size="sm" />
 				) : user ? (
 					<>
-						{/* Desktop View */}
 						<div className="hidden md:flex items-center gap-4">
 							<div className="flex items-center gap-3 bg-white/20 pl-2 pr-6 py-2 rounded-full border border-white/30 backdrop-blur-md shadow-sm transition-all hover:bg-white/30">
 								<div className="relative">
@@ -125,7 +136,7 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 
 							<button
 								onClick={() => signOut()}
-								className="w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-red-50 hover:text-red-600 rounded-full text-orange-900/40 transition-colors border border-white/30 backdrop-blur-md shadow-sm cursor-pointer"
+								className="w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-red-50 hover:text-red-600 rounded-full text-orange-900/40 transition-colors border border-white/30 backdrop-blur-md shadow-sm cursor-pointer hover:scale-105 active:scale-95"
 								title="Çıkış Yap"
 							>
 								<Icon
@@ -136,7 +147,6 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 							</button>
 						</div>
 
-						{/* Mobile View */}
 						<div className="md:hidden relative flex items-center justify-center ">
 							<button
 								onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -150,7 +160,6 @@ export default function Navbar({ onOpenInfo }: NavbarProps) {
 								/>
 							</button>
 
-							{/* Mobile Dropdown */}
 							{isMenuOpen && (
 								<>
 									<div
