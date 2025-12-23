@@ -1,16 +1,10 @@
 "use client";
 
-import {
-	createContext,
-	useContext,
-	useEffect,
-	useState,
-	useCallback,
-} from "react";
-import { createClient } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-import { Profile, ShopItem, InventoryItem } from "@/types";
+import { createClient } from "@/lib/supabase";
+import { InventoryItem, Profile, ShopItem } from "@/types";
 
 type AuthContextType = {
 	user: User | null;
@@ -26,9 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
 	const [profile, setProfile] = useState<Profile | null>(null);
-	const [unlockedFaceIndices, setUnlockedFaceIndices] = useState<number[]>(
-		[]
-	);
+	const [unlockedFaceIndices, setUnlockedFaceIndices] = useState<number[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [supabase] = useState(() => createClient());
 
@@ -66,14 +58,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					shop_items: Pick<ShopItem, "type" | "effect_value"> | null;
 				};
 
-				const indices = (
-					inventoryData as unknown as InventoryWithFace[]
-				)
+				const indices = (inventoryData as unknown as InventoryWithFace[])
 					.map((item) => item.shop_items?.effect_value)
-					.filter(
-						(val): val is number =>
-							val !== null && val !== undefined
-					);
+					.filter((val): val is number => val !== null && val !== undefined);
 				setUnlockedFaceIndices(indices);
 			}
 		},
@@ -101,9 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				if (res.ok) {
 					// Handle Session Migration (Legacy -> Identity)
 					if (data.action === "relogin") {
-						console.log(
-							"Legacy session detected, forcing re-login..."
-						);
+						console.log("Legacy session detected, forcing re-login...");
 						await signOut();
 						return;
 					}
@@ -119,8 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		let channel: ReturnType<typeof supabase.channel> | null = null;
-		let authListener: { subscription: { unsubscribe: () => void } } | null =
-			null;
+		let authListener: { subscription: { unsubscribe: () => void } } | null = null;
 
 		const initAuth = async () => {
 			const {
@@ -147,9 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 						},
 						(payload) => {
 							setProfile((prev) =>
-								prev
-									? { ...prev, ...payload.new }
-									: (payload.new as Profile)
+								prev ? { ...prev, ...payload.new } : (payload.new as Profile)
 							);
 						}
 					)
@@ -158,41 +140,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 			setLoading(false);
 
-			const { data } = supabase.auth.onAuthStateChange(
-				async (_event, session) => {
-					setUser(session?.user ?? null);
-					if (session?.user) {
-						await fetchProfile(session.user.id);
-						syncRoles(session.access_token);
+			const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
+				setUser(session?.user ?? null);
+				if (session?.user) {
+					await fetchProfile(session.user.id);
+					syncRoles(session.access_token);
 
-						// Re-subscribe Realtime if user changed
-						if (channel) supabase.removeChannel(channel);
-						channel = supabase
-							.channel("realtime-profile")
-							.on(
-								"postgres_changes",
-								{
-									event: "UPDATE",
-									schema: "public",
-									table: "profiles",
-									filter: `id=eq.${session.user.id}`,
-								},
-								(payload) => {
-									setProfile((prev) =>
-										prev
-											? { ...prev, ...payload.new }
-											: (payload.new as Profile)
-									);
-								}
-							)
-							.subscribe();
-					} else {
-						setProfile(null);
-						if (channel) supabase.removeChannel(channel);
-						channel = null;
-					}
+					// Re-subscribe Realtime if user changed
+					if (channel) supabase.removeChannel(channel);
+					channel = supabase
+						.channel("realtime-profile")
+						.on(
+							"postgres_changes",
+							{
+								event: "UPDATE",
+								schema: "public",
+								table: "profiles",
+								filter: `id=eq.${session.user.id}`,
+							},
+							(payload) => {
+								setProfile((prev) =>
+									prev ? { ...prev, ...payload.new } : (payload.new as Profile)
+								);
+							}
+						)
+						.subscribe();
+				} else {
+					setProfile(null);
+					if (channel) supabase.removeChannel(channel);
+					channel = null;
 				}
-			);
+			});
 			authListener = data;
 		};
 

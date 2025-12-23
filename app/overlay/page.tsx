@@ -1,29 +1,19 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { createClient } from "@/lib/supabase";
-import { motion, AnimatePresence } from "framer-motion";
-import { GAME_CONFIG } from "@/lib/constants";
-import { useSearchParams } from "next/navigation";
-import LeaderboardWidget from "./LeaderboardWidget";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import Snowfall from "react-snowfall";
 
+import { GAME_CONFIG } from "@/lib/constants";
+import { createClient } from "@/lib/supabase";
+
+import LeaderboardWidget from "./LeaderboardWidget";
+
 const OrangeSliceSVG = ({ className }: { className?: string }) => (
-	<svg
-		viewBox="0 0 100 100"
-		className={className}
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<circle
-			cx="50"
-			cy="50"
-			r="48"
-			fill="#EA580C"
-			stroke="#C2410C"
-			strokeWidth="1"
-		/>
+	<svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+		<circle cx="50" cy="50" r="48" fill="#EA580C" stroke="#C2410C" strokeWidth="1" />
 
 		<circle cx="50" cy="50" r="44" fill="#FFF7ED" />
 
@@ -35,34 +25,10 @@ const OrangeSliceSVG = ({ className }: { className?: string }) => (
 					stroke="#FB923C"
 					strokeWidth="0.5"
 				/>
-				<circle
-					cx="50"
-					cy="18"
-					r="2"
-					fill="#FDBA74"
-					fillOpacity="0.8"
-				/>
-				<circle
-					cx="45"
-					cy="22"
-					r="1.5"
-					fill="#FDBA74"
-					fillOpacity="0.6"
-				/>
-				<circle
-					cx="55"
-					cy="22"
-					r="1.5"
-					fill="#FDBA74"
-					fillOpacity="0.6"
-				/>
-				<circle
-					cx="50"
-					cy="26"
-					r="1.5"
-					fill="#FDBA74"
-					fillOpacity="0.4"
-				/>
+				<circle cx="50" cy="18" r="2" fill="#FDBA74" fillOpacity="0.8" />
+				<circle cx="45" cy="22" r="1.5" fill="#FDBA74" fillOpacity="0.6" />
+				<circle cx="55" cy="22" r="1.5" fill="#FDBA74" fillOpacity="0.6" />
+				<circle cx="50" cy="26" r="1.5" fill="#FDBA74" fillOpacity="0.4" />
 			</g>
 		))}
 
@@ -71,12 +37,7 @@ const OrangeSliceSVG = ({ className }: { className?: string }) => (
 );
 
 const DropletSVG = ({ className }: { className?: string }) => (
-	<svg
-		viewBox="0 0 24 24"
-		className={className}
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
+	<svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
 		<path
 			d="M12 2C12 2 18 8 18 14C18 17.3137 15.3137 20 12 20C8.68629 20 6 17.3137 6 14C6 8 12 2 12 2Z"
 			fill="#F97316"
@@ -101,11 +62,7 @@ const DropletSVG = ({ className }: { className?: string }) => (
 );
 
 const WaveSVG = () => (
-	<svg
-		className="w-full h-full"
-		viewBox="0 0 1440 320"
-		preserveAspectRatio="none"
-	>
+	<svg className="h-full w-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
 		<path
 			fill="#F97316"
 			fillOpacity="1"
@@ -165,9 +122,9 @@ const FloatingParticles = ({ count = 25 }: { count?: number }) => {
 					}}
 				>
 					{p.isSlice ? (
-						<OrangeSliceSVG className="w-12 h-12 opacity-80" />
+						<OrangeSliceSVG className="h-12 w-12 opacity-80" />
 					) : (
-						<DropletSVG className="w-6 h-6 opacity-60" />
+						<DropletSVG className="h-6 w-6 opacity-60" />
 					)}
 				</motion.div>
 			))}
@@ -202,7 +159,7 @@ const SplashBurst = () => {
 	}, []);
 
 	return (
-		<div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
+		<div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center">
 			{particles.map((p) => (
 				<motion.div
 					key={p.id}
@@ -223,7 +180,7 @@ const SplashBurst = () => {
 					}}
 					transition={{ duration: 0.6, ease: "easeOut" }}
 				>
-					<DropletSVG className="w-8 h-8 text-orange-500 fill-current" />
+					<DropletSVG className="h-8 w-8 fill-current text-orange-500" />
 				</motion.div>
 			))}
 		</div>
@@ -249,20 +206,15 @@ const GodRays = () => {
 				opacity: { duration: 2 },
 				rotate: { duration: 20, ease: "linear", repeat: Infinity },
 			}}
-			className="absolute inset-0 z-40 pointer-events-none flex items-center justify-center"
+			className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
 		>
-			<div className="w-[200vw] h-[200vw] bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,white_15deg,transparent_30deg,white_45deg,transparent_60deg,white_75deg,transparent_90deg,white_105deg,transparent_120deg,white_135deg,transparent_150deg,white_165deg,transparent_180deg,white_195deg,transparent_210deg,white_225deg,transparent_240deg,white_255deg,transparent_270deg,white_285deg,transparent_300deg,white_315deg,transparent_330deg,white_345deg,transparent_360deg)] opacity-20 mix-blend-overlay" />
+			<div className="h-[200vw] w-[200vw] bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,white_15deg,transparent_30deg,white_45deg,transparent_60deg,white_75deg,transparent_90deg,white_105deg,transparent_120deg,white_135deg,transparent_150deg,white_165deg,transparent_180deg,white_195deg,transparent_210deg,white_225deg,transparent_240deg,white_255deg,transparent_270deg,white_285deg,transparent_300deg,white_315deg,transparent_330deg,white_345deg,transparent_360deg)] opacity-20 mix-blend-overlay" />
 		</motion.div>
 	);
 };
 
 const SparkleSVG = ({ className }: { className?: string }) => (
-	<svg
-		viewBox="0 0 24 24"
-		className={className}
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
+	<svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
 		<path
 			d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"
 			fill="currentColor"
@@ -307,7 +259,7 @@ const Sparkles = () => {
 
 	return (
 		<motion.div
-			className="absolute inset-0 z-50 pointer-events-none"
+			className="pointer-events-none absolute inset-0 z-50"
 			animate={{ opacity: isVisible ? 1 : 0 }}
 			transition={{ duration: 2 }}
 		>
@@ -329,7 +281,7 @@ const Sparkles = () => {
 						repeatDelay: s.repeatDelay,
 					}}
 				>
-					<SparkleSVG className="w-6 h-6 drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
+					<SparkleSVG className="h-6 w-6 drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
 				</motion.div>
 			))}
 		</motion.div>
@@ -347,8 +299,7 @@ function OverlayContent() {
 		id: string;
 	}
 
-	const [lastMilestoneUser, setLastMilestoneUser] =
-		useState<MilestoneUser | null>(null);
+	const [lastMilestoneUser, setLastMilestoneUser] = useState<MilestoneUser | null>(null);
 
 	const searchParams = useSearchParams();
 	const isTestMode = searchParams.get("test") === "true";
@@ -371,9 +322,7 @@ function OverlayContent() {
 				setCount(data.total_clicks);
 				setPrevLevel(Math.floor(data.total_clicks / GAME_CONFIG.GOAL));
 				if (data.last_milestone_user) {
-					setLastMilestoneUser(
-						data.last_milestone_user as unknown as MilestoneUser
-					);
+					setLastMilestoneUser(data.last_milestone_user as unknown as MilestoneUser);
 				}
 			}
 		};
@@ -397,17 +346,12 @@ function OverlayContent() {
 
 					setCount(newCount);
 					if (newUser) {
-						setLastMilestoneUser(
-							newUser as unknown as MilestoneUser
-						);
+						setLastMilestoneUser(newUser as unknown as MilestoneUser);
 					}
 
 					if (newLevel > prevLevel) {
 						setShowSpill(true);
-						setTimeout(
-							() => setShowSpill(false),
-							GAME_CONFIG.ANIMATION.SPILL_DURATION
-						);
+						setTimeout(() => setShowSpill(false), GAME_CONFIG.ANIMATION.SPILL_DURATION);
 						setPrevLevel(newLevel);
 					}
 				}
@@ -423,10 +367,7 @@ function OverlayContent() {
 
 	const handleTestSpill = () => {
 		setShowSpill(true);
-		setTimeout(
-			() => setShowSpill(false),
-			GAME_CONFIG.ANIMATION.SPILL_DURATION
-		);
+		setTimeout(() => setShowSpill(false), GAME_CONFIG.ANIMATION.SPILL_DURATION);
 	};
 
 	const handleTestAdd = () => {
@@ -441,7 +382,7 @@ function OverlayContent() {
 	if (!isClient) return null; // Prevent hydration mismatch
 
 	return (
-		<div className="p-8 flex flex-col items-start gap-4 relative w-full h-screen overflow-hidden font-sans">
+		<div className="relative flex h-screen w-full flex-col items-start gap-4 overflow-hidden p-8 font-sans">
 			<Snowfall
 				snowflakeCount={100}
 				radius={[0.5, 2.0]}
@@ -471,25 +412,23 @@ function OverlayContent() {
 			`}</style>
 
 			{isTestMode && (
-				<div className="fixed bottom-4 left-4 z-100 bg-black/80 text-white p-4 rounded-xl border border-white/20 backdrop-blur-md flex flex-col gap-2">
-					<h3 className="font-bold text-orange-400 mb-2">
-						Test Controls
-					</h3>
+				<div className="fixed bottom-4 left-4 z-100 flex flex-col gap-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-md">
+					<h3 className="mb-2 font-bold text-orange-400">Test Controls</h3>
 					<button
 						onClick={handleTestSpill}
-						className="px-3 py-1.5 bg-orange-600 hover:bg-orange-500 rounded text-sm font-medium transition-colors"
+						className="rounded bg-orange-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-orange-500"
 					>
 						Simulate Spill
 					</button>
 					<button
 						onClick={handleTestAdd}
-						className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-sm font-medium transition-colors"
+						className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-500"
 					>
 						Add 10 Liters
 					</button>
 					<button
 						onClick={handleTestReset}
-						className="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded text-sm font-medium transition-colors"
+						className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-red-500"
 					>
 						Reset
 					</button>
@@ -501,7 +440,7 @@ function OverlayContent() {
 					<>
 						{/* 0. Screen Shake Wrapper & Flash */}
 						<motion.div
-							className="absolute inset-0 z-50 pointer-events-none"
+							className="pointer-events-none absolute inset-0 z-50"
 							initial={{ x: 0, y: 0 }}
 							animate={{
 								x: [0, -20, 20, -10, 10, -5, 5, 0],
@@ -517,7 +456,7 @@ function OverlayContent() {
 									duration: 0.3,
 									times: [0, 0.1, 1],
 								}}
-								className="absolute inset-0 bg-white mix-blend-overlay z-60"
+								className="absolute inset-0 z-60 bg-white mix-blend-overlay"
 							/>
 						</motion.div>
 
@@ -533,30 +472,30 @@ function OverlayContent() {
 							className="absolute inset-0 z-40 flex flex-col justify-end"
 						>
 							<div
-								className="absolute top-0 left-0 w-[200%] h-48 -mt-12 flex animate-wave-slide opacity-60"
+								className="animate-wave-slide absolute top-0 left-0 -mt-12 flex h-48 w-[200%] opacity-60"
 								style={{ animationDuration: "15s" }}
 							>
 								<WaveSVG />
 								<WaveSVG />
 							</div>
 
-							<div className="w-[200%] h-32 -mb-1 flex animate-wave-slide relative z-10">
+							<div className="animate-wave-slide relative z-10 -mb-1 flex h-32 w-[200%]">
 								<WaveSVG />
 								<WaveSVG />
 							</div>
 
-							<div className="w-full flex-1 bg-orange-500 relative overflow-hidden z-10">
-								<div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-white via-transparent to-transparent bg-size-[40px_40px]" />
+							<div className="relative z-10 w-full flex-1 overflow-hidden bg-orange-500">
+								<div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-white via-transparent to-transparent bg-size-[40px_40px] opacity-20" />
 							</div>
 						</motion.div>
 
 						<GodRays />
 
-						<div className="absolute inset-0 z-50 pointer-events-none">
+						<div className="pointer-events-none absolute inset-0 z-50">
 							<FloatingParticles count={25} />
 						</div>
 
-						<div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
+						<div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center">
 							<SplashBurst />
 						</div>
 
@@ -574,14 +513,14 @@ function OverlayContent() {
 							}}
 							className="absolute inset-0 z-70 flex flex-col items-center justify-center gap-8"
 						>
-							<div className="relative group text-center">
-								<h1 className="text-9xl font-black text-white text-center drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] tracking-tighter italic transform">
+							<div className="group relative text-center">
+								<h1 className="transform text-center text-9xl font-black tracking-tighter text-white italic drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
 									HEDEF
 									<br />
-									<span className="text-yellow-300 relative inline-block">
+									<span className="relative inline-block text-yellow-300">
 										TAMAMLANDI!
 										<motion.span
-											className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent skew-x-12"
+											className="absolute inset-0 skew-x-12 bg-linear-to-r from-transparent via-white/50 to-transparent"
 											initial={{ x: "-100%" }}
 											animate={{ x: "200%" }}
 											transition={{
@@ -599,10 +538,10 @@ function OverlayContent() {
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
 									animate={{ opacity: 1, y: 0, scale: 1 }}
 									transition={{ delay: 0.5, type: "spring" }}
-									className="flex flex-col items-center gap-4 bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl transform rotate-6"
+									className="flex rotate-6 transform flex-col items-center gap-4 rounded-3xl border border-white/20 bg-black/40 p-6 shadow-2xl backdrop-blur-md"
 								>
 									<div className="relative">
-										<div className="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.6)]">
+										<div className="h-24 w-24 overflow-hidden rounded-full border-4 border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.6)]">
 											<Image
 												src={
 													lastMilestoneUser.avatar_url ||
@@ -614,12 +553,12 @@ function OverlayContent() {
 												className="object-cover"
 											/>
 										</div>
-										<div className="absolute -bottom-2 -right-2 bg-yellow-400 text-orange-900 font-bold px-3 py-1 rounded-full text-sm shadow-lg">
+										<div className="absolute -right-2 -bottom-2 rounded-full bg-yellow-400 px-3 py-1 text-sm font-bold text-orange-900 shadow-lg">
 											MVP
 										</div>
 									</div>
 									<div className="text-center">
-										<div className="text-orange-200 text-sm font-bold uppercase tracking-widest mb-1">
+										<div className="mb-1 text-sm font-bold tracking-widest text-orange-200 uppercase">
 											Hedefi Tamamlayan
 										</div>
 										<div className="text-3xl font-black text-white drop-shadow-md">
@@ -633,33 +572,33 @@ function OverlayContent() {
 				)}
 			</AnimatePresence>
 
-			<div className="w-100 h-16 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
+			<div className="relative z-10 h-16 w-100 overflow-hidden rounded-full border-4 border-white/20 bg-black/60 shadow-2xl backdrop-blur-xl">
 				<motion.div
-					className="h-full bg-linear-to-r from-orange-600 via-orange-500 to-yellow-400 relative"
+					className="relative h-full bg-linear-to-r from-orange-600 via-orange-500 to-yellow-400"
 					initial={{ width: "0%" }}
 					animate={{ width: `${progress}%` }}
 					transition={{ type: "spring", stiffness: 40, damping: 15 }}
 				>
-					<div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-full" />
+					<div className="absolute top-0 right-0 left-0 h-1/2 rounded-t-full bg-white/20" />
 
-					<div className="absolute inset-0 opacity-30 bg-[url('/bubbles.svg')] animate-pulse" />
+					<div className="absolute inset-0 animate-pulse bg-[url('/bubbles.svg')] opacity-30" />
 				</motion.div>
 
 				<div className="absolute inset-0 flex items-center justify-center gap-3">
-					<span className="text-3xl font-black text-white font-mono tracking-tighter drop-shadow-lg">
+					<span className="font-mono text-3xl font-black tracking-tighter text-white drop-shadow-lg">
 						{count.toLocaleString()}
 					</span>
-					<span className="text-lg font-bold text-orange-200 uppercase tracking-widest opacity-80 mt-1">
+					<span className="mt-1 text-lg font-bold tracking-widest text-orange-200 uppercase opacity-80">
 						Litre
 					</span>
 				</div>
 			</div>
 
-			<div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl z-10 transform -skew-x-12">
-				<div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse shadow-[0_0_15px_rgba(249,115,22,1)]" />
-				<span className="text-white/90 font-bold text-lg tracking-wide transform skew-x-12">
+			<div className="z-10 flex -skew-x-12 transform items-center gap-2 rounded-xl border border-white/10 bg-black/60 px-4 py-2 shadow-2xl backdrop-blur-xl">
+				<div className="h-3 w-3 animate-pulse rounded-full bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,1)]" />
+				<span className="skew-x-12 transform text-lg font-bold tracking-wide text-white/90">
 					HEDEF:{" "}
-					<span className="text-white text-xl">
+					<span className="text-xl text-white">
 						{(
 							(Math.floor(count / GAME_CONFIG.GOAL) + 1) *
 							GAME_CONFIG.GOAL

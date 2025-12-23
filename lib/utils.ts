@@ -7,9 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getTurkeyDate() {
 	const now = new Date();
-	const turkeyTime = new Date(
-		now.toLocaleString("en-US", { timeZone: "Europe/Istanbul" })
-	);
+	const turkeyTime = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
 	return turkeyTime;
 }
 

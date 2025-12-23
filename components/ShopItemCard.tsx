@@ -1,5 +1,6 @@
-import { ShopItem } from "@/types";
 import { Icon } from "@iconify/react";
+
+import { ShopItem } from "@/types";
 
 interface ShopItemCardProps {
 	item: ShopItem;
@@ -17,8 +18,7 @@ export default function ShopItemCard({
 	userStatus = "member",
 }: ShopItemCardProps) {
 	const isLocked = item.is_locked;
-	const isOwnedPermanent =
-		item.is_owned && (item.type === "face" || item.type === "upgrade");
+	const isOwnedPermanent = item.is_owned && (item.type === "face" || item.type === "upgrade");
 	const isDisabled =
 		isLocked ||
 		(isOwnedPermanent && userStatus === "member") ||
@@ -26,46 +26,39 @@ export default function ShopItemCard({
 
 	return (
 		<div
-			className={`relative group p-3 sm:p-4 rounded-2xl border transition-all hover:-translate-y-1
-            ${
+			className={`group relative rounded-2xl border p-3 transition-all hover:-translate-y-1 sm:p-4 ${
 				isLocked
-					? "bg-gray-100 border-gray-200 opacity-70 grayscale"
-					: "bg-white/60 border-orange-100 shadow-sm hover:shadow-md"
-			}
-        `}
+					? "border-gray-200 bg-gray-100 opacity-70 grayscale"
+					: "border-orange-100 bg-white/60 shadow-sm hover:shadow-md"
+			} `}
 		>
 			{item.type === "upgrade" && item.tier && item.tier > 0 && (
-				<div className="absolute top-3 right-3 z-20 px-2 py-0.5 bg-orange-100 text-orange-700 text-[10px] font-black rounded-full uppercase tracking-wider">
+				<div className="absolute top-3 right-3 z-20 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-black tracking-wider text-orange-700 uppercase">
 					Seviye {item.tier}
 				</div>
 			)}
 
 			{item.duration_minutes && (
-				<div className="absolute top-3 right-3 z-20 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-black rounded-full uppercase tracking-wider flex items-center gap-1">
-					<Icon icon="lucide:clock" className="w-3 h-3" />
+				<div className="absolute top-3 right-3 z-20 flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black tracking-wider text-blue-700 uppercase">
+					<Icon icon="lucide:clock" className="h-3 w-3" />
 					{item.duration_minutes}dk
 				</div>
 			)}
 
 			<div
-				className={`relative h-20 sm:h-24 mb-3 flex items-center justify-center rounded-xl overflow-hidden transition-colors
-                ${
+				className={`relative mb-3 flex h-20 items-center justify-center overflow-hidden rounded-xl transition-colors sm:h-24 ${
 					isLocked
 						? "bg-gray-200"
 						: item.type === "upgrade"
-						? "bg-orange-50 group-hover:bg-orange-100"
-						: item.type === "consumable"
-						? "bg-blue-50 group-hover:bg-blue-100"
-						: "bg-pink-50 group-hover:bg-pink-100"
-				}
-            `}
+							? "bg-orange-50 group-hover:bg-orange-100"
+							: item.type === "consumable"
+								? "bg-blue-50 group-hover:bg-blue-100"
+								: "bg-pink-50 group-hover:bg-pink-100"
+				} `}
 			>
 				{isLocked && (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-						<Icon
-							icon="lucide:lock"
-							className="w-8 h-8 text-gray-500"
-						/>
+						<Icon icon="lucide:lock" className="h-8 w-8 text-gray-500" />
 					</div>
 				)}
 
@@ -74,42 +67,40 @@ export default function ShopItemCard({
 						item.image_url === "mechanical-squeezer"
 							? "lucide:cog"
 							: item.image_url === "hydraulic-press"
-							? "lucide:weight"
-							: item.image_url === "laser-cutter"
-							? "lucide:flame"
-							: item.image_url === "coffee"
-							? "lucide:coffee"
-							: item.image_url === "energy-drink"
-							? "lucide:zap"
-							: item.image_url === "vitamin-c"
-							? "lucide:pill"
-							: item.type === "face"
-							? "lucide:smile" // Default icon for faces
-							: item.type === "upgrade"
-							? "lucide:zap"
-							: item.type === "consumable"
-							? "lucide:zap" // Fallback for buff
-							: "lucide:star"
+								? "lucide:weight"
+								: item.image_url === "laser-cutter"
+									? "lucide:flame"
+									: item.image_url === "coffee"
+										? "lucide:coffee"
+										: item.image_url === "energy-drink"
+											? "lucide:zap"
+											: item.image_url === "vitamin-c"
+												? "lucide:pill"
+												: item.type === "face"
+													? "lucide:smile" // Default icon for faces
+													: item.type === "upgrade"
+														? "lucide:zap"
+														: item.type === "consumable"
+															? "lucide:zap" // Fallback for buff
+															: "lucide:star"
 					}
-					className={`w-12 h-12 transition-transform duration-300 group-hover:scale-110
-                        ${
-							isLocked
-								? "text-gray-400"
-								: item.type === "upgrade"
+					className={`h-12 w-12 transition-transform duration-300 group-hover:scale-110 ${
+						isLocked
+							? "text-gray-400"
+							: item.type === "upgrade"
 								? "text-orange-500"
 								: item.type === "consumable"
-								? "text-blue-500"
-								: "text-pink-500"
-						}
-                    `}
+									? "text-blue-500"
+									: "text-pink-500"
+					} `}
 				/>
 			</div>
 
-			<div className="space-y-1 mb-3">
-				<h3 className="font-bold text-orange-900 leading-tight text-sm sm:text-base">
+			<div className="mb-3 space-y-1">
+				<h3 className="text-sm leading-tight font-bold text-orange-900 sm:text-base">
 					{item.name}
 				</h3>
-				<p className="text-[10px] sm:text-xs text-orange-700/60 line-clamp-2 h-7 sm:h-8">
+				<p className="line-clamp-2 h-7 text-[10px] text-orange-700/60 sm:h-8 sm:text-xs">
 					{item.description}
 				</p>
 			</div>
@@ -117,46 +108,36 @@ export default function ShopItemCard({
 			<button
 				onClick={() => !isLocked && onBuy(item)}
 				disabled={isDisabled}
-				className={`w-full py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all
-                    ${
-						userStatus !== "member"
-							? "bg-[#5865F2] hover:bg-[#4752C4] text-white shadow-lg shadow-[#5865F2]/20 active:scale-[0.98] cursor-pointer"
-							: isLocked
-							? "bg-gray-200 text-gray-400 cursor-not-allowed"
-							: item.is_owned &&
-							  (item.type === "face" || item.type === "upgrade")
-							? "bg-green-100 text-green-700 cursor-default"
-							: !canAfford
-							? "bg-gray-100 text-gray-400 cursor-not-allowed"
-							: "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer"
-					}
-                `}
+				className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-1.5 text-[10px] font-bold transition-all sm:py-2 sm:text-xs ${
+					userStatus !== "member"
+						? "cursor-pointer bg-[#5865F2] text-white shadow-lg shadow-[#5865F2]/20 hover:bg-[#4752C4] active:scale-[0.98]"
+						: isLocked
+							? "cursor-not-allowed bg-gray-200 text-gray-400"
+							: item.is_owned && (item.type === "face" || item.type === "upgrade")
+								? "cursor-default bg-green-100 text-green-700"
+								: !canAfford
+									? "cursor-not-allowed bg-gray-100 text-gray-400"
+									: "cursor-pointer bg-orange-500 text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 active:scale-[0.98]"
+				} `}
 			>
 				{userStatus === "visitor" ? (
 					<>
-						<Icon
-							icon="simple-icons:discord"
-							className="w-3.5 h-3.5"
-						/>
+						<Icon icon="simple-icons:discord" className="h-3.5 w-3.5" />
 						Giriş Yap
 					</>
 				) : userStatus === "guest" ? (
 					<>
-						<Icon
-							icon="simple-icons:discord"
-							className="w-3.5 h-3.5"
-						/>
+						<Icon icon="simple-icons:discord" className="h-3.5 w-3.5" />
 						Sunucuya Katıl
 					</>
 				) : isLocked ? (
 					<>
-						<Icon icon="lucide:lock" className="w-3 h-3" />
+						<Icon icon="lucide:lock" className="h-3 w-3" />
 						Kilitli
 					</>
-				) : item.is_owned &&
-				  (item.type === "face" || item.type === "upgrade") ? (
+				) : item.is_owned && (item.type === "face" || item.type === "upgrade") ? (
 					<>
-						<Icon icon="lucide:check" className="w-3.5 h-3.5" />
+						<Icon icon="lucide:check" className="h-3.5 w-3.5" />
 						Satın Alındı
 					</>
 				) : (

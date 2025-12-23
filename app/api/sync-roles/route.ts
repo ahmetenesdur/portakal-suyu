@@ -25,9 +25,7 @@ export async function POST(request: Request) {
 
 	// 2. Get Discord ID from user metadata
 	// Supabase stores provider info in user_metadata or identities
-	const discordIdentity = user.identities?.find(
-		(id) => id.provider === "discord"
-	);
+	const discordIdentity = user.identities?.find((id) => id.provider === "discord");
 	const discordId = discordIdentity?.id;
 
 	// Check for Legacy Session (Has metadata but no identity)
@@ -41,10 +39,7 @@ export async function POST(request: Request) {
 
 	if (!discordId) {
 		console.error("No Discord ID found for user:", user.id);
-		return NextResponse.json(
-			{ error: "Discord account not linked" },
-			{ status: 400 }
-		);
+		return NextResponse.json({ error: "Discord account not linked" }, { status: 400 });
 	}
 
 	// 3. Fetch User Roles from Discord API
@@ -54,10 +49,7 @@ export async function POST(request: Request) {
 
 	if (!guildId || !botToken || !subscriberRoleId) {
 		console.error("Missing Discord configuration");
-		return NextResponse.json(
-			{ error: "Server configuration error" },
-			{ status: 500 }
-		);
+		return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
 	}
 
 	try {
@@ -71,26 +63,13 @@ export async function POST(request: Request) {
 		);
 
 		if (!response.ok) {
-			console.error(
-				"Discord API Error:",
-				response.status,
-				await response.text()
-			);
+			console.error("Discord API Error:", response.status, await response.text());
 			// If user is not in the guild, they are a guest
 			if (response.status === 404) {
-				await updateUserProfile(
-					supabase,
-					user.id,
-					"Misafir",
-					1,
-					user.user_metadata
-				);
+				await updateUserProfile(supabase, user.id, "Misafir", 1, user.user_metadata);
 				return NextResponse.json({ role: "Misafir", multiplier: 1 });
 			}
-			return NextResponse.json(
-				{ error: "Failed to fetch Discord roles" },
-				{ status: 500 }
-			);
+			return NextResponse.json({ error: "Failed to fetch Discord roles" }, { status: 500 });
 		}
 
 		const memberData = await response.json();
@@ -102,21 +81,12 @@ export async function POST(request: Request) {
 		const newMultiplier = isSubscriber ? 2 : 1;
 
 		// 5. Update Supabase Profile
-		await updateUserProfile(
-			supabase,
-			user.id,
-			newRole,
-			newMultiplier,
-			user.user_metadata
-		);
+		await updateUserProfile(supabase, user.id, newRole, newMultiplier, user.user_metadata);
 
 		return NextResponse.json({ role: newRole, multiplier: newMultiplier });
 	} catch (error) {
 		console.error("Sync Error:", error);
-		return NextResponse.json(
-			{ error: "Internal Server Error" },
-			{ status: 500 }
-		);
+		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 	}
 }
 
@@ -152,18 +122,14 @@ async function updateUserProfile(
 	};
 
 	if (userMetadata) {
-		if (
-			typeof userMetadata.full_name === "string" ||
-			typeof userMetadata.name === "string"
-		) {
+		if (typeof userMetadata.full_name === "string" || typeof userMetadata.name === "string") {
 			updates.username = userMetadata.full_name || userMetadata.name;
 		}
 		if (
 			typeof userMetadata.avatar_url === "string" ||
 			typeof userMetadata.picture === "string"
 		) {
-			updates.avatar_url =
-				userMetadata.avatar_url || userMetadata.picture;
+			updates.avatar_url = userMetadata.avatar_url || userMetadata.picture;
 		}
 	}
 

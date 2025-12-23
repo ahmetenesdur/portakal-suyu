@@ -1,8 +1,4 @@
-export default function OrangeIcon({
-	className = "w-8 h-8",
-}: {
-	className?: string;
-}) {
+export default function OrangeIcon({ className = "w-8 h-8" }: { className?: string }) {
 	return (
 		<svg
 			viewBox="0 0 32 32"
@@ -21,8 +17,7 @@ export default function OrangeIcon({
 				>
 					<stop offset="0%" stopColor="#FDBA74" /> {/* Orange-300 */}
 					<stop offset="50%" stopColor="#FB923C" /> {/* Orange-400 */}
-					<stop offset="100%" stopColor="#EA580C" />{" "}
-					{/* Orange-600 */}
+					<stop offset="100%" stopColor="#EA580C" /> {/* Orange-600 */}
 				</linearGradient>
 				<linearGradient
 					id="lux-glow"
@@ -35,19 +30,9 @@ export default function OrangeIcon({
 					<stop offset="0%" stopColor="#FEF08A" stopOpacity="0.6" />
 					<stop offset="100%" stopColor="#EAB308" stopOpacity="0" />
 				</linearGradient>
-				<filter
-					id="glow-filter"
-					x="-20%"
-					y="-20%"
-					width="140%"
-					height="140%"
-				>
+				<filter id="glow-filter" x="-20%" y="-20%" width="140%" height="140%">
 					<feGaussianBlur stdDeviation="1.5" result="blur" />
-					<feComposite
-						in="SourceGraphic"
-						in2="blur"
-						operator="over"
-					/>
+					<feComposite in="SourceGraphic" in2="blur" operator="over" />
 				</filter>
 			</defs>
 
@@ -80,22 +65,8 @@ export default function OrangeIcon({
 			<circle cx="20" cy="14.5" r="0.5" fill="white" />
 
 			{/* Blush */}
-			<ellipse
-				cx="11"
-				cy="17"
-				rx="1.5"
-				ry="0.8"
-				fill="#FDA4AF"
-				opacity="0.6"
-			/>
-			<ellipse
-				cx="21"
-				cy="17"
-				rx="1.5"
-				ry="0.8"
-				fill="#FDA4AF"
-				opacity="0.6"
-			/>
+			<ellipse cx="11" cy="17" rx="1.5" ry="0.8" fill="#FDA4AF" opacity="0.6" />
+			<ellipse cx="21" cy="17" rx="1.5" ry="0.8" fill="#FDA4AF" opacity="0.6" />
 
 			{/* Mouth (Tiny Smile) */}
 			<path
@@ -106,10 +77,7 @@ export default function OrangeIcon({
 			/>
 
 			{/* Magical Sparkles */}
-			<path
-				d="M16 1.5L16.5 3L18 3.5L16.5 4L16 5.5L15.5 4L14 3.5L15.5 3Z"
-				fill="#FEF9C3"
-			/>
+			<path d="M16 1.5L16.5 3L18 3.5L16.5 4L16 5.5L15.5 4L14 3.5L15.5 3Z" fill="#FEF9C3" />
 			<path
 				d="M28 10L28.5 11.5L30 12L28.5 12.5L28 14L27.5 12.5L26 12L27.5 11.5Z"
 				fill="#FEF9C3"

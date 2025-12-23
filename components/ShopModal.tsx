@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { ShopItem } from "@/types";
-import { useAuth } from "@/components/AuthProvider";
-import ShopItemCard from "./ShopItemCard";
 import confetti from "canvas-confetti";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import LoginPromptModal from "./LoginPromptModal";
+
+import { useAuth } from "@/components/AuthProvider";
+import { ShopItem } from "@/types";
+
 import BaseModal from "./BaseModal";
+import LoginPromptModal from "./LoginPromptModal";
+import ShopItemCard from "./ShopItemCard";
 
 interface ShopModalProps {
 	isOpen: boolean;
@@ -17,9 +19,7 @@ interface ShopModalProps {
 
 export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 	const { profile, signInWithDiscord } = useAuth();
-	const [activeTab, setActiveTab] = useState<
-		"upgrade" | "consumable" | "face"
-	>("upgrade");
+	const [activeTab, setActiveTab] = useState<"upgrade" | "consumable" | "face">("upgrade");
 	const [items, setItems] = useState<ShopItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [purchasing, setPurchasing] = useState<number | null>(null);
@@ -96,136 +96,114 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 			<BaseModal
 				isOpen={isOpen}
 				onClose={onClose}
-				className="max-w-2xl flex flex-col max-h-[80dvh] md:max-h-[85vh] overflow-hidden"
+				className="flex max-h-[80dvh] max-w-2xl flex-col overflow-hidden md:max-h-[85vh]"
 			>
-				<div className="p-6 pb-2 relative z-10 bg-white/50">
-					<div className="flex items-center justify-between mb-6">
+				<div className="relative z-10 bg-white/50 p-6 pb-2">
+					<div className="mb-6 flex items-center justify-between">
 						<div className="flex items-center gap-3">
-							<div className="p-3 bg-orange-100 rounded-xl text-orange-600">
-								<Icon
-									icon="lucide:store"
-									className="w-5 h-5 sm:w-6 sm:h-6"
-								/>
+							<div className="rounded-xl bg-orange-100 p-3 text-orange-600">
+								<Icon icon="lucide:store" className="h-5 w-5 sm:h-6 sm:w-6" />
 							</div>
 							<div>
-								<h2 className="text-xl sm:text-2xl font-black text-orange-900 tracking-tight">
+								<h2 className="text-xl font-black tracking-tight text-orange-900 sm:text-2xl">
 									Portakal Pazarı
 								</h2>
-								<p className="text-xs font-bold text-orange-800/50 uppercase tracking-widest">
+								<p className="text-xs font-bold tracking-widest text-orange-800/50 uppercase">
 									Paranın Geçmediği Tek Yer
 								</p>
 							</div>
 						</div>
 						<button
 							onClick={onClose}
-							className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 cursor-pointer"
+							className="cursor-pointer rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
 						>
-							<Icon icon="lucide:x" className="w-5 h-5" />
+							<Icon icon="lucide:x" className="h-5 w-5" />
 						</button>
 					</div>
 
-					<div className="bg-orange-500 text-white p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-lg shadow-orange-500/20 mb-4">
+					<div className="mb-4 flex items-center justify-between rounded-2xl bg-orange-500 p-3 text-white shadow-lg shadow-orange-500/20 sm:p-4">
 						<div className="flex flex-col">
-							<span className="text-orange-200 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+							<span className="text-[10px] font-bold tracking-wider text-orange-200 uppercase sm:text-xs">
 								Mevcut Bakiye
 							</span>
-							<span className="text-xl sm:text-2xl font-black font-mono">
+							<span className="font-mono text-xl font-black sm:text-2xl">
 								{(profile?.score ?? 0).toLocaleString()}
 							</span>
 						</div>
 						<Icon
 							icon="lucide:citrus"
-							className="w-6 h-6 sm:w-8 sm:h-8 text-orange-200"
+							className="h-6 w-6 text-orange-200 sm:h-8 sm:w-8"
 						/>
 					</div>
 
-					<div className="grid grid-cols-3 gap-2 p-1 bg-gray-100/80 rounded-xl">
+					<div className="grid grid-cols-3 gap-2 rounded-xl bg-gray-100/80 p-1">
 						<button
 							onClick={() => setActiveTab("upgrade")}
-							className={`py-2 rounded-lg text-[10px] sm:text-sm font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 cursor-pointer
-                                            ${
-												activeTab === "upgrade"
-													? "bg-white text-orange-600 shadow-sm"
-													: "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-											}`}
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+								activeTab === "upgrade"
+									? "bg-white text-orange-600 shadow-sm"
+									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+							}`}
 						>
-							<Icon
-								icon="lucide:hammer"
-								className="w-4 h-4 sm:w-4 sm:h-4"
-							/>
+							<Icon icon="lucide:hammer" className="h-4 w-4 sm:h-4 sm:w-4" />
 							<span>Geliştirmeler</span>
 						</button>
 						<button
 							onClick={() => setActiveTab("consumable")}
-							className={`py-2 rounded-lg text-[10px] sm:text-sm font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 cursor-pointer
-                                            ${
-												activeTab === "consumable"
-													? "bg-white text-blue-600 shadow-sm"
-													: "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-											}`}
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+								activeTab === "consumable"
+									? "bg-white text-blue-600 shadow-sm"
+									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+							}`}
 						>
-							<Icon
-								icon="lucide:zap"
-								className="w-4 h-4 sm:w-4 sm:h-4"
-							/>
+							<Icon icon="lucide:zap" className="h-4 w-4 sm:h-4 sm:w-4" />
 							<span>Buff&apos;lar</span>
 						</button>
 						<button
 							onClick={() => setActiveTab("face")}
-							className={`py-2 rounded-lg text-[10px] sm:text-sm font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 cursor-pointer
-                                            ${
-												activeTab === "face"
-													? "bg-white text-pink-600 shadow-sm"
-													: "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-											}`}
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+								activeTab === "face"
+									? "bg-white text-pink-600 shadow-sm"
+									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+							}`}
 						>
-							<Icon
-								icon="lucide:smile"
-								className="w-4 h-4 sm:w-4 sm:h-4"
-							/>
+							<Icon icon="lucide:smile" className="h-4 w-4 sm:h-4 sm:w-4" />
 							<span>Kozmetik</span>
 						</button>
 					</div>
 				</div>
 
-				<div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-gray-50/50">
+				<div className="flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-6">
 					{loading ? (
-						<div className="flex items-center justify-center h-40">
-							<div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin" />
+						<div className="flex h-40 items-center justify-center">
+							<div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
 						</div>
 					) : filteredItems.length > 0 ? (
-						<div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+						<div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3">
 							{filteredItems.map((item) => (
 								<ShopItemCard
 									key={item.id}
 									item={item}
 									onBuy={handleBuy}
-									canAfford={
-										(profile?.score ?? 0) >= item.price
-									}
-									loading={
-										purchasing === item.id ||
-										purchasing !== null
-									}
+									canAfford={(profile?.score ?? 0) >= item.price}
+									loading={purchasing === item.id || purchasing !== null}
 									userStatus={
 										!profile
 											? "visitor"
 											: profile.role === "Misafir"
-											? "guest"
-											: "member"
+												? "guest"
+												: "member"
 									}
 								/>
 							))}
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center h-40 text-gray-400">
+						<div className="flex h-40 flex-col items-center justify-center text-gray-400">
 							<Icon
 								icon="lucide:package-open"
-								className="w-12 h-12 mb-2 opacity-50"
+								className="mb-2 h-12 w-12 opacity-50"
 							/>
-							<p className="text-sm font-medium">
-								Bu kategoride ürün yok.
-							</p>
+							<p className="text-sm font-medium">Bu kategoride ürün yok.</p>
 						</div>
 					)}
 				</div>

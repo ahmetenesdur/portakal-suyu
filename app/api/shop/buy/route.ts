@@ -6,10 +6,7 @@ export async function POST(request: Request) {
 	const { itemId } = await request.json();
 
 	if (!itemId) {
-		return NextResponse.json(
-			{ error: "Item ID is required" },
-			{ status: 400 }
-		);
+		return NextResponse.json({ error: "Item ID is required" }, { status: 400 });
 	}
 
 	const cookieStore = await cookies();
@@ -65,16 +62,10 @@ export async function POST(request: Request) {
 					errorMessage = data.error;
 				}
 
-				return NextResponse.json(
-					{ error: errorMessage },
-					{ status: 400 }
-				);
+				return NextResponse.json({ error: errorMessage }, { status: 400 });
 			}
 		} else {
-			return NextResponse.json(
-				{ error: "Purchase failed" },
-				{ status: 500 }
-			);
+			return NextResponse.json({ error: "Purchase failed" }, { status: 500 });
 		}
 	} catch (error) {
 		console.error("Purchase Error:", error);

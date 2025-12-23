@@ -1,17 +1,11 @@
 export default function CoolFace() {
 	return (
 		<>
-			<div className="flex gap-10 items-center relative -top-2">
+			<div className="relative -top-2 flex items-center gap-10">
 				{/* Sunglasses SVG adapted for Face size */}
 				<svg width="120" height="60" viewBox="0 0 240 120">
 					<defs>
-						<linearGradient
-							id="faceLensGradient"
-							x1="0%"
-							y1="0%"
-							x2="0%"
-							y2="100%"
-						>
+						<linearGradient id="faceLensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
 							<stop offset="0%" stopColor="#0f172a" />
 							<stop offset="100%" stopColor="#334155" />
 						</linearGradient>
@@ -45,16 +39,8 @@ export default function CoolFace() {
 						strokeLinecap="round"
 					/>
 					{/* Reflections */}
-					<path
-						d="M40,25 L90,25 L70,80 L30,60 Z"
-						fill="white"
-						opacity="0.1"
-					/>
-					<path
-						d="M160,25 L210,25 L190,80 L150,60 Z"
-						fill="white"
-						opacity="0.1"
-					/>
+					<path d="M40,25 L90,25 L70,80 L30,60 Z" fill="white" opacity="0.1" />
+					<path d="M160,25 L210,25 L190,80 L150,60 Z" fill="white" opacity="0.1" />
 				</svg>
 			</div>
 			{/* Cool Smirk */}

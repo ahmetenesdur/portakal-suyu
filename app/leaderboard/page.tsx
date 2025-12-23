@@ -1,17 +1,17 @@
 "use client";
 
-import { createClient } from "@/lib/supabase";
 import { Icon } from "@iconify/react";
 import NextImage from "next/image";
-import { useEffect, useState } from "react";
-import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import InfoModal from "@/components/InfoModal";
-import ShopModal from "@/components/ShopModal";
+import { useEffect, useState } from "react";
 
-import { Profile, LeaderboardDaily, LeaderboardWeekly } from "@/types";
+import { useAuth } from "@/components/AuthProvider";
+import InfoModal from "@/components/InfoModal";
+import Navbar from "@/components/Navbar";
+import ShopModal from "@/components/ShopModal";
+import { createClient } from "@/lib/supabase";
 import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { LeaderboardDaily, LeaderboardWeekly, Profile } from "@/types";
 
 type LeaderboardItem =
 	| (Partial<Profile> & { lifetime_score?: number })
@@ -21,9 +21,7 @@ type LeaderboardItem =
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [timeframe, setTimeframe] = useState<"all" | "weekly" | "daily">(
-		"all"
-	);
+	const [timeframe, setTimeframe] = useState<"all" | "weekly" | "daily">("all");
 	const [limit, setLimit] = useState(50);
 	const [hasMore, setHasMore] = useState(true);
 	const { user } = useAuth();
@@ -103,9 +101,7 @@ export default function LeaderboardPage() {
 					setHasMore(true);
 					// Normalize data structure
 
-					const formattedData = data
-						.slice(0, limit)
-						.map(mapLeaderboardItem);
+					const formattedData = data.slice(0, limit).map(mapLeaderboardItem);
 					setProfiles(formattedData);
 				} else {
 					setHasMore(false);
@@ -157,61 +153,53 @@ export default function LeaderboardPage() {
 	};
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
+		<main className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-orange-50 pb-16">
 			<Navbar
 				onOpenInfo={() => setIsInfoModalOpen(true)}
 				onOpenShop={() => setIsShopModalOpen(true)}
 			/>
-			<InfoModal
-				isOpen={isInfoModalOpen}
-				onClose={() => setIsInfoModalOpen(false)}
-			/>
-			<ShopModal
-				isOpen={isShopModalOpen}
-				onClose={() => setIsShopModalOpen(false)}
-			/>
+			<InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} />
+			<ShopModal isOpen={isShopModalOpen} onClose={() => setIsShopModalOpen(false)} />
 
-			<div className="fixed inset-0 pointer-events-none">
-				<div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-300/20 rounded-full blur-[120px]" />
-				<div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-yellow-300/20 rounded-full blur-[120px]" />
+			<div className="pointer-events-none fixed inset-0">
+				<div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-orange-300/20 blur-[120px]" />
+				<div className="absolute right-[-10%] bottom-[-10%] h-[50%] w-[50%] rounded-full bg-yellow-300/20 blur-[120px]" />
 			</div>
 
-			<div className="z-10 flex flex-col items-center justify-start flex-1 w-full max-w-4xl px-4 pt-8 md:pt-0">
-				<div className="relative mb-8 flex flex-col items-center text-center w-full">
+			<div className="z-10 flex w-full max-w-4xl flex-1 flex-col items-center justify-start px-4 pt-8 md:pt-0">
+				<div className="relative mb-8 flex w-full flex-col items-center text-center">
 					{/* Back Button */}
 					<Link
 						href="/"
-						className="absolute left-0 top-0 md:top-1/2 md:-translate-y-1/2 p-3 md:px-5 md:py-2.5 bg-white/40 hover:bg-white/60 text-orange-700 rounded-2xl transition-all hover:scale-105 hover:shadow-lg hover:shadow-orange-500/10 border border-white/50 backdrop-blur-md group flex items-center gap-2 z-20"
+						className="group absolute top-0 left-0 z-20 flex items-center gap-2 rounded-2xl border border-white/50 bg-white/40 p-3 text-orange-700 backdrop-blur-md transition-all hover:scale-105 hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 md:top-1/2 md:-translate-y-1/2 md:px-5 md:py-2.5"
 						title="Ana Sayfaya Dön"
 					>
 						<Icon
 							icon="lucide:arrow-left"
-							className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform"
+							className="h-5 w-5 transition-transform group-hover:-translate-x-1 md:h-6 md:w-6"
 						/>
-						<span className="hidden md:inline font-bold text-lg">
-							Geri
-						</span>
+						<span className="hidden text-lg font-bold md:inline">Geri</span>
 					</Link>
 
-					<div className="inline-flex items-center justify-center p-4 bg-linear-to-br from-orange-100 to-white/50 backdrop-blur-xl rounded-3xl shadow-xl shadow-orange-500/10 mb-6 border border-white/60 mt-12 md:mt-0">
+					<div className="mt-12 mb-6 inline-flex items-center justify-center rounded-3xl border border-white/60 bg-linear-to-br from-orange-100 to-white/50 p-4 shadow-xl shadow-orange-500/10 backdrop-blur-xl md:mt-0">
 						<Icon
 							icon="lucide:medal"
-							className="w-10 h-10 text-orange-500 drop-shadow-sm"
+							className="h-10 w-10 text-orange-500 drop-shadow-sm"
 						/>
 					</div>
 
-					<h1 className="text-4xl md:text-6xl font-black text-orange-900 mb-4 tracking-tight drop-shadow-sm">
+					<h1 className="mb-4 text-4xl font-black tracking-tight text-orange-900 drop-shadow-sm md:text-6xl">
 						Liderlik Tablosu
 					</h1>
-					<p className="text-orange-800/70 text-lg md:text-xl font-medium max-w-lg leading-relaxed">
+					<p className="max-w-lg text-lg leading-relaxed font-medium text-orange-800/70 md:text-xl">
 						Portakal Vadisi&apos;nin en yetenekli sihirdarları.{" "}
 						<br className="hidden md:block" />
 						Zirveye çıkmak için daha çok portakal sık!
 					</p>
 				</div>
 
-				<div className="flex justify-center mb-8">
-					<div className="flex p-1 bg-white/40 backdrop-blur-xl rounded-2xl border border-white/60 shadow-sm">
+				<div className="mb-8 flex justify-center">
+					<div className="flex rounded-2xl border border-white/60 bg-white/40 p-1 shadow-sm backdrop-blur-xl">
 						{(["daily", "weekly", "all"] as const).map((t) => (
 							<button
 								key={t}
@@ -219,7 +207,7 @@ export default function LeaderboardPage() {
 									setTimeframe(t);
 									setLimit(50);
 								}}
-								className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+								className={`rounded-xl px-6 py-2 text-sm font-bold transition-all ${
 									timeframe === t
 										? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
 										: "text-orange-800/60 hover:bg-white/50 hover:text-orange-800"
@@ -228,64 +216,57 @@ export default function LeaderboardPage() {
 								{t === "daily"
 									? "Günlük"
 									: t === "weekly"
-									? "Haftalık"
-									: "Tüm Zamanlar"}
+										? "Haftalık"
+										: "Tüm Zamanlar"}
 							</button>
 						))}
 					</div>
 				</div>
 
-				<div className="w-full bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-orange-500/5 overflow-hidden">
-					<div className="grid grid-cols-12 gap-4 p-4 md:p-6 border-b border-orange-100/50 bg-white/30 text-xs md:text-sm font-bold text-orange-900/50 uppercase tracking-wider">
-						<div className="col-span-2 md:col-span-1 text-center">
-							#
-						</div>
+				<div className="w-full overflow-hidden rounded-3xl border border-white/60 bg-white/40 shadow-xl shadow-orange-500/5 backdrop-blur-xl">
+					<div className="grid grid-cols-12 gap-4 border-b border-orange-100/50 bg-white/30 p-4 text-xs font-bold tracking-wider text-orange-900/50 uppercase md:p-6 md:text-sm">
+						<div className="col-span-2 text-center md:col-span-1">#</div>
 						<div className="col-span-7 md:col-span-8">Sihirdar</div>
 						<div className="col-span-3 text-right">Litre</div>
 					</div>
 
-					<div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+					<div className="custom-scrollbar max-h-[60vh] overflow-y-auto">
 						{loading && profiles.length === 0 ? (
-							<div className="flex flex-col items-center justify-center py-20 gap-4">
-								<div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin" />
-								<span className="text-orange-800/50 font-medium animate-pulse">
+							<div className="flex flex-col items-center justify-center gap-4 py-20">
+								<div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+								<span className="animate-pulse font-medium text-orange-800/50">
 									Sıralama yükleniyor...
 								</span>
 							</div>
 						) : profiles.length === 0 ? (
-							<div className="text-center py-20 text-orange-800/50 font-medium">
+							<div className="py-20 text-center font-medium text-orange-800/50">
 								Henüz kimse portakal suyu sıkmamış. İlk sen ol!
 							</div>
 						) : (
 							<>
 								{profiles.map((profile, index) => {
 									const rank = index + 1;
-									const isCurrentUser =
-										user?.id === profile.id;
+									const isCurrentUser = user?.id === profile.id;
 									const score = profile.score;
 
 									return (
 										<div
 											key={profile.id}
-											className={`grid grid-cols-12 gap-4 p-4 items-center transition-colors border-b border-orange-50/50 last:border-0 ${
+											className={`grid grid-cols-12 items-center gap-4 border-b border-orange-50/50 p-4 transition-colors last:border-0 ${
 												isCurrentUser
 													? "bg-orange-500/10 hover:bg-orange-500/15"
 													: "hover:bg-white/40"
 											}`}
 										>
-											<div className="col-span-2 md:col-span-1 flex justify-center">
+											<div className="col-span-2 flex justify-center md:col-span-1">
 												<div
-													className={`font-black text-lg md:text-xl flex items-center justify-center w-8 h-8 ${getRankStyle(
+													className={`flex h-8 w-8 items-center justify-center text-lg font-black md:text-xl ${getRankStyle(
 														rank
 													)}`}
 												>
 													{rank <= 3 ? (
 														<Icon
-															icon={
-																getRankIcon(
-																	rank
-																)!
-															}
+															icon={getRankIcon(rank)!}
 															width="24"
 															height="24"
 														/>
@@ -295,78 +276,69 @@ export default function LeaderboardPage() {
 												</div>
 											</div>
 
-											<div className="col-span-7 md:col-span-8 flex items-center gap-3 md:gap-4">
-												<div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
+											<div className="col-span-7 flex items-center gap-3 md:col-span-8 md:gap-4">
+												<div className="relative h-8 w-8 shrink-0 md:h-10 md:w-10">
 													<NextImage
 														src={
 															profile.avatar_url ||
 															`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.id}`
 														}
-														alt={
-															profile.username ||
-															"User"
-														}
+														alt={profile.username || "User"}
 														fill
 														sizes="(max-width: 768px) 32px, 40px"
-														className={`rounded-full object-cover border-2 shadow-sm ${
+														className={`rounded-full border-2 object-cover shadow-sm ${
 															rank === 1
 																? "border-yellow-400"
 																: rank === 2
-																? "border-gray-300"
-																: rank === 3
-																? "border-amber-600"
-																: "border-white"
+																	? "border-gray-300"
+																	: rank === 3
+																		? "border-amber-600"
+																		: "border-white"
 														}`}
 													/>
 													{rank <= 3 && (
-														<div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+														<div className="absolute -top-1 -right-1 rounded-full bg-white p-0.5 shadow-sm">
 															<Icon
 																icon="ph:star-fill"
-																className="w-3 h-3 text-yellow-400"
+																className="h-3 w-3 text-yellow-400"
 															/>
 														</div>
 													)}
 												</div>
-												<div className="flex flex-col min-w-0">
+												<div className="flex min-w-0 flex-col">
 													<span
-														className={`font-bold text-sm md:text-base truncate ${
+														className={`truncate text-sm font-bold md:text-base ${
 															isCurrentUser
 																? "text-orange-700"
 																: "text-orange-900"
 														}`}
 													>
-														{profile.username ||
-															"İsimsiz Sihirdar"}
+														{profile.username || "İsimsiz Sihirdar"}
 														{isCurrentUser && (
-															<span className="ml-2 text-[10px] bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded-full uppercase tracking-wide align-middle">
+															<span className="ml-2 rounded-full bg-orange-200 px-1.5 py-0.5 align-middle text-[10px] tracking-wide text-orange-800 uppercase">
 																Sen
 															</span>
 														)}
 													</span>
-													<span className="text-xs text-orange-800/40 font-medium truncate">
-														{profile.role ||
-															"Sihirdar"}
+													<span className="truncate text-xs font-medium text-orange-800/40">
+														{profile.role || "Sihirdar"}
 													</span>
 												</div>
 											</div>
 
-											<div className="col-span-3 text-right flex flex-col items-end justify-center">
+											<div className="col-span-3 flex flex-col items-end justify-center text-right">
 												<span
-													className={`font-black text-sm md:text-lg tracking-tight ${
+													className={`text-sm font-black tracking-tight md:text-lg ${
 														rank <= 3
 															? "text-orange-600"
 															: "text-orange-900/60"
 													}`}
 												>
-													{new Intl.NumberFormat(
-														"tr-TR"
-													).format(score)}
+													{new Intl.NumberFormat("tr-TR").format(score)}
 												</span>
 												{profile.total_clicks && (
-													<span className="text-[10px] md:text-xs text-orange-900/30 font-semibold">
-														{new Intl.NumberFormat(
-															"tr-TR"
-														).format(
+													<span className="text-[10px] font-semibold text-orange-900/30 md:text-xs">
+														{new Intl.NumberFormat("tr-TR").format(
 															profile.total_clicks
 														)}{" "}
 														Tık
@@ -379,15 +351,11 @@ export default function LeaderboardPage() {
 								{hasMore && (
 									<div className="p-4 text-center">
 										<button
-											onClick={() =>
-												setLimit((prev) => prev + 50)
-											}
+											onClick={() => setLimit((prev) => prev + 50)}
 											disabled={loading}
-											className="px-6 py-2 bg-orange-100 text-orange-700 rounded-xl font-bold hover:bg-orange-200 transition-colors disabled:opacity-50"
+											className="rounded-xl bg-orange-100 px-6 py-2 font-bold text-orange-700 transition-colors hover:bg-orange-200 disabled:opacity-50"
 										>
-											{loading
-												? "Yükleniyor..."
-												: "Daha Fazla Yükle"}
+											{loading ? "Yükleniyor..." : "Daha Fazla Yükle"}
 										</button>
 									</div>
 								)}

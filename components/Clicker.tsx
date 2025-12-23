@@ -1,11 +1,13 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "./AuthProvider";
-import { useClickerGame } from "@/hooks/useClickerGame";
-import OrangeCharacter from "./OrangeCharacter";
-import BuffHUD from "./BuffHUD";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+
+import { useClickerGame } from "@/hooks/useClickerGame";
+
+import { useAuth } from "./AuthProvider";
+import BuffHUD from "./BuffHUD";
+import OrangeCharacter from "./OrangeCharacter";
 
 type ClickerProps = {
 	onPop?: () => void;
@@ -57,11 +59,8 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-12">
-			<div className="relative group">
-				<OrangeCharacter
-					currentFace={currentFace}
-					onClick={handleClick}
-				/>
+			<div className="group relative">
+				<OrangeCharacter currentFace={currentFace} onClick={handleClick} />
 
 				<BuffHUD
 					activeBuffs={activeBuffs}
@@ -81,7 +80,7 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 								opacity: 0,
 							}}
 							transition={{ duration: 0.6, ease: "easeOut" }}
-							className="absolute w-3 h-3 bg-orange-400 rounded-full pointer-events-none z-20"
+							className="pointer-events-none absolute z-20 h-3 w-3 rounded-full bg-orange-400"
 						/>
 					))}
 				</AnimatePresence>
@@ -103,7 +102,7 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 								rotate: 10,
 							}}
 							exit={{ opacity: 0 }}
-							className="absolute text-5xl font-black text-white pointer-events-none select-none drop-shadow-[0_4px_0_rgba(234,88,12,1)] z-50"
+							className="pointer-events-none absolute z-50 text-5xl font-black text-white drop-shadow-[0_4px_0_rgba(234,88,12,1)] select-none"
 							style={{ left: click.x, top: click.y }}
 						>
 							+{clickAmount}
@@ -112,21 +111,19 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 				</AnimatePresence>
 			</div>
 
-			<div className="text-center relative">
-				<div className="absolute inset-0 bg-white/50 blur-2xl -z-10 rounded-full" />
-				<h2 className="text-2xl font-bold text-orange-900/60 mb-2 tracking-widest">
+			<div className="relative text-center">
+				<div className="absolute inset-0 -z-10 rounded-full bg-white/50 blur-2xl" />
+				<h2 className="mb-2 text-2xl font-bold tracking-widest text-orange-900/60">
 					TOPLAM SIKILAN
 				</h2>
-				<div className="text-7xl font-black text-transparent bg-clip-text bg-linear-to-b from-orange-500 to-orange-700 drop-shadow-sm font-mono tracking-tight">
+				<div className="bg-linear-to-b from-orange-500 to-orange-700 bg-clip-text font-mono text-7xl font-black tracking-tight text-transparent drop-shadow-sm">
 					{isLoading ? (
-						<div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mx-auto" />
+						<div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
 					) : (
 						count.toLocaleString()
 					)}
 				</div>
-				<p className="text-lg text-orange-800/80 mt-2 font-medium">
-					Litre Portakal Suyu
-				</p>
+				<p className="mt-2 text-lg font-medium text-orange-800/80">Litre Portakal Suyu</p>
 			</div>
 		</div>
 	);

@@ -1,24 +1,20 @@
 import { Icon } from "@iconify/react";
+
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 export default function SocialDock() {
 	return (
-		<div className="flex items-center gap-2 md:gap-4 p-2 md:p-3 bg-white/20 backdrop-blur-xl rounded-full border border-white/30 shadow-lg mt-8 transition-transform hover:scale-105">
+		<div className="mt-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/20 p-2 shadow-lg backdrop-blur-xl transition-transform hover:scale-105 md:gap-4 md:p-3">
 			{SOCIAL_LINKS.map((social) => (
 				<a
 					key={social.name}
 					href={social.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					className={`p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 flex items-center justify-center ${social.color}`}
+					className={`flex items-center justify-center rounded-full p-2 transition-all duration-300 hover:scale-110 md:p-3 ${social.color}`}
 					title={social.name}
 				>
-					<Icon
-						icon={social.icon}
-						width="20"
-						height="20"
-						className="md:w-6 md:h-6"
-					/>
+					<Icon icon={social.icon} width="20" height="20" className="md:h-6 md:w-6" />
 				</a>
 			))}
 		</div>

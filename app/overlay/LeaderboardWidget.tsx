@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase";
-import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react";
+import { AnimatePresence, motion } from "framer-motion";
 import NextImage from "next/image";
-import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { createClient } from "@/lib/supabase";
+import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
 
 interface LeaderboardEntry {
 	username: string;
@@ -21,8 +22,7 @@ export default function LeaderboardWidget() {
 	const [loading, setLoading] = useState(true);
 	const [supabase] = useState(() => createClient());
 	const searchParams = useSearchParams();
-	const mode =
-		(searchParams.get("lb_mode") as "daily" | "weekly" | "all") || "daily";
+	const mode = (searchParams.get("lb_mode") as "daily" | "weekly" | "all") || "daily";
 
 	const getTitle = () => {
 		switch (mode) {
@@ -42,23 +42,17 @@ export default function LeaderboardWidget() {
 			if (mode === "daily") {
 				query = supabase
 					.from("leaderboard_daily")
-					.select(
-						"score, total_clicks, profiles!inner(id, username, avatar_url, role)"
-					)
+					.select("score, total_clicks, profiles!inner(id, username, avatar_url, role)")
 					.eq("date", getTurkeyDateString());
 			} else if (mode === "weekly") {
 				query = supabase
 					.from("leaderboard_weekly")
-					.select(
-						"score, total_clicks, profiles!inner(id, username, avatar_url, role)"
-					)
+					.select("score, total_clicks, profiles!inner(id, username, avatar_url, role)")
 					.eq("week_start", getTurkeyWeekStart());
 			} else {
 				query = supabase
 					.from("profiles")
-					.select(
-						"id, username, avatar_url, lifetime_score, role, total_clicks"
-					);
+					.select("id, username, avatar_url, lifetime_score, role, total_clicks");
 			}
 
 			const sortColumn = mode === "all" ? "lifetime_score" : "score";
@@ -128,9 +122,7 @@ export default function LeaderboardWidget() {
 									  }[];
 							};
 
-							const profile = Array.isArray(
-								itemWithProfile.profiles
-							)
+							const profile = Array.isArray(itemWithProfile.profiles)
 								? itemWithProfile.profiles[0]
 								: itemWithProfile.profiles;
 							return {
@@ -169,14 +161,11 @@ export default function LeaderboardWidget() {
 		<motion.div
 			initial={{ opacity: 0, x: 50 }}
 			animate={{ opacity: 1, x: 0 }}
-			className="fixed top-8 right-8 z-50 flex flex-col gap-3 w-72"
+			className="fixed top-8 right-8 z-50 flex w-72 flex-col gap-3"
 		>
-			<div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 shadow-lg transform -skew-x-6 self-end">
-				<Icon
-					icon="ph:trophy-fill"
-					className="w-5 h-5 text-yellow-400 animate-pulse"
-				/>
-				<span className="text-white font-bold text-sm uppercase tracking-wider">
+			<div className="flex -skew-x-6 transform items-center gap-2 self-end rounded-xl border border-white/10 bg-black/60 px-4 py-2 shadow-lg backdrop-blur-xl">
+				<Icon icon="ph:trophy-fill" className="h-5 w-5 animate-pulse text-yellow-400" />
+				<span className="text-sm font-bold tracking-wider text-white uppercase">
 					{getTitle()}
 				</span>
 			</div>
@@ -219,25 +208,25 @@ export default function LeaderboardWidget() {
 									ease: "easeInOut",
 								},
 							}}
-							className={`relative flex items-center gap-3 p-3 rounded-xl border backdrop-blur-md shadow-lg overflow-hidden group bg-black/20 ${
+							className={`group relative flex items-center gap-3 overflow-hidden rounded-xl border bg-black/20 p-3 shadow-lg backdrop-blur-md ${
 								index === 0
-									? "bg-linear-to-r from-yellow-500/60 to-orange-500/60 border-yellow-500/30"
+									? "border-yellow-500/30 bg-linear-to-r from-yellow-500/60 to-orange-500/60"
 									: index === 1
-									? "bg-linear-to-r from-slate-300/40 to-slate-400/40 border-slate-300/20"
-									: "bg-linear-to-r from-orange-800/40 to-amber-900/40 border-orange-800/20"
+										? "border-slate-300/20 bg-linear-to-r from-slate-300/40 to-slate-400/40"
+										: "border-orange-800/20 bg-linear-to-r from-orange-800/40 to-amber-900/40"
 							}`}
 						>
 							<div
-								className={`absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full ${
+								className={`absolute top-1/2 -left-1 h-8 w-1 -translate-y-1/2 rounded-r-full ${
 									index === 0
 										? "bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]"
 										: index === 1
-										? "bg-slate-300 shadow-[0_0_10px_rgba(203,213,225,0.3)]"
-										: "bg-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.3)]"
+											? "bg-slate-300 shadow-[0_0_10px_rgba(203,213,225,0.3)]"
+											: "bg-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.3)]"
 								}`}
 							/>
 
-							<div className="relative w-10 h-10 shrink-0 ml-2">
+							<div className="relative ml-2 h-10 w-10 shrink-0">
 								<NextImage
 									src={
 										leader.avatar_url ||
@@ -245,12 +234,12 @@ export default function LeaderboardWidget() {
 									}
 									alt={leader.username}
 									fill
-									className={`rounded-full object-cover border-2 ${
+									className={`rounded-full border-2 object-cover ${
 										index === 0
 											? "border-yellow-400"
 											: index === 1
-											? "border-slate-300"
-											: "border-amber-700"
+												? "border-slate-300"
+												: "border-amber-700"
 									}`}
 								/>
 
@@ -258,57 +247,54 @@ export default function LeaderboardWidget() {
 									{index === 0 && (
 										<Icon
 											icon="ph:crown-fill"
-											className="w-5 h-5 text-yellow-400 drop-shadow-md transform rotate-12"
+											className="h-5 w-5 rotate-12 transform text-yellow-400 drop-shadow-md"
 										/>
 									)}
 									{index === 1 && (
 										<Icon
 											icon="ph:medal-fill"
-											className="w-5 h-5 text-slate-300 drop-shadow-md transform rotate-12"
+											className="h-5 w-5 rotate-12 transform text-slate-300 drop-shadow-md"
 										/>
 									)}
 									{index === 2 && (
 										<Icon
 											icon="ph:medal-fill"
-											className="w-5 h-5 text-amber-700 drop-shadow-md transform rotate-12"
+											className="h-5 w-5 rotate-12 transform text-amber-700 drop-shadow-md"
 										/>
 									)}
 								</div>
 							</div>
 
-							<div className="flex flex-col min-w-0 flex-1">
+							<div className="flex min-w-0 flex-1 flex-col">
 								<span
-									className={`font-bold text-sm truncate ${
+									className={`truncate text-sm font-bold ${
 										index === 0
 											? "text-yellow-100"
 											: index === 1
-											? "text-slate-100"
-											: "text-orange-100"
+												? "text-slate-100"
+												: "text-orange-100"
 									}`}
 								>
 									{leader.username}
 								</span>
 								<div className="flex items-center gap-2">
 									<span
-										className={`text-xs font-mono font-bold ${
+										className={`font-mono text-xs font-bold ${
 											index === 0
 												? "text-yellow-200"
 												: index === 1
-												? "text-slate-300"
-												: "text-orange-200"
+													? "text-slate-300"
+													: "text-orange-200"
 										}`}
 									>
-										{new Intl.NumberFormat("tr-TR").format(
-											leader.score
-										)}{" "}
-										lt
+										{new Intl.NumberFormat("tr-TR").format(leader.score)} lt
 									</span>
 									{leader.total_clicks && (
-										<span className="text-[10px] text-white/50 font-medium">
+										<span className="text-[10px] font-medium text-white/50">
 											•{" "}
-											{new Intl.NumberFormat(
-												"tr-TR"
-											).format(leader.total_clicks)}{" "}
+											{new Intl.NumberFormat("tr-TR").format(
+												leader.total_clicks
+											)}{" "}
 											Tık
 										</span>
 									)}
@@ -316,7 +302,7 @@ export default function LeaderboardWidget() {
 							</div>
 
 							<motion.div
-								className={`absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -skew-x-12`}
+								className={`absolute inset-0 -skew-x-12 bg-linear-to-r from-transparent via-white/10 to-transparent`}
 								animate={{
 									x: ["-100%", "200%"],
 								}}

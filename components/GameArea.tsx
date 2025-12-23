@@ -7,9 +7,6 @@ interface GameAreaProps {
 	onShowLoginPrompt?: () => void;
 }
 
-export default function GameArea({
-	playPop,
-	onShowLoginPrompt,
-}: GameAreaProps) {
+export default function GameArea({ playPop, onShowLoginPrompt }: GameAreaProps) {
 	return <Clicker onPop={playPop} onShowLoginPrompt={onShowLoginPrompt} />;
 }

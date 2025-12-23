@@ -41,10 +41,7 @@ export const BUFF_ICONS: Record<string, string> = {
 	"7": "lucide:pill",
 };
 
-export const BUFF_THEMES: Record<
-	string,
-	{ text: string; bg: string; border: string }
-> = {
+export const BUFF_THEMES: Record<string, { text: string; bg: string; border: string }> = {
 	"5": {
 		text: "text-amber-300",
 		bg: "bg-amber-500/20",

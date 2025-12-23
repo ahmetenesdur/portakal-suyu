@@ -1,6 +1,8 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
 import { Baloo_2 } from "next/font/google";
-import "./globals.css";
+
 import { cn } from "@/lib/utils";
 
 const baloo2 = Baloo_2({
@@ -25,9 +27,7 @@ export const metadata: Metadata = {
 		"Topluluk Oyunu",
 		"Sihirli Vadi",
 	],
-	authors: [
-		{ name: "Ahmet Enes Dur", url: "https://github.com/ahmetenesdur" },
-	],
+	authors: [{ name: "Ahmet Enes Dur", url: "https://github.com/ahmetenesdur" }],
 	creator: "Ahmet Enes Dur",
 	openGraph: {
 		type: "website",
@@ -56,8 +56,9 @@ export const metadata: Metadata = {
 	},
 };
 
-import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "react-hot-toast";
+
+import { AuthProvider } from "@/components/AuthProvider";
 
 export default function RootLayout({
 	children,
@@ -69,7 +70,7 @@ export default function RootLayout({
 			<body
 				className={cn(
 					baloo2.className,
-					"antialiased min-h-screen bg-linear-to-b from-orange-rift-50 to-white text-foreground overflow-x-hidden selection:bg-orange-rift-200 selection:text-orange-rift-900"
+					"from-orange-rift-50 text-foreground selection:bg-orange-rift-200 selection:text-orange-rift-900 min-h-screen overflow-x-hidden bg-linear-to-b to-white antialiased"
 				)}
 			>
 				<AuthProvider>

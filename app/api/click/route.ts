@@ -7,28 +7,17 @@ export async function POST(request: Request) {
 
 	// Security: Strict validation to prevent score manipulation
 	if (typeof count !== "number" || !Number.isInteger(count)) {
-		return NextResponse.json(
-			{ error: "Invalid count format" },
-			{ status: 400 }
-		);
+		return NextResponse.json({ error: "Invalid count format" }, { status: 400 });
 	}
 
 	if (count <= 0) {
-		return NextResponse.json(
-			{ error: "Count must be positive" },
-			{ status: 400 }
-		);
+		return NextResponse.json({ error: "Count must be positive" }, { status: 400 });
 	}
 
 	// Rate Limit / Batch Size Cap (MAX_BATCH_SIZE is 50 in frontend)
 	if (count > 50) {
-		console.warn(
-			`Suspicious activity detected: Request with ${count} clicks rejected.`
-		);
-		return NextResponse.json(
-			{ error: "Batch size limit exceeded" },
-			{ status: 400 }
-		);
+		console.warn(`Suspicious activity detected: Request with ${count} clicks rejected.`);
+		return NextResponse.json({ error: "Batch size limit exceeded" }, { status: 400 });
 	}
 
 	const cookieStore = await cookies();

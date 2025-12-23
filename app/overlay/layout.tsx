@@ -1,4 +1,5 @@
 import { Fredoka } from "next/font/google";
+
 import { cn } from "@/lib/utils";
 
 const fredoka = Fredoka({
@@ -6,17 +7,10 @@ const fredoka = Fredoka({
 	weight: ["300", "400", "500", "600", "700"],
 });
 
-export default function OverlayLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function OverlayLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<div
-			className={cn(
-				"min-h-screen w-full bg-transparent overflow-hidden",
-				fredoka.className
-			)}
+			className={cn("min-h-screen w-full overflow-hidden bg-transparent", fredoka.className)}
 		>
 			{children}
 		</div>

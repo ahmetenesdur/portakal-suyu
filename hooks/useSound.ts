@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useSound() {
 	const [isMuted, setIsMuted] = useState(false);
@@ -11,8 +11,7 @@ export function useSound() {
 		// but usually best to do it lazily or on first click to comply with autoplay policies.
 		const AudioContextClass =
 			window.AudioContext ||
-			(window as unknown as { webkitAudioContext: typeof AudioContext })
-				.webkitAudioContext;
+			(window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
 		if (AudioContextClass) {
 			audioContextRef.current = new AudioContextClass();
 		}
@@ -39,16 +38,10 @@ export function useSound() {
 		const baseFreq = 600;
 		const randomOffset = Math.random() * 200 - 100; // +/- 100Hz
 		oscillator.type = "sine";
-		oscillator.frequency.setValueAtTime(
-			baseFreq + randomOffset,
-			ctx.currentTime
-		);
+		oscillator.frequency.setValueAtTime(baseFreq + randomOffset, ctx.currentTime);
 
 		// Pitch drop for "pop" effect
-		oscillator.frequency.exponentialRampToValueAtTime(
-			100,
-			ctx.currentTime + 0.1
-		);
+		oscillator.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
 
 		// Volume envelope
 		gainNode.gain.setValueAtTime(0.1, ctx.currentTime);

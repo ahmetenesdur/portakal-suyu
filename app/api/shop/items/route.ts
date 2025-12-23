@@ -55,17 +55,12 @@ export async function GET() {
 		const itemsWithOwnership = items.map((item) => ({
 			...item,
 			is_owned: inventoryIds.includes(item.id),
-			is_locked:
-				item.required_item_id &&
-				!inventoryIds.includes(item.required_item_id),
+			is_locked: item.required_item_id && !inventoryIds.includes(item.required_item_id),
 		}));
 
 		return NextResponse.json(itemsWithOwnership);
 	} catch (error) {
 		console.error("Shop Fetch Error:", error);
-		return NextResponse.json(
-			{ error: "Failed to fetch shop items" },
-			{ status: 500 }
-		);
+		return NextResponse.json({ error: "Failed to fetch shop items" }, { status: 500 });
 	}
 }

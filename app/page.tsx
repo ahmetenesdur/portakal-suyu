@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { useAuth } from "@/components/AuthProvider";
-import Navbar from "@/components/Navbar";
-import InfoModal from "@/components/InfoModal";
-import ShopModal from "@/components/ShopModal";
-import LoginPromptModal from "@/components/LoginPromptModal";
-import { useSound } from "@/hooks/useSound";
-import SoundToggle from "@/components/SoundToggle";
-import HeroSection from "@/components/HeroSection";
 import GameArea from "@/components/GameArea";
+import HeroSection from "@/components/HeroSection";
+import InfoModal from "@/components/InfoModal";
+import LoginPromptModal from "@/components/LoginPromptModal";
+import Navbar from "@/components/Navbar";
+import ShopModal from "@/components/ShopModal";
 import SocialDock from "@/components/SocialDock";
+import SoundToggle from "@/components/SoundToggle";
+import { useSound } from "@/hooks/useSound";
 
 export default function Home() {
 	const { user, profile, loading, signInWithDiscord } = useAuth();
@@ -18,9 +19,7 @@ export default function Home() {
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 	const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 	const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
-	const [particles, setParticles] = useState<
-		{ id: number; style: React.CSSProperties }[]
-	>([]);
+	const [particles, setParticles] = useState<{ id: number; style: React.CSSProperties }[]>([]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -32,9 +31,7 @@ export default function Home() {
 						height: Math.random() * 20 + 10 + "px",
 						left: Math.random() * 100 + "%",
 						top: Math.random() * 100 + "%",
-						animation: `float ${
-							10 + Math.random() * 20
-						}s infinite linear`,
+						animation: `float ${10 + Math.random() * 20}s infinite linear`,
 						animationDelay: `-${Math.random() * 20}s`,
 					},
 				}))
@@ -48,15 +45,15 @@ export default function Home() {
 	};
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-start pb-16 relative overflow-hidden bg-orange-50">
-			<div className="absolute inset-0 pointer-events-none overflow-hidden">
-				<div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-300/30 rounded-full blur-[100px] animate-pulse" />
-				<div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-300/30 rounded-full blur-[100px] animate-pulse delay-1000" />
+		<main className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-orange-50 pb-16">
+			<div className="pointer-events-none absolute inset-0 overflow-hidden">
+				<div className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] animate-pulse rounded-full bg-orange-300/30 blur-[100px]" />
+				<div className="absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] animate-pulse rounded-full bg-pink-300/30 blur-[100px] delay-1000" />
 
 				{particles.map((p) => (
 					<div
 						key={p.id}
-						className="absolute bg-orange-400/20 rounded-full backdrop-blur-sm"
+						className="absolute rounded-full bg-orange-400/20 backdrop-blur-sm"
 						style={p.style}
 					/>
 				))}
@@ -64,15 +61,9 @@ export default function Home() {
 
 			<SoundToggle isMuted={isMuted} toggleMute={toggleMute} />
 
-			<InfoModal
-				isOpen={isInfoModalOpen}
-				onClose={() => setIsInfoModalOpen(false)}
-			/>
+			<InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} />
 
-			<ShopModal
-				isOpen={isShopModalOpen}
-				onClose={() => setIsShopModalOpen(false)}
-			/>
+			<ShopModal isOpen={isShopModalOpen} onClose={() => setIsShopModalOpen(false)} />
 
 			<LoginPromptModal
 				isOpen={isLoginPromptOpen}
@@ -92,7 +83,7 @@ export default function Home() {
 				onOpenShop={() => setIsShopModalOpen(true)}
 			/>
 
-			<div className="z-10 flex flex-col items-center justify-center flex-1 gap-12 w-full max-w-4xl px-4 pt-8 md:pt-0">
+			<div className="z-10 flex w-full max-w-4xl flex-1 flex-col items-center justify-center gap-12 px-4 pt-8 md:pt-0">
 				<HeroSection loading={loading} user={user} />
 
 				<GameArea

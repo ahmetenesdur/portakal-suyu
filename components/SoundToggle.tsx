@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
+import { motion } from "framer-motion";
 
 type SoundToggleProps = {
 	isMuted: boolean;
@@ -16,7 +16,7 @@ export default function SoundToggle({ isMuted, toggleMute }: SoundToggleProps) {
 			whileHover={{ scale: 1.1 }}
 			whileTap={{ scale: 0.9 }}
 			onClick={toggleMute}
-			className="fixed bottom-6 left-6 z-50 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/50 text-orange-600 hover:bg-orange-50 transition-colors group cursor-pointer"
+			className="group fixed bottom-6 left-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white/50 bg-white/80 text-orange-600 shadow-lg backdrop-blur-md transition-colors hover:bg-orange-50"
 			title={isMuted ? "Sesi Aç" : "Sesi Kapat"}
 		>
 			<div className="relative">

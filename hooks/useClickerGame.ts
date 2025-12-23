@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
-import { createClient } from "@/lib/supabase";
-import { addClick } from "@/lib/batching";
 import { User } from "@supabase/supabase-js";
+import { useCallback, useEffect, useState } from "react";
+
+import { addClick } from "@/lib/batching";
+import { createClient } from "@/lib/supabase";
 
 type UseClickerGameProps = {
 	user: User | null;
@@ -20,9 +21,7 @@ export function useClickerGame({
 }: UseClickerGameProps) {
 	const [count, setCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
-	const [clicks, setClicks] = useState<
-		{ id: number; x: number; y: number }[]
-	>([]);
+	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>([]);
 	const [particles, setParticles] = useState<
 		{ id: number; x: number; y: number; angle: number; velocity: number }[]
 	>([]);
@@ -54,9 +53,7 @@ export function useClickerGame({
 	}, [activeBuffs, now]);
 
 	const roleMultiplier = role === "Abone" ? 2 : 1;
-	const clickAmount = Math.floor(
-		(basePower || 1) * roleMultiplier * currentBuffMultiplier
-	);
+	const clickAmount = Math.floor((basePower || 1) * roleMultiplier * currentBuffMultiplier);
 
 	useEffect(() => {
 		const fetchStats = async () => {
@@ -101,19 +98,11 @@ export function useClickerGame({
 			setCount((prev) => prev + clickAmount);
 
 			// Change face randomly (but not same as current)
-			let nextFace =
-				unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
+			let nextFace = unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
 			// Retries if it picks the same face, but with a failsafe count to avoid infinite loops if only 1 face exists
 			let attempts = 0;
-			while (
-				nextFace === currentFace &&
-				unlockedFaces.length > 1 &&
-				attempts < 5
-			) {
-				nextFace =
-					unlockedFaces[
-						Math.floor(Math.random() * unlockedFaces.length)
-					];
+			while (nextFace === currentFace && unlockedFaces.length > 1 && attempts < 5) {
+				nextFace = unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
 				attempts++;
 			}
 			setCurrentFace(nextFace);
@@ -154,9 +143,7 @@ export function useClickerGame({
 
 			setTimeout(() => {
 				setParticles((prev) =>
-					prev.filter(
-						(p) => !newParticles.find((np) => np.id === p.id)
-					)
+					prev.filter((p) => !newParticles.find((np) => np.id === p.id))
 				);
 			}, 1000);
 		},
