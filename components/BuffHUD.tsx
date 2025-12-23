@@ -100,7 +100,7 @@ export default function BuffHUD({
 	if (currentBuffMultiplier <= 1 && activeBuffs.length === 0) return null;
 
 	return (
-		<div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[120%] max-w-[400px] flex justify-between items-start z-30 pointer-events-none md:top-0 md:left-auto md:right-[-10rem] md:translate-x-0 md:w-32 md:max-w-none md:flex-col md:justify-start md:items-stretch md:gap-3 transition-all duration-300">
+		<div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[120%] max-w-100 flex justify-between items-start z-30 pointer-events-none md:top-0 md:left-auto md:right-[-10rem] md:translate-x-0 md:w-32 md:max-w-none md:flex-col md:justify-start md:items-stretch md:gap-3 transition-all duration-300">
 			{/* Left Side (Mobile) / Top Item (Desktop) - Total Boost */}
 			<div className="flex flex-col items-start gap-2 md:items-stretch md:w-full">
 				<AnimatePresence mode="popLayout">

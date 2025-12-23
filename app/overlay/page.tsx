@@ -443,16 +443,17 @@ function OverlayContent() {
 	return (
 		<div className="p-8 flex flex-col items-start gap-4 relative w-full h-screen overflow-hidden font-sans">
 			<Snowfall
-				snowflakeCount={200}
-				radius={[0.5, 2.5]}
-				speed={[0.5, 2.0]}
-				wind={[-0.5, 1.5]}
+				snowflakeCount={100}
+				radius={[0.5, 2.0]}
+				speed={[0.5, 1.5]}
+				wind={[-0.5, 1.0]}
 				color="#fff"
 				style={{
 					position: "fixed",
 					width: "100vw",
 					height: "100vh",
 					zIndex: 0,
+					opacity: 0.8,
 				}}
 			/>
 			<style jsx global>{`
@@ -632,7 +633,7 @@ function OverlayContent() {
 				)}
 			</AnimatePresence>
 
-			<div className="w-[400px] h-16 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
+			<div className="w-100 h-16 bg-black/60 rounded-full border-4 border-white/20 backdrop-blur-xl relative overflow-hidden shadow-2xl z-10">
 				<motion.div
 					className="h-full bg-linear-to-r from-orange-600 via-orange-500 to-yellow-400 relative"
 					initial={{ width: "0%" }}
