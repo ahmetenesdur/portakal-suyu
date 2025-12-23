@@ -199,7 +199,7 @@ export default function LeaderboardPage() {
 				</div>
 
 				<div className="mb-8 flex justify-center">
-					<div className="flex rounded-2xl border border-white/60 bg-white/40 p-1 shadow-sm backdrop-blur-xl">
+					<div className="grid grid-cols-3 gap-1 rounded-2xl border border-white/50 bg-white/30 p-1.5 shadow-sm backdrop-blur-md">
 						{(["daily", "weekly", "all"] as const).map((t) => (
 							<button
 								key={t}
@@ -207,17 +207,22 @@ export default function LeaderboardPage() {
 									setTimeframe(t);
 									setLimit(50);
 								}}
-								className={`rounded-xl px-6 py-2 text-sm font-bold transition-all ${
+								className={`flex items-center justify-center rounded-xl px-6 py-2 text-sm font-bold transition-all ${
 									timeframe === t
-										? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-										: "text-orange-800/60 hover:bg-white/50 hover:text-orange-800"
+										? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+										: "text-orange-900/60 hover:scale-105 hover:bg-white/50 active:scale-95"
 								}`}
 							>
-								{t === "daily"
-									? "Günlük"
-									: t === "weekly"
-										? "Haftalık"
-										: "Tüm Zamanlar"}
+								{t === "daily" ? (
+									"Günlük"
+								) : t === "weekly" ? (
+									"Haftalık"
+								) : (
+									<>
+										<span className="md:hidden">Tümü</span>
+										<span className="hidden md:inline">Tüm Zamanlar</span>
+									</>
+								)}
 							</button>
 						))}
 					</div>

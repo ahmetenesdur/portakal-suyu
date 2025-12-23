@@ -136,13 +136,13 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 						/>
 					</div>
 
-					<div className="grid grid-cols-3 gap-2 rounded-xl bg-gray-100/80 p-1">
+					<div className="grid grid-cols-3 gap-1 rounded-2xl border border-white/50 bg-white/30 p-1.5 shadow-sm backdrop-blur-md">
 						<button
 							onClick={() => setActiveTab("upgrade")}
-							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "upgrade"
-									? "bg-white text-orange-600 shadow-sm"
-									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+									? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+									: "text-gray-600 hover:scale-105 hover:bg-white/50 active:scale-95"
 							}`}
 						>
 							<Icon icon="lucide:hammer" className="h-4 w-4 sm:h-4 sm:w-4" />
@@ -150,10 +150,10 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 						</button>
 						<button
 							onClick={() => setActiveTab("consumable")}
-							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "consumable"
-									? "bg-white text-blue-600 shadow-sm"
-									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+									? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+									: "text-gray-600 hover:scale-105 hover:bg-white/50 active:scale-95"
 							}`}
 						>
 							<Icon icon="lucide:zap" className="h-4 w-4 sm:h-4 sm:w-4" />
@@ -161,10 +161,10 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 						</button>
 						<button
 							onClick={() => setActiveTab("face")}
-							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
+							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "face"
-									? "bg-white text-pink-600 shadow-sm"
-									: "text-gray-500 hover:bg-gray-200/50 hover:text-gray-700"
+									? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+									: "text-gray-600 hover:scale-105 hover:bg-white/50 active:scale-95"
 							}`}
 						>
 							<Icon icon="lucide:smile" className="h-4 w-4 sm:h-4 sm:w-4" />
