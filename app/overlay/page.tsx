@@ -394,7 +394,6 @@ function OverlayContent() {
 					width: "100vw",
 					height: "100vh",
 					zIndex: 0,
-					opacity: 0.8,
 				}}
 			/>
 			<style jsx global>{`
