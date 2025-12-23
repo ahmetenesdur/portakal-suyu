@@ -207,7 +207,7 @@ export default function LeaderboardPage() {
 									setTimeframe(t);
 									setLimit(50);
 								}}
-								className={`flex items-center justify-center rounded-xl px-6 py-2 text-sm font-bold transition-all ${
+								className={`flex cursor-pointer items-center justify-center rounded-xl px-6 py-2 text-sm font-bold transition-all ${
 									timeframe === t
 										? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
 										: "text-orange-900/60 hover:scale-105 hover:bg-white/50 active:scale-95"
