@@ -224,13 +224,13 @@ export default function LeaderboardPage() {
 				</div>
 
 				<div className="w-full overflow-hidden rounded-3xl border border-white/60 bg-white/40 shadow-xl shadow-orange-500/5 backdrop-blur-xl">
-					<div className="grid grid-cols-12 gap-4 border-b border-orange-100/50 bg-white/30 p-4 text-xs font-bold tracking-wider text-orange-900/50 uppercase md:p-6 md:text-sm">
-						<div className="col-span-2 text-center md:col-span-1">#</div>
-						<div className="col-span-7 md:col-span-8">Sihirdar</div>
-						<div className="col-span-3 text-right">Litre</div>
-					</div>
+					<div className="custom-scrollbar max-h-[60vh] w-full overflow-y-auto">
+						<div className="sticky top-0 z-10 grid grid-cols-12 gap-4 border-b border-orange-100/50 bg-white/80 p-4 text-xs font-bold tracking-wider text-orange-900/50 uppercase backdrop-blur-md md:p-6 md:text-sm">
+							<div className="col-span-2 text-center md:col-span-1">#</div>
+							<div className="col-span-7 md:col-span-8">Sihirdar</div>
+							<div className="col-span-3 text-right">Litre</div>
+						</div>
 
-					<div className="custom-scrollbar max-h-[60vh] overflow-y-auto">
 						{loading && profiles.length === 0 ? (
 							<div className="flex flex-col items-center justify-center gap-4 py-20">
 								<div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
