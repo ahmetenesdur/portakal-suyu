@@ -34,9 +34,9 @@ export default function ShopItemCard({
 			}
         `}
 		>
-			{item.tier && item.tier > 0 && (
+			{item.type === "upgrade" && item.tier && item.tier > 0 && (
 				<div className="absolute top-3 right-3 z-20 px-2 py-0.5 bg-orange-100 text-orange-700 text-[10px] font-black rounded-full uppercase tracking-wider">
-					Tier {item.tier}
+					Seviye {item.tier}
 				</div>
 			)}
 
