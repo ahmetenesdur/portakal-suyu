@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 
-import OrangeIcon from "./icons/OrangeIcon";
+import OrangeIcon from "./Icons";
 import Loading from "./Loading";
 
 interface NavbarProps {
