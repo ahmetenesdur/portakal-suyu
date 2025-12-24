@@ -173,7 +173,7 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 					</div>
 				</div>
 
-				<div className="flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-6">
+				<div className="custom-scrollbar flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-6">
 					{loading ? (
 						<div className="flex h-40 items-center justify-center">
 							<div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
