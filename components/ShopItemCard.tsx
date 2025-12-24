@@ -1,5 +1,17 @@
 import { Icon } from "@iconify/react";
 
+import CoolFace from "@/components/orange/faces/CoolFace";
+import DeadFace from "@/components/orange/faces/DeadFace";
+import DefaultFace from "@/components/orange/faces/DefaultFace";
+import DizzyFace from "@/components/orange/faces/DizzyFace";
+import ExcitedFace from "@/components/orange/faces/ExcitedFace";
+import HappyFace from "@/components/orange/faces/HappyFace";
+import KingFace from "@/components/orange/faces/KingFace";
+import LoveFace from "@/components/orange/faces/LoveFace";
+import NinjaFace from "@/components/orange/faces/NinjaFace";
+import RichFace from "@/components/orange/faces/RichFace";
+import SurprisedFace from "@/components/orange/faces/SurprisedFace";
+import WinkFace from "@/components/orange/faces/WinkFace";
 import { ShopItem } from "@/types";
 
 interface ShopItemCardProps {
@@ -9,6 +21,21 @@ interface ShopItemCardProps {
 	loading: boolean;
 	userStatus: "member" | "guest" | "visitor";
 }
+
+const FACE_COMPONENTS: Record<number, React.ComponentType> = {
+	0: DefaultFace,
+	1: HappyFace,
+	2: SurprisedFace,
+	3: WinkFace,
+	4: ExcitedFace,
+	5: DeadFace,
+	6: DizzyFace,
+	7: CoolFace,
+	8: KingFace,
+	9: LoveFace,
+	10: RichFace,
+	11: NinjaFace,
+};
 
 export default function ShopItemCard({
 	item,
@@ -23,6 +50,9 @@ export default function ShopItemCard({
 		isLocked ||
 		(isOwnedPermanent && userStatus === "member") ||
 		(userStatus === "member" && (!canAfford || loading));
+
+	const FaceComponent =
+		item.type === "face" ? FACE_COMPONENTS[item.effect_value] || DefaultFace : null;
 
 	return (
 		<div
@@ -62,38 +92,49 @@ export default function ShopItemCard({
 					</div>
 				)}
 
-				<Icon
-					icon={
-						item.image_url === "mechanical-squeezer"
-							? "lucide:cog"
-							: item.image_url === "hydraulic-press"
-								? "lucide:weight"
-								: item.image_url === "laser-cutter"
-									? "lucide:flame"
-									: item.image_url === "coffee"
-										? "lucide:coffee"
-										: item.image_url === "energy-drink"
-											? "lucide:zap"
-											: item.image_url === "vitamin-c"
-												? "lucide:pill"
-												: item.type === "face"
-													? "lucide:smile" // Default icon for faces
+				{item.type === "face" && FaceComponent ? (
+					<div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full sm:h-20 sm:w-20">
+						{/* Mini Orange Background Detail */}
+						<div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
+						<div className="absolute top-2 left-3 h-3 w-6 -rotate-12 rounded-full bg-white/40 blur-sm" />
+
+						{/* Face Preview (Scaled down) */}
+						<div className="scale-[0.25] sm:scale-[0.3]">
+							<FaceComponent />
+						</div>
+					</div>
+				) : (
+					<Icon
+						icon={
+							item.image_url === "mechanical-squeezer"
+								? "lucide:cog"
+								: item.image_url === "hydraulic-press"
+									? "lucide:weight"
+									: item.image_url === "laser-cutter"
+										? "lucide:flame"
+										: item.image_url === "coffee"
+											? "lucide:coffee"
+											: item.image_url === "energy-drink"
+												? "lucide:zap"
+												: item.image_url === "vitamin-c"
+													? "lucide:pill"
 													: item.type === "upgrade"
 														? "lucide:zap"
 														: item.type === "consumable"
-															? "lucide:zap" // Fallback for buff
+															? "lucide:zap"
 															: "lucide:star"
-					}
-					className={`h-12 w-12 transition-transform duration-300 group-hover:scale-110 ${
-						isLocked
-							? "text-gray-400"
-							: item.type === "upgrade"
-								? "text-orange-500"
-								: item.type === "consumable"
-									? "text-blue-500"
-									: "text-pink-500"
-					} `}
-				/>
+						}
+						className={`h-12 w-12 transition-transform duration-300 group-hover:scale-110 ${
+							isLocked
+								? "text-gray-400"
+								: item.type === "upgrade"
+									? "text-orange-500"
+									: item.type === "consumable"
+										? "text-blue-500"
+										: "text-pink-500"
+						} `}
+					/>
+				)}
 			</div>
 
 			<div className="mb-3 space-y-1">

@@ -6,6 +6,10 @@ import DefaultFace from "./orange/faces/DefaultFace";
 import DizzyFace from "./orange/faces/DizzyFace";
 import ExcitedFace from "./orange/faces/ExcitedFace";
 import HappyFace from "./orange/faces/HappyFace";
+import KingFace from "./orange/faces/KingFace";
+import LoveFace from "./orange/faces/LoveFace";
+import NinjaFace from "./orange/faces/NinjaFace";
+import RichFace from "./orange/faces/RichFace";
 import SurprisedFace from "./orange/faces/SurprisedFace";
 import WinkFace from "./orange/faces/WinkFace";
 
@@ -23,6 +27,10 @@ const FACE_COMPONENTS: Record<number, React.ComponentType> = {
 	5: DeadFace,
 	6: DizzyFace,
 	7: CoolFace,
+	8: KingFace,
+	9: LoveFace,
+	10: RichFace,
+	11: NinjaFace,
 };
 
 export default function OrangeCharacter({ currentFace, onClick }: OrangeCharacterProps) {
