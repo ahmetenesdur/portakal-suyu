@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Baloo_2 } from "next/font/google";
 
@@ -94,6 +95,7 @@ export default function RootLayout({
 							},
 						}}
 					/>
+					<Analytics />
 				</AuthProvider>
 			</body>
 		</html>
