@@ -549,7 +549,7 @@ function OverlayContent() {
 												}
 												alt={lastMilestoneUser.username}
 												fill
-												className="object-cover"
+												className="rounded-2xl object-cover"
 											/>
 										</div>
 										<div className="absolute -right-2 -bottom-2 rounded-full bg-yellow-400 px-3 py-1 text-sm font-bold text-orange-900 shadow-lg">
