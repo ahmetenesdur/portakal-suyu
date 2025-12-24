@@ -1,10 +1,7 @@
 export const GAME_CONFIG = {
-	GOAL: 1000, // Her 1000 litrede bir seviye atlama/taşma
-	CLICK_AMOUNT: 1, // Tıklama başına gelen miktar
-	COMBO_TIMEOUT: 1000, // Combo sıfırlanma süresi (ms)
+	GOAL: 1000,
 	ANIMATION: {
-		ORANGE_SPAWN_COUNT: 10,
-		SPILL_DURATION: 2000,
+		SPILL_DURATION: 2500,
 	},
 };
 
