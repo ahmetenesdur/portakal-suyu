@@ -93,7 +93,7 @@ export default function ShopItemCard({
 				)}
 
 				{item.type === "face" && FaceComponent ? (
-					<div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full sm:h-20 sm:w-20">
+					<div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full group-hover:scale-110 sm:h-20 sm:w-20">
 						{/* Mini Orange Background Detail */}
 						<div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
 						<div className="absolute top-2 left-3 h-3 w-6 -rotate-12 rounded-full bg-white/40 blur-sm" />
