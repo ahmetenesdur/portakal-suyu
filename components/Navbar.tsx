@@ -256,7 +256,7 @@ export default function Navbar({ onOpenInfo, onOpenShop }: NavbarProps) {
 					<>
 						<button
 							onClick={() => signInWithDiscord()}
-							className="hidden cursor-pointer items-center gap-2 rounded-xl bg-[#5865F2] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-[#5865F2]/30 transition-all hover:scale-105 hover:bg-[#4752C4] active:scale-95 md:flex md:rounded-2xl md:px-6 md:py-3 md:text-base"
+							className="hidden cursor-pointer items-center gap-2 rounded-xl bg-[#5865F2] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-[#5865F2]/30 transition-all hover:scale-105 hover:bg-[#4752C4] active:scale-95 md:flex md:px-6 md:py-3 md:text-base"
 						>
 							<Icon
 								icon="simple-icons:discord"

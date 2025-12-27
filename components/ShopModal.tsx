@@ -8,9 +8,9 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/components/AuthProvider";
 import { ShopItem } from "@/types";
 
-import BaseModal from "./BaseModal";
 import LoginPromptModal from "./LoginPromptModal";
 import ShopItemCard from "./ShopItemCard";
+import BaseModal from "./ui/BaseModal";
 
 interface ShopModalProps {
 	isOpen: boolean;

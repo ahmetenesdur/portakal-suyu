@@ -68,19 +68,19 @@ function OverlayContent() {
 					<h3 className="mb-2 font-bold text-orange-400">Test Controls</h3>
 					<button
 						onClick={testActions.testSpill}
-						className="rounded bg-orange-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-orange-500"
+						className="rounded-xl bg-orange-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-orange-500"
 					>
 						Simulate Spill
 					</button>
 					<button
 						onClick={testActions.testAdd}
-						className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-500"
+						className="rounded-xl bg-blue-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-500"
 					>
 						Add 10 Liters
 					</button>
 					<button
 						onClick={testActions.testReset}
-						className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-red-500"
+						className="rounded-xl bg-red-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-red-500"
 					>
 						Reset
 					</button>

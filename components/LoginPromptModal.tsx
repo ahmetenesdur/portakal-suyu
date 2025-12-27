@@ -2,7 +2,7 @@
 
 import { Icon } from "@iconify/react";
 
-import BaseModal from "./BaseModal";
+import BaseModal from "./ui/BaseModal";
 
 interface LoginPromptModalProps {
 	isOpen: boolean;
@@ -111,18 +111,18 @@ export default function LoginPromptModal({
 					<div className="space-y-3">
 						<button
 							onClick={onLogin}
-							className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#5865F2] py-4 font-bold text-white shadow-lg shadow-[#5865F2]/20 transition-all hover:scale-[1.02] hover:bg-[#4752C4] active:scale-[0.98]"
+							className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#5865F2] py-4 text-base font-bold text-white shadow-lg shadow-[#5865F2]/20 transition-all hover:scale-[1.02] hover:bg-[#4752C4] active:scale-[0.98]"
 						>
 							<Icon
 								icon="simple-icons:discord"
 								className="h-5 w-5 transition-transform group-hover:rotate-12"
 							/>
-							<span>{isJoin ? "Sunucuya Katıl" : "Giriş Yap ve Kaydet"}</span>
+							{isJoin ? "Sunucuya Katıl" : "Giriş Yap ve Kaydet"}
 						</button>
 
 						<button
 							onClick={onClose}
-							className="w-full cursor-pointer rounded-xl border-2 border-orange-100 bg-white py-4 font-bold text-orange-700 transition-all hover:scale-[1.02] hover:border-orange-200 hover:bg-orange-50 active:scale-[0.98]"
+							className="flex w-full cursor-pointer items-center justify-center rounded-xl border-2 border-orange-100 bg-white py-4 text-base font-bold text-orange-700 transition-all hover:scale-[1.02] hover:border-orange-200 hover:bg-orange-50 active:scale-[0.98]"
 						>
 							Şimdilik Devam Et
 						</button>

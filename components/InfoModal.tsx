@@ -2,7 +2,7 @@
 
 import { Icon } from "@iconify/react";
 
-import BaseModal from "./BaseModal";
+import BaseModal from "./ui/BaseModal";
 
 interface InfoModalProps {
 	isOpen: boolean;
@@ -146,9 +146,9 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
 
 					<button
 						onClick={onClose}
-						className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-500 to-orange-600 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:scale-[1.02] hover:from-orange-600 hover:to-orange-700 active:scale-[0.98] md:py-4 md:text-base"
+						className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-500 to-orange-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition-all hover:scale-[1.02] hover:from-orange-600 hover:to-orange-700 active:scale-[0.98] md:py-4 md:text-base"
 					>
-						<span>Anlaşıldı</span>
+						Anlaşıldı
 						<Icon
 							icon="lucide:check"
 							className="h-4 w-4 transition-transform group-hover:scale-125 md:h-5 md:w-5"
