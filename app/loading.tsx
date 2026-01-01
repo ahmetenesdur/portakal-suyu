@@ -6,7 +6,7 @@ import OrangeCharacter from "@/components/OrangeCharacter";
 
 export default function Loading() {
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-orange-50/50 p-4">
+		<main className="from-orange-rift-100 to-orange-rift-50 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-br via-white p-4">
 			<motion.div
 				initial={{ scale: 0.8, opacity: 0 }}
 				animate={{ scale: 1, opacity: 1 }}
@@ -14,7 +14,7 @@ export default function Loading() {
 				className="relative flex flex-col items-center gap-8"
 			>
 				{/* Rotating Halo Effect */}
-				<div className="absolute top-1/2 left-1/2 -z-10 h-125 w-125 -translate-x-1/2 -translate-y-1/2 animate-[spin_10s_linear_infinite] rounded-full bg-linear-to-tr from-orange-300/10 via-pink-300/10 to-transparent blur-3xl" />
+				<div className="from-lol-gold-400/20 via-orange-rift-300/20 absolute top-1/2 left-1/2 -z-10 h-125 w-125 -translate-x-1/2 -translate-y-1/2 animate-[spin_10s_linear_infinite] rounded-full bg-linear-to-tr to-transparent blur-3xl" />
 
 				<motion.div
 					animate={{
@@ -34,15 +34,15 @@ export default function Loading() {
 					<motion.h2
 						animate={{ opacity: [0.5, 1, 0.5] }}
 						transition={{ duration: 1.5, repeat: Infinity }}
-						className="font-baloo text-3xl font-black text-orange-900"
+						className="font-baloo text-orange-rift-900 text-3xl font-black"
 					>
 						Portakallar Sıkılıyor...
 					</motion.h2>
 
 					{/* Custom Loading Bar */}
-					<div className="h-2 w-48 overflow-hidden rounded-full bg-orange-100 ring-2 ring-orange-200">
+					<div className="bg-orange-rift-100 ring-orange-rift-200 h-2 w-48 overflow-hidden rounded-full ring-2">
 						<motion.div
-							className="h-full bg-linear-to-r from-orange-400 to-orange-600"
+							className="from-orange-rift-400 to-orange-rift-600 h-full bg-linear-to-r"
 							animate={{ x: ["-100%", "0%", "100%"] }}
 							transition={{
 								duration: 1.5,

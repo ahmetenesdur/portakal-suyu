@@ -10,11 +10,11 @@ export default function AuthErrorPage() {
 	const [face, setFace] = useState(6); // 6: DizzyFace
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-orange-50/50 p-4 text-center">
+		<main className="from-orange-rift-100 to-orange-rift-50 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-br via-white p-4 text-center">
 			{/* Background Effects */}
 			<div className="pointer-events-none absolute inset-0 overflow-hidden">
-				<div className="absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-br from-orange-300/20 to-transparent blur-[100px]" />
-				<div className="absolute right-1/4 bottom-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-tl from-pink-300/20 to-transparent blur-[100px] delay-1000" />
+				<div className="from-orange-rift-300/20 absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-br to-transparent blur-[100px]" />
+				<div className="from-mlp-pink-300/20 absolute right-1/4 bottom-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-tl to-transparent blur-[100px] delay-1000" />
 			</div>
 
 			<motion.div
@@ -35,7 +35,7 @@ export default function AuthErrorPage() {
 						initial={{ y: 20, opacity: 0 }}
 						animate={{ y: 0, opacity: 1 }}
 						transition={{ delay: 0.2 }}
-						className="font-baloo text-4xl font-black text-orange-900 drop-shadow-sm md:text-5xl"
+						className="font-baloo text-orange-rift-900 text-4xl font-black drop-shadow-sm md:text-5xl"
 					>
 						Büyülü Kapı Açılmadı!
 					</motion.h1>
@@ -46,10 +46,10 @@ export default function AuthErrorPage() {
 						transition={{ delay: 0.3 }}
 						className="space-y-2"
 					>
-						<h2 className="font-baloo text-xl font-bold text-orange-900/80">
+						<h2 className="font-baloo text-orange-rift-900 text-xl font-black">
 							Giriş İşlemi Başarısız
 						</h2>
-						<p className="mx-auto max-w-md text-lg font-medium text-orange-800">
+						<p className="text-orange-rift-800 mx-auto max-w-md text-lg font-bold">
 							Kimlik doğrulama büyüsünde ufak bir aksaklık oldu. Belki de iksirin
 							kıvamı tutmamıştır? Lütfen tekrar dene. 🍊
 						</p>
@@ -63,7 +63,7 @@ export default function AuthErrorPage() {
 					>
 						<Link
 							href="/"
-							className="group font-baloo relative inline-flex items-center gap-2 rounded-xl border-2 border-orange-100 bg-white px-8 py-4 text-lg font-bold text-orange-700 shadow-sm transition-all hover:scale-105 hover:border-orange-200 hover:bg-orange-50 active:scale-95"
+							className="group font-baloo border-orange-rift-100 text-orange-rift-700 hover:border-orange-rift-200 hover:bg-orange-rift-50 relative inline-flex items-center gap-2 rounded-xl border-2 bg-white px-8 py-4 text-lg font-bold shadow-sm transition-all hover:scale-105 active:scale-95"
 						>
 							<span className="relative flex items-center gap-2">
 								<svg
