@@ -1,35 +1,90 @@
 "use client";
 
-import { Icon } from "@iconify/react";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 
-import Navbar from "@/components/Navbar";
+import OrangeCharacter from "@/components/OrangeCharacter";
 
 export default function AuthErrorPage() {
+	const [face, setFace] = useState(6); // 6: DizzyFace
+
 	return (
-		<main className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-orange-50 pb-16">
-			<Navbar />
-			<div className="z-10 flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-4 pt-8 md:pt-0">
-				<div className="w-full max-w-md space-y-6 rounded-3xl border border-white/50 bg-white/60 p-8 shadow-xl backdrop-blur-xl">
-					<div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-100 text-red-500">
-						<Icon icon="lucide:alert-circle" width="40" height="40" />
-					</div>
-
-					<div className="space-y-2">
-						<h1 className="text-2xl font-black text-orange-900">Giriş Hatası</h1>
-						<p className="text-orange-800/70">
-							Giriş yaparken bir sorun oluştu. Lütfen tekrar deneyin.
-						</p>
-					</div>
-
-					<Link
-						href="/"
-						className="block w-full rounded-xl bg-orange-500 py-3 font-bold text-white transition-all hover:scale-105 hover:bg-orange-600 active:scale-95"
-					>
-						Ana Sayfaya Dön
-					</Link>
-				</div>
+		<main className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-orange-50/50 p-4 text-center">
+			{/* Background Effects */}
+			<div className="pointer-events-none absolute inset-0 overflow-hidden">
+				<div className="absolute top-1/4 left-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-br from-orange-300/20 to-transparent blur-[100px]" />
+				<div className="absolute right-1/4 bottom-1/4 h-96 w-96 animate-pulse rounded-full bg-linear-to-tl from-pink-300/20 to-transparent blur-[100px] delay-1000" />
 			</div>
+
+			<motion.div
+				initial={{ scale: 0.8, opacity: 0 }}
+				animate={{ scale: 1, opacity: 1 }}
+				transition={{ type: "spring", bounce: 0.5 }}
+				className="relative z-10 flex flex-col items-center gap-8"
+			>
+				<div className="transition-transform duration-300 hover:scale-105">
+					<OrangeCharacter
+						currentFace={face}
+						onClick={() => setFace((prev) => (prev === 6 ? 5 : 6))}
+					/>
+				</div>
+
+				<div className="space-y-4">
+					<motion.h1
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ delay: 0.2 }}
+						className="font-baloo text-4xl font-black text-orange-900 drop-shadow-sm md:text-5xl"
+					>
+						Büyülü Kapı Açılmadı!
+					</motion.h1>
+
+					<motion.div
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ delay: 0.3 }}
+						className="space-y-2"
+					>
+						<h2 className="font-baloo text-xl font-bold text-orange-900/80">
+							Giriş İşlemi Başarısız
+						</h2>
+						<p className="mx-auto max-w-md text-lg font-medium text-orange-800">
+							Kimlik doğrulama büyüsünde ufak bir aksaklık oldu. Belki de iksirin
+							kıvamı tutmamıştır? Lütfen tekrar dene. 🍊
+						</p>
+					</motion.div>
+
+					<motion.div
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ delay: 0.4 }}
+						className="pt-4"
+					>
+						<Link
+							href="/"
+							className="group font-baloo relative inline-flex items-center gap-2 rounded-xl border-2 border-orange-100 bg-white px-8 py-4 text-lg font-bold text-orange-700 shadow-sm transition-all hover:scale-105 hover:border-orange-200 hover:bg-orange-50 active:scale-95"
+						>
+							<span className="relative flex items-center gap-2">
+								<svg
+									className="h-5 w-5 transition-transform group-hover:-translate-x-1"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2.5}
+										d="M10 19l-7-7m0 0l7-7m-7 7h18"
+									/>
+								</svg>
+								Vadiye Geri Dön
+							</span>
+						</Link>
+					</motion.div>
+				</div>
+			</motion.div>
 		</main>
 	);
 }
