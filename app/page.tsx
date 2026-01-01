@@ -1,17 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import GameArea from "@/components/GameArea";
 import HeroSection from "@/components/HeroSection";
-import InfoModal from "@/components/InfoModal";
-import LoginPromptModal from "@/components/LoginPromptModal";
 import Navbar from "@/components/Navbar";
-import ShopModal from "@/components/ShopModal";
 import SocialDock from "@/components/SocialDock";
 import SoundToggle from "@/components/SoundToggle";
 import { useSound } from "@/hooks/useSound";
+
+const InfoModal = dynamic(() => import("@/components/InfoModal"), { ssr: false });
+const LoginPromptModal = dynamic(() => import("@/components/LoginPromptModal"), { ssr: false });
+const ShopModal = dynamic(() => import("@/components/ShopModal"), { ssr: false });
 
 export default function Home() {
 	const { user, profile, loading, signInWithDiscord } = useAuth();

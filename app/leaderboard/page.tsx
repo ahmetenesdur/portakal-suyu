@@ -1,16 +1,18 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import dynamic from "next/dynamic";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { getCachedLeaderboard } from "@/app/actions/leaderboard";
 import { useAuth } from "@/components/AuthProvider";
-import InfoModal from "@/components/InfoModal";
 import Navbar from "@/components/Navbar";
-import ShopModal from "@/components/ShopModal";
 import { Profile } from "@/types";
+
+const InfoModal = dynamic(() => import("@/components/InfoModal"), { ssr: false });
+const ShopModal = dynamic(() => import("@/components/ShopModal"), { ssr: false });
 
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
