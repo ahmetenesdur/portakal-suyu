@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
+import { getShopItems, getUserInventory, purchaseItem } from "@/app/actions/shop";
 import { useAuth } from "@/components/AuthProvider";
 import { ShopItem } from "@/types";
 
@@ -34,12 +35,22 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 	const fetchItems = async () => {
 		setLoading(true);
 		try {
-			const res = await fetch("/api/shop/items");
-			if (!res.ok) throw new Error("Failed to fetch");
-			const data = await res.json();
-			if (Array.isArray(data)) {
-				setItems(data);
-			}
+			// Parallel fetch for speed
+			const [fetchedItems, inventoryIds] = await Promise.all([
+				getShopItems(),
+				getUserInventory(),
+			]);
+
+			const itemsWithOwnership = fetchedItems.map((item) => ({
+				...item,
+				is_owned: inventoryIds.includes(item.id),
+				is_locked:
+					item.required_item_id && !inventoryIds.includes(item.required_item_id)
+						? true
+						: false,
+			}));
+
+			setItems(itemsWithOwnership);
 		} catch (error) {
 			console.error("Failed to fetch shop items", error);
 			toast.error("Pazar verileri yüklenemedi.");
@@ -59,15 +70,9 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 
 		setPurchasing(item.id);
 		try {
-			const res = await fetch("/api/shop/buy", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ itemId: item.id }),
-			});
+			const result = await purchaseItem(item.id);
 
-			const data = await res.json();
-
-			if (res.ok) {
+			if (result.success) {
 				// Refresh items to update "owned" status
 				await fetchItems();
 
@@ -77,9 +82,9 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 					origin: { y: 0.6 },
 					colors: ["#fb923c", "#fca5a5", "#fbbf24"],
 				});
-				toast.success(data.message || "Satın alma başarılı!");
+				toast.success(result.message || "Satın alma başarılı!");
 			} else {
-				toast.error(data.error || "Satın alma işlemi başarısız oldu.");
+				toast.error(result.error || "Satın alma işlemi başarısız oldu.");
 			}
 		} catch (error) {
 			console.error("Purchase failed", error);

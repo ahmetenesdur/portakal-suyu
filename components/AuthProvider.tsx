@@ -3,6 +3,7 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
+import { syncDiscordRoles } from "@/app/actions/auth";
 import { createClient } from "@/lib/supabase";
 import { InventoryItem, Profile, ShopItem } from "@/types";
 
@@ -73,34 +74,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setProfile(null);
 	}, [supabase.auth]);
 
-	const syncRoles = useCallback(
-		async (sessionToken: string) => {
-			try {
-				const res = await fetch("/api/sync-roles", {
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${sessionToken}`,
-					},
-				});
+	const syncRoles = useCallback(async () => {
+		try {
+			const data = await syncDiscordRoles();
 
-				const data = await res.json();
-
-				if (res.ok) {
-					// Handle Session Migration (Legacy -> Identity)
-					if (data.action === "relogin") {
-						console.log("Legacy session detected, forcing re-login...");
-						await signOut();
-						return;
-					}
-
-					setProfile((prev) => (prev ? { ...prev, ...data } : data));
-				}
-			} catch (error) {
-				console.error("Failed to sync roles:", error);
+			if (data.error) {
+				console.error("Failed to sync roles:", data.error);
+				return;
 			}
-		},
-		[signOut]
-	);
+
+			// Handle Session Migration (Legacy -> Identity)
+			if (data.action === "relogin") {
+				console.log("Legacy session detected, forcing re-login...");
+				await signOut();
+				return;
+			}
+
+			// Optimistically update profile if valid data returned
+			if (data.role) {
+				setProfile((prev) => (prev ? { ...prev, ...data } : (data as unknown as Profile))); // Partial update safe here
+			}
+		} catch (error) {
+			console.error("Failed to sync roles:", error);
+		}
+	}, [signOut]);
 
 	useEffect(() => {
 		let channel: ReturnType<typeof supabase.channel> | null = null;
@@ -116,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 			if (session?.user) {
 				await fetchProfile(session.user.id);
-				syncRoles(session.access_token);
+				syncRoles();
 
 				// Initial Realtime Subscription
 				channel = supabase
@@ -144,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				setUser(session?.user ?? null);
 				if (session?.user) {
 					await fetchProfile(session.user.id);
-					syncRoles(session.access_token);
+					syncRoles();
 
 					// Re-subscribe Realtime if user changed
 					if (channel) supabase.removeChannel(channel);
