@@ -31,12 +31,13 @@ export function useClickerGame({
 	// Buff Logic (Lazy Evaluation)
 
 	// Timer State (Single Source of Truth for Time)
-	const [now, setNow] = useState(() => Date.now());
+	const [now, setNow] = useState(0);
 	const [currentBuffMultiplier, setCurrentBuffMultiplier] = useState(1);
 
 	// Calculate multiplier based on active buffs
 	// We memoize the calculation to run only when activeBuffs or time changes
 	useEffect(() => {
+		setNow(Date.now());
 		const interval = setInterval(() => {
 			setNow(Date.now());
 		}, 1000);

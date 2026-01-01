@@ -5,18 +5,12 @@ import NextImage from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { getCachedLeaderboard } from "@/app/actions/leaderboard";
 import { useAuth } from "@/components/AuthProvider";
 import InfoModal from "@/components/InfoModal";
 import Navbar from "@/components/Navbar";
 import ShopModal from "@/components/ShopModal";
-import { createClient } from "@/lib/supabase";
-import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
-import { LeaderboardDaily, LeaderboardWeekly, Profile } from "@/types";
-
-type LeaderboardItem =
-	| (Partial<Profile> & { lifetime_score?: number })
-	| LeaderboardDaily
-	| LeaderboardWeekly;
+import { Profile } from "@/types";
 
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -25,7 +19,7 @@ export default function LeaderboardPage() {
 	const [limit, setLimit] = useState(50);
 	const [hasMore, setHasMore] = useState(true);
 	const { user } = useAuth();
-	const [supabase] = useState(() => createClient());
+
 	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 	const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
@@ -35,78 +29,16 @@ export default function LeaderboardPage() {
 		async function fetchLeaderboard() {
 			setLoading(true);
 			try {
-				let query;
-
-				if (timeframe === "daily") {
-					query = supabase
-						.from("leaderboard_daily")
-						.select(
-							"score, total_clicks, profiles!inner(id, username, avatar_url, role, multiplier)"
-						)
-						.eq("date", getTurkeyDateString())
-						.gt("score", 0)
-						.neq("profiles.role", "Misafir")
-						.order("score", { ascending: false });
-				} else if (timeframe === "weekly") {
-					// Calculate Monday of current week in Turkey
-					const mondayStr = getTurkeyWeekStart();
-
-					query = supabase
-						.from("leaderboard_weekly")
-						.select(
-							"score, total_clicks, profiles!inner(id, username, avatar_url, role, multiplier)"
-						)
-						.eq("week_start", mondayStr)
-						.gt("score", 0)
-						.neq("profiles.role", "Misafir")
-						.order("score", { ascending: false });
-				} else {
-					query = supabase
-						.from("profiles")
-						.select(
-							"id, username, avatar_url, lifetime_score, role, multiplier, total_clicks"
-						)
-						.gt("lifetime_score", 0)
-						.neq("role", "Misafir")
-						.order("lifetime_score", { ascending: false });
-				}
-
-				const { data, error } = await query.limit(limit + 1);
+				const data = await getCachedLeaderboard(timeframe, limit);
 
 				if (!isMounted) return;
 
-				if (error) throw error;
-
-				// Normalize data structure
-				const mapLeaderboardItem = (item: LeaderboardItem) => {
-					if (timeframe === "all") {
-						const entry = item as Profile & {
-							lifetime_score: number;
-						};
-						return {
-							...entry,
-							score: entry.lifetime_score, // Use lifetime_score for all-time
-						};
-					}
-					// Flatten structure for daily/weekly
-					const entry = item as LeaderboardDaily | LeaderboardWeekly;
-					return {
-						...(entry.profiles as Profile),
-						score: entry.score,
-						total_clicks: entry.total_clicks,
-					};
-				};
-
 				if (data && data.length > limit) {
 					setHasMore(true);
-					// Normalize data structure
-
-					const formattedData = data.slice(0, limit).map(mapLeaderboardItem);
-					setProfiles(formattedData);
+					setProfiles(data.slice(0, limit));
 				} else {
 					setHasMore(false);
-					const formattedData = (data || []).map(mapLeaderboardItem);
-					setProfiles(formattedData);
+					setProfiles(data);
 				}
 			} catch (error: unknown) {
 				if (isMounted) {
@@ -124,7 +56,7 @@ export default function LeaderboardPage() {
 		return () => {
 			isMounted = false;
 		};
-	}, [supabase, timeframe, limit]);
+	}, [timeframe, limit]);
 
 	const getRankStyle = (rank: number) => {
 		switch (rank) {
