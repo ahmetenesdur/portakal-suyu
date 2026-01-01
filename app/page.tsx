@@ -11,15 +11,12 @@ import SocialDock from "@/components/SocialDock";
 import SoundToggle from "@/components/SoundToggle";
 import { useSound } from "@/hooks/useSound";
 
-const InfoModal = dynamic(() => import("@/components/InfoModal"), { ssr: false });
 const LoginPromptModal = dynamic(() => import("@/components/LoginPromptModal"), { ssr: false });
-const ShopModal = dynamic(() => import("@/components/ShopModal"), { ssr: false });
 
 export default function Home() {
 	const { user, profile, loading, signInWithDiscord } = useAuth();
 	const { playPop, isMuted, toggleMute } = useSound();
-	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-	const [isShopModalOpen, setIsShopModalOpen] = useState(false);
+
 	const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 	const [particles, setParticles] = useState<{ id: number; style: React.CSSProperties }[]>([]);
 
@@ -63,10 +60,6 @@ export default function Home() {
 
 			<SoundToggle isMuted={isMuted} toggleMute={toggleMute} />
 
-			<InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} />
-
-			<ShopModal isOpen={isShopModalOpen} onClose={() => setIsShopModalOpen(false)} />
-
 			<LoginPromptModal
 				isOpen={isLoginPromptOpen}
 				onClose={() => setIsLoginPromptOpen(false)}
@@ -80,10 +73,7 @@ export default function Home() {
 				variant={profile?.role === "Misafir" ? "join" : "login"}
 			/>
 
-			<Navbar
-				onOpenInfo={() => setIsInfoModalOpen(true)}
-				onOpenShop={() => setIsShopModalOpen(true)}
-			/>
+			<Navbar />
 
 			<div className="z-10 flex w-full max-w-4xl flex-1 flex-col items-center justify-center gap-12 px-4 pt-8 md:pt-0">
 				<HeroSection loading={loading} user={user} />

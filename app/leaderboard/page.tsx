@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import dynamic from "next/dynamic";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,9 +10,6 @@ import { useAuth } from "@/components/AuthProvider";
 import Navbar from "@/components/Navbar";
 import { Profile } from "@/types";
 
-const InfoModal = dynamic(() => import("@/components/InfoModal"), { ssr: false });
-const ShopModal = dynamic(() => import("@/components/ShopModal"), { ssr: false });
-
 export default function LeaderboardPage() {
 	const [profiles, setProfiles] = useState<Profile[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -21,9 +17,6 @@ export default function LeaderboardPage() {
 	const [limit, setLimit] = useState(50);
 	const [hasMore, setHasMore] = useState(true);
 	const { user } = useAuth();
-
-	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-	const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -88,12 +81,7 @@ export default function LeaderboardPage() {
 
 	return (
 		<main className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-orange-50 pb-16">
-			<Navbar
-				onOpenInfo={() => setIsInfoModalOpen(true)}
-				onOpenShop={() => setIsShopModalOpen(true)}
-			/>
-			<InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} />
-			<ShopModal isOpen={isShopModalOpen} onClose={() => setIsShopModalOpen(false)} />
+			<Navbar />
 
 			<div className="pointer-events-none fixed inset-0">
 				<div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-orange-300/20 blur-[120px]" />
