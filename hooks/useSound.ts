@@ -1,9 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+
+// Helpers for useSyncExternalStore
+const STORAGE_KEY = "portakal_is_muted";
+
+function getSnapshot() {
+	if (typeof window === "undefined") return "false";
+	return localStorage.getItem(STORAGE_KEY) || "false";
+}
+
+function getServerSnapshot() {
+	return "false";
+}
+
+function subscribe(callback: () => void) {
+	window.addEventListener("storage", callback);
+	// Listen to custom event for same-window updates
+	window.addEventListener("portakal:storage", callback);
+	return () => {
+		window.removeEventListener("storage", callback);
+		window.removeEventListener("portakal:storage", callback);
+	};
+}
 
 export function useSound() {
-	const [isMuted, setIsMuted] = useState(false);
+	const isMutedString = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+	const isMuted = isMutedString === "true";
+
 	const audioContextRef = useRef<AudioContext | null>(null);
 
 	useEffect(() => {
@@ -51,7 +75,17 @@ export function useSound() {
 		oscillator.stop(ctx.currentTime + 0.1);
 	}, [isMuted]);
 
-	const toggleMute = () => setIsMuted((prev) => !prev);
+	const toggleMute = () => {
+		const newValue = !isMuted;
+		try {
+			// Update localStorage
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(newValue));
+			// Dispatch custom event to notify useSyncExternalStore in this window
+			window.dispatchEvent(new Event("portakal:storage"));
+		} catch (error) {
+			console.error("Failed to save sound settings:", error);
+		}
+	};
 
 	return { playPop, isMuted, toggleMute };
 }
