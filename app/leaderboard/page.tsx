@@ -138,6 +138,9 @@ export default function LeaderboardPage() {
 							<button
 								key={t}
 								onClick={() => {
+									if (timeframe === t && limit === 50) return;
+									setProfiles([]);
+									setLoading(true);
 									setTimeframe(t);
 									setLimit(50);
 								}}
