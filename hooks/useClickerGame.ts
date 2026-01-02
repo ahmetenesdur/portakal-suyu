@@ -32,7 +32,6 @@ export function useClickerGame({
 
 	// Timer State (Single Source of Truth for Time)
 	const [now, setNow] = useState(0);
-	const [currentBuffMultiplier, setCurrentBuffMultiplier] = useState(1);
 
 	// Calculate multiplier based on active buffs
 	// We memoize the calculation to run only when activeBuffs or time changes
@@ -45,13 +44,11 @@ export function useClickerGame({
 		return () => clearInterval(interval);
 	}, []);
 
-	useEffect(() => {
-		const currentBuffMultiplierCalc = activeBuffs
-			.filter((b) => Number(b.expires_at) > now)
-			.reduce((acc, b) => acc * (b.multiplier || 1), 1);
-
-		setCurrentBuffMultiplier(currentBuffMultiplierCalc);
-	}, [activeBuffs, now]);
+	// Optimized: Calculate directly in render body (Derived State)
+	// This avoids "Double Render" (Render -> Effect -> SetState -> Render)
+	const currentBuffMultiplier = activeBuffs
+		.filter((b) => Number(b.expires_at) > now)
+		.reduce((acc, b) => acc * (b.multiplier || 1), 1);
 
 	const roleMultiplier = role === "Abone" ? 2 : 1;
 	const clickAmount = Math.floor((basePower || 1) * roleMultiplier * currentBuffMultiplier);
