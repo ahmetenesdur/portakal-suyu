@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import Snowfall from "react-snowfall";
 
 import { GAME_CONFIG } from "@/lib/constants";
 
@@ -36,19 +35,6 @@ function OverlayContent() {
 
 	return (
 		<div className="relative flex h-screen w-full flex-col items-start gap-4 overflow-hidden p-8 font-sans">
-			<Snowfall
-				snowflakeCount={GAME_CONFIG.PARTICLES.SNOWFLAKE_COUNT}
-				radius={[0.5, 2.0]}
-				speed={[0.5, 1.5]}
-				wind={[-0.5, 1.0]}
-				color="#fff"
-				style={{
-					position: "fixed",
-					width: "100vw",
-					height: "100vh",
-					zIndex: 0,
-				}}
-			/>
 			<style jsx global>{`
 				@keyframes wave-slide {
 					0% {
