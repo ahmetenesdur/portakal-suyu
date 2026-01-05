@@ -293,6 +293,7 @@ export default function Navbar() {
 								<button
 									onClick={() => setIsMenuOpen(!isMenuOpen)}
 									className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-white/20 text-orange-600 shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-white/40 active:scale-95"
+									aria-label="Menu"
 								>
 									<Icon icon="lucide:menu" width="20" height="20" />
 								</button>
