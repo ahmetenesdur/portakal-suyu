@@ -3,7 +3,8 @@
 import { Icon } from "@iconify/react";
 import NextImage from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 
 import { getCachedLeaderboard } from "@/app/actions/leaderboard";
 import { useAuth } from "@/components/AuthProvider";
@@ -18,6 +19,9 @@ export default function LeaderboardClient({
 	initialData,
 	initialTimeframe,
 }: LeaderboardClientProps) {
+	const router = useRouter();
+	const [isPending, startTransition] = useTransition();
+
 	const [profiles, setProfiles] = useState<Profile[]>(initialData);
 	const [loading, setLoading] = useState(false);
 	const [limit, setLimit] = useState(50);
@@ -55,6 +59,14 @@ export default function LeaderboardClient({
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleTimeframeChange = (newTimeframe: "daily" | "weekly" | "all") => {
+		if (newTimeframe === timeframe) return;
+
+		startTransition(() => {
+			router.replace(`/leaderboard?timeframe=${newTimeframe}`);
+		});
 	};
 
 	const getRankStyle = (rank: number) => {
@@ -119,10 +131,9 @@ export default function LeaderboardClient({
 			<div className="mb-8 flex justify-center">
 				<div className="grid grid-cols-3 gap-1 rounded-2xl border border-white/50 bg-white/30 p-1.5 shadow-sm backdrop-blur-md">
 					{(["daily", "weekly", "all"] as const).map((t) => (
-						<Link
+						<button
 							key={t}
-							href={`/leaderboard?timeframe=${t}`}
-							replace
+							onClick={() => handleTimeframeChange(t)}
 							className={`flex cursor-pointer items-center justify-center rounded-xl px-6 py-2 text-sm font-bold transition-all ${
 								timeframe === t
 									? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
@@ -139,13 +150,24 @@ export default function LeaderboardClient({
 									<span className="hidden md:inline">Tüm Zamanlar</span>
 								</>
 							)}
-						</Link>
+						</button>
 					))}
 				</div>
 			</div>
 
 			<div className="w-full overflow-hidden rounded-3xl border border-white/60 bg-white/40 shadow-xl shadow-orange-500/5 backdrop-blur-xl">
-				<div className="custom-scrollbar max-h-[60vh] w-full overflow-y-auto">
+				{/* Loading Overlay */}
+				{isPending && (
+					<div className="absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
+						<div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+					</div>
+				)}
+
+				<div
+					className={`custom-scrollbar max-h-[60vh] w-full overflow-y-auto transition-opacity duration-200 ${
+						isPending ? "opacity-30" : "opacity-100"
+					}`}
+				>
 					<div className="sticky top-0 z-10 grid grid-cols-12 gap-4 border-b border-orange-100/50 bg-white/80 p-4 text-xs font-bold tracking-wider text-orange-900/50 uppercase backdrop-blur-md md:p-6 md:text-sm">
 						<div className="col-span-2 text-center md:col-span-1">#</div>
 						<div className="col-span-7 md:col-span-8">Sihirdar</div>
