@@ -80,7 +80,7 @@ export function useClickerGame({
 					filter: "id=eq.1",
 				},
 				(payload) => {
-					setCount(payload.new.total_clicks);
+					setCount((prev) => Math.max(prev, payload.new.total_clicks));
 				}
 			)
 			.subscribe();
@@ -92,7 +92,7 @@ export function useClickerGame({
 
 	const handleGameClick = useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
-			// Optimistic update
+			// Instant local update (True Optimistic)
 			setCount((prev) => prev + clickAmount);
 
 			// Change face randomly (but not same as current)
