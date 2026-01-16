@@ -4,17 +4,9 @@ import { User } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 import { syncDiscordRoles } from "@/app/actions/auth";
-import { createClient } from "@/lib/supabase";
-import { InventoryItem, Profile, ShopItem } from "@/types";
-
-type AuthContextType = {
-	user: User | null;
-	profile: Profile | null;
-	signInWithDiscord: () => Promise<void>;
-	signOut: () => Promise<void>;
-	loading: boolean;
-	unlockedFaceIndices: number[];
-};
+import { createClient } from "@/lib/services/supabase/client";
+import { AuthContextType } from "@/types/auth";
+import { InventoryItem, Profile, ShopItem } from "@/types/game";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

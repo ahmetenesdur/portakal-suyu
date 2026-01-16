@@ -2,18 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import {
-	CHAT_CONFIG,
-	detectTrigger,
-	getRandomResponse,
-	KICK_PUSHER_CONFIG,
-} from "@/lib/kick/constants";
-import {
-	ChatReaction,
-	KickChatMessage,
-	KickConnectionStatus,
-	KickPusherEvent,
-} from "@/lib/kick/types";
+import { CHAT_CONFIG, KICK_PUSHER_CONFIG } from "@/constants/kick";
+import { detectTrigger, getRandomResponse } from "@/lib/services/kick";
+import { ChatReaction, KickChatMessage, KickConnectionStatus, KickPusherEvent } from "@/types/kick";
 
 interface UseKickChatOptions {
 	chatroomId: string | null;

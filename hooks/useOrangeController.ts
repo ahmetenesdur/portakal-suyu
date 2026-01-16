@@ -1,9 +1,10 @@
 import { useAnimation } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { AVAILABLE_FACES, Mood, MOOD_FACES, MOODS } from "@/lib/constants";
-import { CHAT_CONFIG, getReactionFaceIndex } from "@/lib/kick/constants";
-import { ChatReactionType } from "@/lib/kick/types";
+import { CHAT_CONFIG } from "@/constants/kick";
+import { AVAILABLE_FACES, Mood, MOOD_FACES, MOODS } from "@/constants/orange";
+import { getReactionFaceIndex } from "@/lib/services/kick";
+import { ChatReactionType } from "@/types/kick";
 
 export function useOrangeController() {
 	const [currentFace, setCurrentFace] = useState(0);

@@ -170,9 +170,6 @@ export const CHAT_RESPONSES = {
 	],
 } as const;
 
-// Reaction types
-export type ReactionType = "greeting" | "farewell" | "cheer" | "question";
-
 // Chat configuration
 export const CHAT_CONFIG = {
 	REACTION_DURATION: 4000, // Reaction display duration (ms)
@@ -190,62 +187,3 @@ export const REACTION_FACES = {
 	CHEER: [4], // ExcitedFace
 	QUESTION: [1, 2, 3], // HappyFace, SurprisedFace, WinkFace
 } as const;
-
-/**
- * Returns a random response template with username replaced
- */
-export function getRandomResponse(type: ReactionType, username: string): string {
-	const responseMap: Record<ReactionType, readonly string[]> = {
-		greeting: CHAT_RESPONSES.GREETING,
-		farewell: CHAT_RESPONSES.FAREWELL,
-		cheer: CHAT_RESPONSES.CHEER,
-		question: CHAT_RESPONSES.QUESTION,
-	};
-
-	const templates = responseMap[type];
-	const template = templates[Math.floor(Math.random() * templates.length)];
-	return template.replace("{username}", username);
-}
-
-/**
- * Returns a random face index for the given reaction type
- */
-export function getReactionFaceIndex(type: ReactionType): number {
-	const faceMap: Record<ReactionType, readonly number[]> = {
-		greeting: REACTION_FACES.GREETING,
-		farewell: REACTION_FACES.FAREWELL,
-		cheer: REACTION_FACES.CHEER,
-		question: REACTION_FACES.QUESTION,
-	};
-
-	const faces = faceMap[type];
-	return faces[Math.floor(Math.random() * faces.length)];
-}
-
-/**
- * Detects reaction type from message content
- */
-export function detectTrigger(content: string): ReactionType | null {
-	const normalizedContent = content.toLowerCase().trim();
-
-	// Only check short messages (spam prevention)
-	if (normalizedContent.length > 50) return null;
-
-	// Check in order (priority matters)
-	const triggerChecks: Array<{ type: ReactionType; triggers: readonly string[] }> = [
-		{ type: "cheer", triggers: CHAT_TRIGGERS.CHEER },
-		{ type: "question", triggers: CHAT_TRIGGERS.QUESTION },
-		{ type: "greeting", triggers: CHAT_TRIGGERS.GREETING },
-		{ type: "farewell", triggers: CHAT_TRIGGERS.FAREWELL },
-	];
-
-	for (const { type, triggers } of triggerChecks) {
-		for (const trigger of triggers) {
-			if (normalizedContent === trigger || normalizedContent.startsWith(trigger + " ")) {
-				return type;
-			}
-		}
-	}
-
-	return null;
-}

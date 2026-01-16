@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
-import { GAME_CONFIG } from "@/lib/constants";
+import { GAME_CONFIG } from "@/constants/game";
 
 import LeaderboardWidget from "../../components/LeaderboardWidget";
 import {

@@ -1,5 +1,5 @@
 import Clicker from "@/components/Clicker";
-import { Profile } from "@/types";
+import { Profile } from "@/types/game";
 
 interface GameAreaProps {
 	profile: Profile | null;

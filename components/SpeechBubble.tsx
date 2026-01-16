@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { ChatReaction, ChatReactionType } from "@/lib/kick/types";
+import { ChatReaction, ChatReactionType } from "@/types/kick";
 
 interface SpeechBubbleProps {
 	reaction: ChatReaction | null;

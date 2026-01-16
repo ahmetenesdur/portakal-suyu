@@ -1,8 +1,8 @@
 import { User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 
-import { addClick } from "@/lib/batching";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/services/supabase/client";
+import { addClick } from "@/lib/utils/batching";
 
 type UseClickerGameProps = {
 	user: User | null;

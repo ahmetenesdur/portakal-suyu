@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { GAME_CONFIG } from "@/lib/constants";
-import { createClient } from "@/lib/supabase";
+import { GAME_CONFIG } from "@/constants/game";
+import { createClient } from "@/lib/services/supabase/client";
 import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
 
 export interface LeaderboardEntry {
@@ -12,7 +12,9 @@ export interface LeaderboardEntry {
 	id: string;
 }
 
-export type LeaderboardMode = "daily" | "weekly" | "all";
+import { LeaderboardMode } from "@/types/leaderboard";
+
+export { type LeaderboardMode };
 
 export function useLeaderboard(mode: LeaderboardMode) {
 	const [leaders, setLeaders] = useState<LeaderboardEntry[]>([]);

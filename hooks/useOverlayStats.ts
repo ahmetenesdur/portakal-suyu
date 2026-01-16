@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { GAME_CONFIG } from "@/lib/constants";
-import { createClient } from "@/lib/supabase";
+import { GAME_CONFIG } from "@/constants/game";
+import { createClient } from "@/lib/services/supabase/client";
 
 export interface MilestoneUser {
 	username: string;

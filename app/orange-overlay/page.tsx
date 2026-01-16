@@ -6,11 +6,11 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 
 import OrangeCharacter from "@/components/OrangeCharacter";
 import SpeechBubble from "@/components/SpeechBubble";
+import { IDLE_ANIMATIONS } from "@/constants/orange";
 import { useKickChat } from "@/hooks/useKickChat";
 import { useOrangeController } from "@/hooks/useOrangeController";
-import { IDLE_ANIMATIONS } from "@/lib/constants";
-import { getRandomResponse } from "@/lib/kick/constants";
-import { ChatReaction, ChatReactionType } from "@/lib/kick/types";
+import { getRandomResponse } from "@/lib/services/kick";
+import { ChatReaction, ChatReactionType } from "@/types/kick";
 
 function OrangeOverlayContent() {
 	const searchParams = useSearchParams();

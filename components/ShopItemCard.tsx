@@ -12,14 +12,14 @@ import NinjaFace from "@/components/orange/faces/NinjaFace";
 import RichFace from "@/components/orange/faces/RichFace";
 import SurprisedFace from "@/components/orange/faces/SurprisedFace";
 import WinkFace from "@/components/orange/faces/WinkFace";
-import { ShopItem } from "@/types";
+import { ShopItem, UserStatus } from "@/types/game";
 
 interface ShopItemCardProps {
 	item: ShopItem;
 	onBuy: (item: ShopItem) => void;
 	canAfford: boolean;
 	loading: boolean;
-	userStatus: "member" | "guest" | "visitor";
+	userStatus: UserStatus;
 }
 
 const FACE_COMPONENTS: Record<number, React.ComponentType> = {

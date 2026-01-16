@@ -4,22 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
-interface ProfileUpdates {
-	id: string;
-	role: string;
-	multiplier: number;
-	last_active_at: string;
-	username?: string;
-	avatar_url?: string;
-}
-
-interface UserMetadata {
-	full_name?: string;
-	name?: string;
-	avatar_url?: string;
-	picture?: string;
-	[key: string]: unknown;
-}
+import { ProfileUpdates, UserMetadata } from "@/types/auth";
 
 export async function syncDiscordRoles() {
 	const cookieStore = await cookies();

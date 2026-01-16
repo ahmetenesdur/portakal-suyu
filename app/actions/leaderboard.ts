@@ -4,7 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
-import { LeaderboardDaily, LeaderboardWeekly, Profile } from "@/types";
+import { Profile } from "@/types/game";
+import { LeaderboardDaily, LeaderboardMode, LeaderboardWeekly } from "@/types/leaderboard";
 
 // Create a simple client for public data fetching without auth context
 const supabase = createClient(
@@ -17,10 +18,7 @@ type LeaderboardItem =
 	| LeaderboardDaily
 	| LeaderboardWeekly;
 
-export async function getCachedLeaderboard(
-	timeframe: "all" | "weekly" | "daily",
-	limit: number = 50
-) {
+export async function getCachedLeaderboard(timeframe: LeaderboardMode, limit: number = 50) {
 	"use cache";
 	cacheLife("minutes"); // Cache for default minutes (usually 60s or config dependent)
 	cacheTag("leaderboard", `leaderboard-${timeframe}`);

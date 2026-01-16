@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 import { getShopItems, getUserInventory, purchaseItem } from "@/app/actions/shop";
 import { useAuth } from "@/components/AuthProvider";
-import { ShopItem } from "@/types";
+import { ShopItem } from "@/types/game";
 
 import LoginPromptModal from "./LoginPromptModal";
 import ShopItemCard from "./ShopItemCard";

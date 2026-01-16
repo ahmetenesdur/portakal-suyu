@@ -8,11 +8,12 @@ import { useEffect, useState, useTransition } from "react";
 
 import { getCachedLeaderboard } from "@/app/actions/leaderboard";
 import { useAuth } from "@/components/AuthProvider";
-import { Profile } from "@/types";
+import { Profile } from "@/types/game";
+import { LeaderboardMode } from "@/types/leaderboard";
 
 interface LeaderboardClientProps {
 	initialData: Profile[];
-	initialTimeframe: "all" | "weekly" | "daily";
+	initialTimeframe: LeaderboardMode;
 }
 
 export default function LeaderboardClient({

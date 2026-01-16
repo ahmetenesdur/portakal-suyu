@@ -3,7 +3,7 @@
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { BUFF_DURATIONS, BUFF_ICONS, BUFF_THEMES } from "@/lib/constants";
+import { BUFF_DURATIONS, BUFF_ICONS, BUFF_THEMES } from "@/constants/buffs";
 
 type Buff = {
 	id: string;

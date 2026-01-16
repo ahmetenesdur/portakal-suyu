@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 
-import { SOCIAL_LINKS } from "@/lib/constants";
+import { SOCIAL_LINKS } from "@/constants/socials";
 
 export default function SocialDock() {
 	return (

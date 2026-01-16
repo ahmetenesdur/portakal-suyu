@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import { cacheLife, cacheTag } from "next/cache";
 import { cookies } from "next/headers";
 
-import { ShopItem } from "@/types";
+import { ShopItem } from "@/types/game";
 
 // Cached Action for fetching items
 export async function getShopItems() {

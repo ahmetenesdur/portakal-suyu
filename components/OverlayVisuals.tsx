@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { GAME_CONFIG } from "@/lib/constants";
+import { GAME_CONFIG } from "@/constants/game";
 
 export const OrangeSliceSVG = ({ className }: { className?: string }) => (
 	<svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
