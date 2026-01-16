@@ -1,17 +1,15 @@
-import { Fredoka } from "next/font/google";
+import { Baloo_2 } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
-const fredoka = Fredoka({
-	subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700"],
+const baloo2 = Baloo_2({
+	subsets: ["latin", "latin-ext"],
+	weight: ["400", "500", "600", "700", "800"],
 });
 
 export default function OrangeOverlayLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<div
-			className={cn("min-h-screen w-full overflow-hidden bg-transparent", fredoka.className)}
-		>
+		<div className={cn("min-h-screen w-full overflow-hidden bg-transparent", baloo2.className)}>
 			{children}
 		</div>
 	);
