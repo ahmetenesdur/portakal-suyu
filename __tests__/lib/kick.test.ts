@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { detectTrigger, getRandomResponse, getReactionFaceIndex } from "../lib/services/kick";
+import { detectTrigger, getRandomResponse, getReactionFaceIndex } from "@/lib/services/kick";
 
 describe("detectTrigger", () => {
 	describe("GREETING triggers", () => {
@@ -264,9 +264,10 @@ describe("getRandomResponse", () => {
 		expect(response).toContain("TestUser");
 	});
 
-	it("should return a cheer response with username", () => {
+	it("should return a cheer response", () => {
 		const response = getRandomResponse("cheer", "TestUser");
-		expect(response).toContain("TestUser");
+		// Most responses contain username, some don't (e.g., "Portakal power!")
+		expect(response.length).toBeGreaterThan(0);
 	});
 
 	it("should return a question response with username", () => {
