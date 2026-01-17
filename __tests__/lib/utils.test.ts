@@ -1,10 +1,34 @@
 /**
- * Tests for Date Utilities (lib/utils.ts)
+ * Tests for Utilities (lib/utils.ts)
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getTurkeyDate, getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { cn, getTurkeyDate, getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+
+describe("cn (class name utility)", () => {
+	it("should merge class names", () => {
+		expect(cn("foo", "bar")).toBe("foo bar");
+	});
+
+	it("should handle conditional classes", () => {
+		expect(cn("base", true && "active")).toBe("base active");
+		expect(cn("base", false && "active")).toBe("base");
+	});
+
+	it("should merge Tailwind classes correctly", () => {
+		expect(cn("px-2", "px-4")).toBe("px-4");
+		expect(cn("text-red-500", "text-blue-500")).toBe("text-blue-500");
+	});
+
+	it("should handle undefined and null", () => {
+		expect(cn("foo", undefined, "bar", null)).toBe("foo bar");
+	});
+
+	it("should handle empty inputs", () => {
+		expect(cn()).toBe("");
+	});
+});
 
 describe("getTurkeyDate", () => {
 	it("should return a Date object", () => {

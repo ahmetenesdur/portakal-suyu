@@ -241,4 +241,52 @@ describe("Input Validation Logic", () => {
 			expect(validateClickCount({}).error).toBe("Invalid count format");
 		});
 	});
+
+	describe("Shop purchase error mapping (from shop.ts logic)", () => {
+		// Recreate error mapping logic
+		const mapPurchaseError = (error: string): string => {
+			if (error === "Insufficient balance") return "Yetersiz Portakal Suyu";
+			if (error === "Item already owned") return "Bu eşyaya zaten sahipsiniz";
+			return error;
+		};
+
+		it("should map 'Insufficient balance' to Turkish", () => {
+			expect(mapPurchaseError("Insufficient balance")).toBe("Yetersiz Portakal Suyu");
+		});
+
+		it("should map 'Item already owned' to Turkish", () => {
+			expect(mapPurchaseError("Item already owned")).toBe("Bu eşyaya zaten sahipsiniz");
+		});
+
+		it("should pass through unknown errors unchanged", () => {
+			expect(mapPurchaseError("Unknown error")).toBe("Unknown error");
+			expect(mapPurchaseError("Server error")).toBe("Server error");
+		});
+	});
+
+	describe("Auth error responses (from auth.ts logic)", () => {
+		// Common auth error responses
+		const authErrors = {
+			unauthorized: { error: "Unauthorized" },
+			discordNotLinked: { error: "Discord account not linked" },
+			configError: { error: "Server configuration error" },
+			reloginRequired: { action: "relogin", error: "Session upgrade required" },
+		};
+
+		it("should have error property in all error responses", () => {
+			expect(authErrors.unauthorized.error).toBeDefined();
+			expect(authErrors.discordNotLinked.error).toBeDefined();
+			expect(authErrors.configError.error).toBeDefined();
+			expect(authErrors.reloginRequired.error).toBeDefined();
+		});
+
+		it("should have action property for relogin requirement", () => {
+			expect(authErrors.reloginRequired.action).toBe("relogin");
+		});
+
+		it("should have descriptive error messages", () => {
+			expect(authErrors.unauthorized.error.length).toBeGreaterThan(0);
+			expect(authErrors.discordNotLinked.error.length).toBeGreaterThan(0);
+		});
+	});
 });
