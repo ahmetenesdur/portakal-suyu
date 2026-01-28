@@ -134,6 +134,9 @@ export const CHAT_TRIGGERS = {
 		"hoşçakalın",
 		"hoscakalin",
 		// Bay bay varyasyonları
+		"babay",
+		"babays",
+		"bays",
 		"bay bay",
 		"baybay",
 		"bayy",
