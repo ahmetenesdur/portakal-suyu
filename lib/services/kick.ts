@@ -2,8 +2,20 @@
  * Kick Chat Helper Functions
  */
 
-import { CHAT_RESPONSES, CHAT_TRIGGERS, REACTION_FACES } from "@/constants/kick";
+import {
+	CHAT_RESPONSES,
+	CHAT_TRIGGERS,
+	FUZZY_MATCH_CONFIG,
+	REACTION_FACES,
+} from "@/constants/kick";
 import { ChatReactionType } from "@/types/kick";
+
+import {
+	findBestFuzzyMatch,
+	FuzzyMatchConfig,
+	normalizeTurkish,
+	removeRepeatedEnding,
+} from "../utils/fuzzy-match";
 
 /**
  * Returns a random response template with username replaced
@@ -56,13 +68,15 @@ function normalizeForTrigger(text: string): string {
  * Checks if a trigger exists in the content with word boundary awareness
  * Prevents false matches like "selam" inside "selamlar"
  */
-function matchesTrigger(normalizedContent: string, trigger: string): boolean {
+function matchesTrigger(
+	normalizedContent: string,
+	contentWords: string[],
+	trigger: string
+): boolean {
 	// Exact match
 	if (normalizedContent === trigger) return true;
 
-	// Word boundary check using regex
-	// \b doesn't work well with Turkish characters, so we use a custom approach
-	const words = normalizedContent.split(" ");
+	// Word boundary check
 	const triggerWords = trigger.split(" ");
 
 	// For multi-word triggers, check if they appear consecutively
@@ -80,12 +94,70 @@ function matchesTrigger(normalizedContent: string, trigger: string): boolean {
 	}
 
 	// For single-word triggers, check if it's a complete word
-	return words.includes(trigger);
+	return contentWords.includes(trigger);
+}
+
+/**
+ * Converts FUZZY_MATCH_CONFIG to FuzzyMatchConfig interface
+ */
+function getFuzzyConfig(): FuzzyMatchConfig {
+	return {
+		shortWordMaxDistance: FUZZY_MATCH_CONFIG.SHORT_WORD_MAX_DISTANCE,
+		shortWordLength: FUZZY_MATCH_CONFIG.SHORT_WORD_LENGTH,
+		mediumWordMinSimilarity: FUZZY_MATCH_CONFIG.MEDIUM_WORD_MIN_SIMILARITY,
+		mediumWordMaxLength: FUZZY_MATCH_CONFIG.MEDIUM_WORD_MAX_LENGTH,
+		longWordMinSimilarity: FUZZY_MATCH_CONFIG.LONG_WORD_MIN_SIMILARITY,
+		normalizeTurkish: FUZZY_MATCH_CONFIG.NORMALIZE_TURKISH,
+		removeRepeatedChars: FUZZY_MATCH_CONFIG.REMOVE_REPEATED_CHARS,
+	};
+}
+
+/**
+ * Attempts fuzzy matching on individual words in the content
+ * Returns the best match result with similarity score
+ */
+function fuzzyMatchesTrigger(
+	normalizedContent: string,
+	contentWords: string[],
+	triggers: readonly string[],
+	config: FuzzyMatchConfig
+): { trigger: string; similarity: number } | null {
+	// Try to match each word against triggers
+	for (const word of contentWords) {
+		if (word.length < 2) continue; // Skip very short words
+
+		const result = findBestFuzzyMatch(word, triggers, config);
+		if (result) {
+			return result;
+		}
+	}
+
+	// Try matching the entire content (for multi-word phrases)
+	// First, normalize for fuzzy: remove Turkish chars and repeated endings
+	let processedContent = normalizedContent;
+	if (config.normalizeTurkish) {
+		processedContent = normalizeTurkish(processedContent);
+	}
+	if (config.removeRepeatedChars) {
+		processedContent = removeRepeatedEnding(processedContent);
+	}
+
+	// Check multi-word triggers
+	const multiWordTriggers = triggers.filter((t) => t.includes(" "));
+	if (multiWordTriggers.length > 0) {
+		const result = findBestFuzzyMatch(processedContent, multiWordTriggers, config);
+		if (result) {
+			return result;
+		}
+	}
+
+	return null;
 }
 
 /**
  * Detects reaction type from message content
- * Uses smart matching with punctuation removal and word boundary awareness
+ * Uses smart matching with punctuation removal, word boundary awareness,
+ * and fuzzy matching for typo tolerance
  */
 export function detectTrigger(content: string): ChatReactionType | null {
 	const normalizedContent = normalizeForTrigger(content);
@@ -107,12 +179,13 @@ export function detectTrigger(content: string): ChatReactionType | null {
 		{ type: "farewell", triggers: CHAT_TRIGGERS.FAREWELL },
 	];
 
-	// Find all matching triggers with their lengths (prefer longer/more specific matches)
+	// Phase 1: Try exact matching first (fast path)
 	let bestMatch: { type: ChatReactionType; length: number } | null = null;
+	const contentWords = normalizedContent.split(" ");
 
 	for (const { type, triggers } of triggerChecks) {
 		for (const trigger of triggers) {
-			if (matchesTrigger(normalizedContent, trigger)) {
+			if (matchesTrigger(normalizedContent, contentWords, trigger)) {
 				// Prefer longer triggers (more specific matches)
 				if (!bestMatch || trigger.length > bestMatch.length) {
 					bestMatch = { type, length: trigger.length };
@@ -121,5 +194,48 @@ export function detectTrigger(content: string): ChatReactionType | null {
 		}
 	}
 
-	return bestMatch?.type ?? null;
+	// If we found an exact match, return it
+	if (bestMatch) {
+		return bestMatch.type;
+	}
+
+	// Phase 2: Try fuzzy matching if enabled (slower path)
+	if (FUZZY_MATCH_CONFIG.ENABLED) {
+		const fuzzyConfig = getFuzzyConfig();
+		let bestFuzzyMatch: {
+			type: ChatReactionType;
+			similarity: number;
+			triggerLength: number;
+		} | null = null;
+
+		for (const { type, triggers } of triggerChecks) {
+			const result = fuzzyMatchesTrigger(
+				normalizedContent,
+				contentWords,
+				triggers,
+				fuzzyConfig
+			);
+			if (result) {
+				// Prefer higher similarity, then longer triggers
+				if (
+					!bestFuzzyMatch ||
+					result.similarity > bestFuzzyMatch.similarity ||
+					(result.similarity === bestFuzzyMatch.similarity &&
+						result.trigger.length > bestFuzzyMatch.triggerLength)
+				) {
+					bestFuzzyMatch = {
+						type,
+						similarity: result.similarity,
+						triggerLength: result.trigger.length,
+					};
+				}
+			}
+		}
+
+		if (bestFuzzyMatch) {
+			return bestFuzzyMatch.type;
+		}
+	}
+
+	return null;
 }

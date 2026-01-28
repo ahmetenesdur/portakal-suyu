@@ -200,6 +200,16 @@ export const CHAT_TRIGGERS = {
 		"güzel yayındı",
 		"guzel yayindi",
 		"yayının devamını izleyemiyorum",
+		// Kaçış bahaneleri/sebepleri
+		"yatmaya gidiyorum",
+		"ben yatar",
+		"uykum geldi",
+		"sabah is var",
+		"sabah iş var",
+		"okul var",
+		"yarın erken kalkıcam",
+		"yarin erken kalkicam",
+		"gözlerim kapandı",
 	],
 	CHEER: [
 		// Tebrik ve övgü
@@ -315,6 +325,21 @@ export const CHAT_TRIGGERS = {
 		"reis",
 		"boss",
 		"goat",
+		// Gen Z / Twitch Slang
+		"w",
+		"big w",
+		"massive",
+		"huge",
+		"bet",
+		"sheesh",
+		"sheeesh",
+		"yapıyorsun bu sporu",
+		"yapiyorsun bu sporu",
+		"bu işi biliyorsun",
+		"bu isi biliyorsun",
+		"dayı naptın",
+		"dayi naptin",
+		"oynamayı biliyorsun",
 		// Eline sağlık
 		"eline sağlık",
 		"eline saglik",
@@ -452,6 +477,22 @@ export const CHAT_CONFIG = {
 	REACTION_COOLDOWN: 2000, // Min interval between reactions (ms)
 	RECONNECT_DELAY: 5000, // WebSocket reconnect delay (ms)
 	MAX_RECONNECT_ATTEMPTS: 5, // Max reconnect attempts
+} as const;
+
+// Fuzzy matching configuration for typo tolerance
+export const FUZZY_MATCH_CONFIG = {
+	ENABLED: true, // Enable/disable fuzzy matching
+	// Short words (≤3 chars): max Levenshtein distance
+	SHORT_WORD_MAX_DISTANCE: 0, // Exact match only
+	SHORT_WORD_LENGTH: 3,
+	// Medium words (4-7 chars): min similarity ratio (stricter to avoid false positives)
+	MEDIUM_WORD_MIN_SIMILARITY: 0.82,
+	MEDIUM_WORD_MAX_LENGTH: 7,
+	// Long words (≥8 chars): min similarity ratio
+	LONG_WORD_MIN_SIMILARITY: 0.8,
+	// Preprocessing options
+	NORMALIZE_TURKISH: true, // Convert ş→s, ğ→g, etc.
+	REMOVE_REPEATED_CHARS: true, // "selammmm" → "selam"
 } as const;
 
 // Face indices by reaction type

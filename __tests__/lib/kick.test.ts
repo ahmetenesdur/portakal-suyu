@@ -250,6 +250,58 @@ describe("detectTrigger", () => {
 			expect(detectTrigger("clutch yaptın be")).toBe("cheer");
 		});
 	});
+
+	describe("Fuzzy matching - typo tolerance", () => {
+		it("should detect greetings with common typos", () => {
+			// Missing letter (closer match)
+			expect(detectTrigger("meraba")).toBe("greeting");
+			// Extra letter (English plural)
+			expect(detectTrigger("selams")).toBe("greeting");
+		});
+
+		it("should detect greetings with Turkish char variations", () => {
+			// Without Turkish characters
+			expect(detectTrigger("gunaydin")).toBe("greeting");
+			expect(detectTrigger("iyi aksamlar")).toBe("greeting");
+		});
+
+		it("should detect farewells with typos", () => {
+			// Turkish char normalization
+			expect(detectTrigger("gorusuruz")).toBe("farewell");
+			// Typo variations
+			expect(detectTrigger("hoscakal")).toBe("farewell");
+		});
+
+		it("should detect cheers with typos", () => {
+			// Extra letters (already handled by exact match but good to verify)
+			expect(detectTrigger("bravoo")).toBe("cheer");
+			// Typo
+			expect(detectTrigger("helall")).toBe("cheer");
+		});
+
+		it("should detect questions with typos", () => {
+			// Turkish char normalization
+			expect(detectTrigger("nasilsin")).toBe("question");
+			// Common variations
+			expect(detectTrigger("naberr")).toBe("question");
+		});
+
+		it("should NOT false positive on unrelated words", () => {
+			expect(detectTrigger("masa")).toBe(null);
+			expect(detectTrigger("koltuk")).toBe(null);
+			expect(detectTrigger("pencere")).toBe(null);
+			expect(detectTrigger("bilgisayar")).toBe(null);
+			// "hava" should not trigger "hadi" or "harika" with strict thresholds
+			expect(detectTrigger("hava çok sıcak bugün")).toBe(null);
+		});
+
+		it("should prefer exact match over fuzzy match", () => {
+			// "selam" is an exact match, should not fuzzy match to something else
+			expect(detectTrigger("selam")).toBe("greeting");
+			// "hey" is an exact match
+			expect(detectTrigger("hey")).toBe("greeting");
+		});
+	});
 });
 
 describe("getRandomResponse", () => {
