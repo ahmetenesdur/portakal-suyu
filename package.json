@@ -10,7 +10,8 @@
 		"lint:fix": "eslint --fix",
 		"format": "prettier --write .",
 		"check:format": "prettier --check .",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run"
 	},
 	"dependencies": {
 		"@iconify/react": "^6.0.2",
