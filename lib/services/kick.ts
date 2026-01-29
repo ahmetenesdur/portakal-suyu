@@ -1,5 +1,5 @@
 /**
- * Kick Chat Helper Functions
+ * Kick Chat Services
  */
 
 import {
@@ -49,7 +49,7 @@ export function getReactionFaceIndex(type: ChatReactionType): number {
 }
 
 /**
- * Removes punctuation and normalizes text for trigger matching
+ * Normalizes text for trigger matching
  */
 function normalizeForTrigger(text: string): string {
 	return (
@@ -66,7 +66,6 @@ function normalizeForTrigger(text: string): string {
 
 /**
  * Checks if a trigger exists in the content with word boundary awareness
- * Prevents false matches like "selam" inside "selamlar"
  */
 function matchesTrigger(
 	normalizedContent: string,
@@ -97,9 +96,6 @@ function matchesTrigger(
 	return contentWords.includes(trigger);
 }
 
-/**
- * Converts FUZZY_MATCH_CONFIG to FuzzyMatchConfig interface
- */
 function getFuzzyConfig(): FuzzyMatchConfig {
 	return {
 		shortWordMaxDistance: FUZZY_MATCH_CONFIG.SHORT_WORD_MAX_DISTANCE,
@@ -113,8 +109,7 @@ function getFuzzyConfig(): FuzzyMatchConfig {
 }
 
 /**
- * Attempts fuzzy matching on individual words in the content
- * Returns the best match result with similarity score
+ * Attempts fuzzy matching on individual words
  */
 function fuzzyMatchesTrigger(
 	normalizedContent: string,
@@ -156,22 +151,18 @@ function fuzzyMatchesTrigger(
 
 /**
  * Detects reaction type from message content
- * Uses smart matching with punctuation removal, word boundary awareness,
- * and fuzzy matching for typo tolerance
  */
 export function detectTrigger(content: string): ChatReactionType | null {
 	const normalizedContent = normalizeForTrigger(content);
 
-	// Skip very long messages (likely spam or detailed conversation)
-	// But allow reasonable message lengths
-	if (normalizedContent.length > 100) return null;
+	// Skip very long messages
+	if (normalizedContent.length > 150) return null;
 
-	// Skip messages that are mostly emojis or special characters
+	// Skip messages with too few letters
 	const letterCount = (content.match(/[\p{L}]/gu) || []).length;
 	if (letterCount < 2) return null;
 
-	// Trigger configuration with priority order
-	// More specific triggers (longer phrases) should match first within each category
+	// Trigger configuration
 	const triggerChecks: Array<{ type: ChatReactionType; triggers: readonly string[] }> = [
 		{ type: "cheer", triggers: CHAT_TRIGGERS.CHEER },
 		{ type: "question", triggers: CHAT_TRIGGERS.QUESTION },
@@ -179,63 +170,79 @@ export function detectTrigger(content: string): ChatReactionType | null {
 		{ type: "farewell", triggers: CHAT_TRIGGERS.FAREWELL },
 	];
 
-	// Phase 1: Try exact matching first (fast path)
-	let bestMatch: { type: ChatReactionType; length: number } | null = null;
-	const contentWords = normalizedContent.split(" ");
+	// Initialize scores
+	// Initialize scores
+	const scores: Record<ChatReactionType, number> = {
+		greeting: 0,
+		farewell: 0,
+		cheer: 0,
+		question: 0,
+	};
 
+	const contentWords = normalizedContent.split(" ");
+	const fuzzyConfig = FUZZY_MATCH_CONFIG.ENABLED ? getFuzzyConfig() : null;
+
+	// Helper to add score
+	const addScore = (type: ChatReactionType, score: number) => {
+		scores[type] += score;
+	};
+
+	// Iterate through all categories
 	for (const { type, triggers } of triggerChecks) {
 		for (const trigger of triggers) {
+			let matchScore = 0;
+
+			// Check for exact match first (strongest signal)
 			if (matchesTrigger(normalizedContent, contentWords, trigger)) {
-				// Prefer longer triggers (more specific matches)
-				if (!bestMatch || trigger.length > bestMatch.length) {
-					bestMatch = { type, length: trigger.length };
+				// Base score for exact match is 1.0
+				matchScore = 1.0;
+			}
+			// Fallback to fuzzy match
+			else if (fuzzyConfig) {
+				const fuzzyResult = fuzzyMatchesTrigger(
+					normalizedContent,
+					contentWords,
+					[trigger], // Check one by one to accumulate correctly
+					fuzzyConfig
+				);
+
+				if (fuzzyResult) {
+					matchScore = fuzzyResult.similarity;
 				}
+			}
+
+			// If we have a match, calculate final weight based on length and specificity
+			if (matchScore > 0) {
+				// Length Bonus: Longer phrases get higher weight
+				const lengthBonus = trigger.length * 0.1;
+
+				// Final score accumulation
+				addScore(type, matchScore + lengthBonus);
 			}
 		}
 	}
 
-	// If we found an exact match, return it
-	if (bestMatch) {
-		return bestMatch.type;
-	}
+	// Find the winner
+	let winner: { type: ChatReactionType; score: number } | null = null;
+	const threshold = 0.5; // Minimum score required to trigger anything
 
-	// Phase 2: Try fuzzy matching if enabled (slower path)
-	if (FUZZY_MATCH_CONFIG.ENABLED) {
-		const fuzzyConfig = getFuzzyConfig();
-		let bestFuzzyMatch: {
-			type: ChatReactionType;
-			similarity: number;
-			triggerLength: number;
-		} | null = null;
+	for (const type of Object.keys(scores) as ChatReactionType[]) {
+		const score = scores[type];
+		if (score < threshold) continue;
 
-		for (const { type, triggers } of triggerChecks) {
-			const result = fuzzyMatchesTrigger(
-				normalizedContent,
-				contentWords,
-				triggers,
-				fuzzyConfig
-			);
-			if (result) {
-				// Prefer higher similarity, then longer triggers
-				if (
-					!bestFuzzyMatch ||
-					result.similarity > bestFuzzyMatch.similarity ||
-					(result.similarity === bestFuzzyMatch.similarity &&
-						result.trigger.length > bestFuzzyMatch.triggerLength)
-				) {
-					bestFuzzyMatch = {
-						type,
-						similarity: result.similarity,
-						triggerLength: result.trigger.length,
-					};
-				}
+		if (!winner || score > winner.score) {
+			winner = { type, score };
+		} else if (score === winner.score) {
+			// Tie-breaking: Question > Greeting
+			if (type === "question" && winner.type === "greeting") {
+				winner = { type, score };
+			}
+			// Tie-breaking: Farewell > Greeting
+			else if (type === "farewell" && winner.type === "greeting") {
+				winner = { type, score };
 			}
 		}
-
-		if (bestFuzzyMatch) {
-			return bestFuzzyMatch.type;
-		}
 	}
 
-	return null;
+	return winner ? winner.type : null;
 }

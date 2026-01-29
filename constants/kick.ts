@@ -1,8 +1,8 @@
 /**
- * Kick Chat Integration Constants
+ * Kick Chat Constants
  */
 
-// Pusher WebSocket configuration
+// Pusher Config
 export const KICK_PUSHER_CONFIG = {
 	APP_KEY: "32cbd69e4b950bf97679",
 	WS_URL: "wss://ws-us2.pusher.com/app",
@@ -11,10 +11,10 @@ export const KICK_PUSHER_CONFIG = {
 	VERSION: "8.4.0-rc2",
 } as const;
 
-// Chat trigger words (compared in lowercase)
+// Chat trigger words
 export const CHAT_TRIGGERS = {
 	GREETING: [
-		// Standart selamlar
+		// Standard greetings
 		"merhaba",
 		"merhabalar",
 		"mrb",
@@ -28,7 +28,7 @@ export const CHAT_TRIGGERS = {
 		"slm",
 		"slmm",
 		"slmlar",
-		// Selamın aleyküm varyasyonları
+		// Religious greetings
 		"selamün aleyküm",
 		"selamun aleykum",
 		"selamunaleyküm",
@@ -40,7 +40,7 @@ export const CHAT_TRIGGERS = {
 		"as sa",
 		"aleyküm selam",
 		"aleykum selam",
-		// İngilizce selamlar
+		// English greetings
 		"hey",
 		"heyy",
 		"heyyy",
@@ -60,7 +60,7 @@ export const CHAT_TRIGGERS = {
 		"sup",
 		"whats up",
 		"wassup",
-		// Günün saatine göre
+		// Time-based greetings
 		"günaydın",
 		"gunaydin",
 		"günaydınlar",
@@ -71,7 +71,7 @@ export const CHAT_TRIGGERS = {
 		"iyi gunler",
 		"iyi akşamlar",
 		"iyi aksamlar",
-		// Yayın spesifik
+		// Stream specific
 		"iyi yayınlar",
 		"iyi yayinlar",
 		"nasıl gidiyor iyi yayınlar",
@@ -80,7 +80,7 @@ export const CHAT_TRIGGERS = {
 		"bereketli yayınlar",
 		"bol şans",
 		"bol sans",
-		// Giriş bildirimi
+		// Arrival notification
 		"geldim",
 		"ben geldim",
 		"buradayım",
@@ -92,12 +92,12 @@ export const CHAT_TRIGGERS = {
 		"yetistim",
 		"yakaladım",
 		"yakaladim",
-		// Hoş geldin/bulduk
+		// Welcome / Found
 		"hoşbulduk",
 		"hosbulduk",
 		"hoş bulduk",
 		"hos bulduk",
-		// Chat ve topluluk
+		// Chat and community
 		"selam chat",
 		"selam millet",
 		"selam dostlar",
@@ -111,9 +111,7 @@ export const CHAT_TRIGGERS = {
 		"herkese merhaba",
 		"selam portakal",
 		"selam portakallar",
-		// Kısaltmalar ve slang
-		// Note: "nbr" is in QUESTION category (short for "ne haber")
-		"slm nbr",
+		// Abbreviations and slang
 		"meraba",
 		"merabalar",
 		"merba",
@@ -121,7 +119,7 @@ export const CHAT_TRIGGERS = {
 		"salamlar",
 	],
 	FAREWELL: [
-		// Standart vedalar
+		// Standard farewells
 		"görüşürüz",
 		"görüşürüzz",
 		"görüşürüzzz",
@@ -138,7 +136,7 @@ export const CHAT_TRIGGERS = {
 		"hosca kal",
 		"hoşçakalın",
 		"hoscakalin",
-		// Bay bay varyasyonları
+		// Bye variations
 		"babay",
 		"babays",
 		"bays",
@@ -148,7 +146,7 @@ export const CHAT_TRIGGERS = {
 		"bb",
 		"bbb",
 		"bbbb",
-		// İngilizce vedalar
+		// English farewells
 		"bye",
 		"byee",
 		"byeee",
@@ -163,24 +161,24 @@ export const CHAT_TRIGGERS = {
 		"later",
 		"peace",
 		"peace out",
-		// Güle güle
+		// Goodbye
 		"güle güle",
 		"gule gule",
 		"gülegüle",
 		"gulegule",
-		// Gece spesifik
+		// Night specific
 		"iyi geceler",
 		"geceniz güzel geçsin",
 		"tatlı rüyalar",
 		"tatli ruyalar",
-		// Dini vedalar
+		// Religious farewells
 		"allah'a emanet",
 		"allaha emanet",
 		"allah'a ısmarladık",
 		"allaha ismarladik",
 		"hayırlı geceler",
 		"hayirli geceler",
-		// Gidiş bildirimi
+		// Departure notification
 		"gidiyorum",
 		"ben gidiyorum",
 		"ben kaçar",
@@ -195,20 +193,20 @@ export const CHAT_TRIGGERS = {
 		"cikiyorum",
 		"ben çıkayım",
 		"ben cikayim",
-		// Resmi vedalar
+		// Formal farewells
 		"müsaadenizle",
 		"musadenizle",
 		"izninizle",
 		"hadi eyvallah",
 		"eyvallah",
 		"eyv",
-		// Yayın sonu
+		// Stream end
 		"iyi yayınlar dilerim",
 		"iyi yayınlardı",
 		"güzel yayındı",
 		"guzel yayindi",
 		"yayının devamını izleyemiyorum",
-		// Kaçış bahaneleri/sebepleri
+		// Excuses
 		"yatmaya gidiyorum",
 		"ben yatar",
 		"uykum geldi",
@@ -220,7 +218,7 @@ export const CHAT_TRIGGERS = {
 		"gözlerim kapandı",
 	],
 	CHEER: [
-		// Tebrik ve övgü
+		// Congrats and praise
 		"aferin",
 		"aferim",
 		"helal",
@@ -234,7 +232,7 @@ export const CHAT_TRIGGERS = {
 		"bravooo",
 		"tebrikler",
 		"tebrik ederim",
-		// Kalite övgüsü
+		// Quality praise
 		"süper",
 		"super",
 		"süperr",
@@ -255,7 +253,7 @@ export const CHAT_TRIGGERS = {
 		"enfes",
 		"olağanüstü",
 		"olaganüstü",
-		// Güzel/iyi
+		// Good / Nice
 		"güzel",
 		"guzel",
 		"güzell",
@@ -269,7 +267,7 @@ export const CHAT_TRIGGERS = {
 		"fena değil",
 		"fena degil",
 		"iyi iyi",
-		// Gaming terimleri
+		// Gaming terms
 		"nice",
 		"nicee",
 		"niceee",
@@ -294,7 +292,7 @@ export const CHAT_TRIGGERS = {
 		"godlike",
 		"goated",
 		"cracked",
-		// Türkçe gaming slangi
+		// Turkish gaming slang
 		"yargı",
 		"yargi",
 		"yargıladın",
@@ -317,7 +315,7 @@ export const CHAT_TRIGGERS = {
 		"vay bee",
 		"vayy",
 		"vayyy",
-		// Kral/büyük övgüsü
+		// King / Big praise
 		"kral",
 		"krall",
 		"kralll",
@@ -348,12 +346,12 @@ export const CHAT_TRIGGERS = {
 		"dayı naptın",
 		"dayi naptin",
 		"oynamayı biliyorsun",
-		// Eline sağlık
+		// Well done
 		"eline sağlık",
 		"eline saglik",
 		"ellerine sağlık",
 		"ellerine saglik",
-		// Dilek ve teşvik
+		// Wishes and encouragement
 		"başarılar",
 		"basarilar",
 		"başarılarını",
@@ -363,7 +361,7 @@ export const CHAT_TRIGGERS = {
 		"devam",
 		"devamm",
 		"devamke",
-		// Heyecan ifadeleri
+		// Excitement expressions
 		"leeet's goooo",
 		"lets go",
 		"let's go",
@@ -383,7 +381,7 @@ export const CHAT_TRIGGERS = {
 		"wowww",
 	],
 	QUESTION: [
-		// Nasılsın varyasyonları
+		// How are you variations
 		"nasılsın",
 		"nasilsin",
 		"nasılsınız",
@@ -396,7 +394,7 @@ export const CHAT_TRIGGERS = {
 		"nasisin",
 		"n'asılsın",
 		"nasilsn",
-		// Ne haber varyasyonları
+		// What's up variations
 		"naber",
 		"naberr",
 		"naberrr",
@@ -408,7 +406,7 @@ export const CHAT_TRIGGERS = {
 		"ne var ne yok",
 		"neler var",
 		"neler oluyor",
-		// Nasıl gidiyor
+		// How is it going
 		"nasıl gidiyor",
 		"nasil gidiyor",
 		"nasıl gidiyo",
@@ -417,7 +415,7 @@ export const CHAT_TRIGGERS = {
 		"nasi gidiyo",
 		"işler nasıl",
 		"isler nasil",
-		// Keyif/durum sorgusu
+		// Mood / Status check
 		"keyifler nasıl",
 		"keyifler nasil",
 		"durumlar nasıl",
@@ -426,14 +424,14 @@ export const CHAT_TRIGGERS = {
 		"moraller nasil",
 		"enerji nasıl",
 		"enerji nasil",
-		// İyi misin
+		// Are you okay
 		"iyi misin",
 		"iyi misiniz",
 		"iyimisin",
 		"iyisin",
 		"her şey yolunda mı",
 		"hersey yolunda mi",
-		// Slang sorular
+		// Slang questions
 		"ne diyon",
 		"nediyon",
 		"napıyon",
@@ -445,7 +443,7 @@ export const CHAT_TRIGGERS = {
 	],
 } as const;
 
-// Response templates ({username} is replaced with actual username)
+// Response templates
 export const CHAT_RESPONSES = {
 	GREETING: [
 		"Merhaba {username}! 🍊",
@@ -487,7 +485,7 @@ export const CHAT_CONFIG = {
 	MAX_RECONNECT_ATTEMPTS: 5, // Max reconnect attempts
 } as const;
 
-// Fuzzy matching configuration for typo tolerance
+// Fuzzy matching configuration
 export const FUZZY_MATCH_CONFIG = {
 	ENABLED: true, // Enable/disable fuzzy matching
 	// Short words (≤3 chars): max Levenshtein distance
@@ -503,8 +501,7 @@ export const FUZZY_MATCH_CONFIG = {
 	REMOVE_REPEATED_CHARS: true, // "selammmm" → "selam"
 } as const;
 
-// Face indices by reaction type
-// 0: Default, 1: Happy, 2: Surprised, 3: Wink, 4: Excited, 5: Dead, 6: Dizzy, 7: Cool, 8: King, 10: Rich, 11: Ninja
+// Reaction Face Indices
 export const REACTION_FACES = {
 	GREETING: [1, 3, 4], // HappyFace, WinkFace, ExcitedFace
 	FAREWELL: [3, 7], // WinkFace, CoolFace

@@ -1,13 +1,8 @@
 /**
- * Fuzzy Matching Utilities for Chat Trigger Detection
- *
- * Provides algorithms for detecting similar strings even with typos,
- * character variations, or Turkish character issues.
+ * Fuzzy Matching Utilities
  */
 
-/**
- * Turkish character mapping for normalization
- */
+/** Turkish character mapping */
 const TURKISH_CHAR_MAP: Record<string, string> = {
 	ş: "s",
 	Ş: "s",
@@ -25,8 +20,6 @@ const TURKISH_CHAR_MAP: Record<string, string> = {
 
 /**
  * Normalizes Turkish characters to ASCII equivalents
- * "günaydın" → "gunaydin"
- * "teşekkürler" → "tesekkurler"
  */
 export function normalizeTurkish(text: string): string {
 	return text
@@ -37,13 +30,6 @@ export function normalizeTurkish(text: string): string {
 
 /**
  * Calculates the Levenshtein distance between two strings
- * This is the minimum number of single-character edits (insertions, deletions, substitutions)
- * required to change one string into the other.
- *
- * @example
- * levenshteinDistance("merhaba", "mereba") // → 1
- * levenshteinDistance("selam", "selams") // → 1
- * levenshteinDistance("hello", "helo") // → 1
  */
 export function levenshteinDistance(a: string, b: string): number {
 	// Handle edge cases
@@ -81,11 +67,6 @@ export function levenshteinDistance(a: string, b: string): number {
 
 /**
  * Calculates similarity ratio between two strings (0 to 1)
- * 1 = identical, 0 = completely different
- *
- * @example
- * calculateSimilarity("merhaba", "mereba") // → ~0.86
- * calculateSimilarity("selam", "selam") // → 1.0
  */
 export function calculateSimilarity(source: string, target: string): number {
 	if (source === target) return 1;
@@ -98,8 +79,7 @@ export function calculateSimilarity(source: string, target: string): number {
 }
 
 /**
- * Checks if a word ends with repeated characters (common in chat)
- * "selammmm" → true, "selam" → false
+ * Checks if a word ends with repeated characters
  */
 export function hasRepeatedEnding(text: string): boolean {
 	if (text.length < 3) return false;
@@ -111,8 +91,6 @@ export function hasRepeatedEnding(text: string): boolean {
 
 /**
  * Removes repeated trailing characters
- * "selammmm" → "selam"
- * "heyyyy" → "hey"
  */
 export function removeRepeatedEnding(text: string): string {
 	if (text.length < 2) return text;
@@ -144,7 +122,6 @@ export interface FuzzyMatchConfig {
 
 /**
  * Default fuzzy match configuration
- * Thresholds are set conservatively to minimize false positives
  */
 export const DEFAULT_FUZZY_CONFIG: FuzzyMatchConfig = {
 	shortWordMaxDistance: 0, // Exact match only for short words
@@ -158,7 +135,6 @@ export const DEFAULT_FUZZY_CONFIG: FuzzyMatchConfig = {
 
 /**
  * Checks if source matches target with fuzzy matching
- * Returns similarity score if match, null if no match
  */
 export function fuzzyMatch(
 	source: string,
