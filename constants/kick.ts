@@ -74,6 +74,7 @@ export const CHAT_TRIGGERS = {
 		// Yayın spesifik
 		"iyi yayınlar",
 		"iyi yayinlar",
+		"nasıl gidiyor iyi yayınlar",
 		"hayırlı yayınlar",
 		"hayirli yayinlar",
 		"bereketli yayınlar",
@@ -122,7 +123,11 @@ export const CHAT_TRIGGERS = {
 	FAREWELL: [
 		// Standart vedalar
 		"görüşürüz",
+		"görüşürüzz",
+		"görüşürüzzz",
 		"gorusuruz",
+		"gorusuruzz",
+		"gorusuruzzz",
 		"görüşürük",
 		"gorusuruk",
 		"görüşmek üzere",
