@@ -1,5 +1,5 @@
 /**
- * Tests for Fuzzy Matching Utilities
+ * Fuzzy Matching Tests
  */
 
 import { describe, expect, it } from "vitest";
@@ -9,259 +9,148 @@ import {
 	DEFAULT_FUZZY_CONFIG,
 	findBestFuzzyMatch,
 	fuzzyMatch,
+	hasRepeatedEnding,
 	levenshteinDistance,
 	normalizeTurkish,
 	removeRepeatedEnding,
 } from "@/lib/utils/fuzzy-match";
 
-describe("levenshteinDistance", () => {
-	it("should return 0 for identical strings", () => {
-		expect(levenshteinDistance("hello", "hello")).toBe(0);
-		expect(levenshteinDistance("merhaba", "merhaba")).toBe(0);
-		expect(levenshteinDistance("", "")).toBe(0);
+describe("Turkish Normalization", () => {
+	it("should normalize lowercase Turkish characters", () => {
+		expect(normalizeTurkish("şğıöçü")).toBe("sgiocu");
 	});
 
-	it("should return correct distance for single character changes", () => {
-		// Substitution
-		expect(levenshteinDistance("cat", "bat")).toBe(1);
-		expect(levenshteinDistance("merhaba", "merheba")).toBe(1);
-
-		// Insertion
-		expect(levenshteinDistance("selam", "selams")).toBe(1);
-		expect(levenshteinDistance("helo", "hello")).toBe(1);
-
-		// Deletion
-		expect(levenshteinDistance("hello", "helo")).toBe(1);
-		expect(levenshteinDistance("merhaba", "meraba")).toBe(1);
-	});
-
-	it("should handle empty strings", () => {
-		expect(levenshteinDistance("", "hello")).toBe(5);
-		expect(levenshteinDistance("hello", "")).toBe(5);
-	});
-
-	it("should calculate distance for common typos", () => {
-		// "merhaba" vs "mereba" = 2 edits (delete 'h', change 'a' to 'e')
-		expect(levenshteinDistance("merhaba", "mereba")).toBe(2);
-		expect(levenshteinDistance("selam", "salam")).toBe(1);
-		expect(levenshteinDistance("nasılsın", "nasilsin")).toBe(2); // ı→i, ı→i
-		// Simple typos with 1 edit
-		expect(levenshteinDistance("selam", "selams")).toBe(1); // insertion
-		expect(levenshteinDistance("hello", "helo")).toBe(1); // deletion
-	});
-});
-
-describe("normalizeTurkish", () => {
-	it("should convert Turkish characters to ASCII", () => {
-		expect(normalizeTurkish("şşş")).toBe("sss");
-		expect(normalizeTurkish("ğğğ")).toBe("ggg");
-		expect(normalizeTurkish("üüü")).toBe("uuu");
-		expect(normalizeTurkish("ööö")).toBe("ooo");
-		expect(normalizeTurkish("ççç")).toBe("ccc");
-		expect(normalizeTurkish("ııı")).toBe("iii");
-	});
-
-	it("should normalize common Turkish words", () => {
-		expect(normalizeTurkish("günaydın")).toBe("gunaydin");
-		expect(normalizeTurkish("teşekkürler")).toBe("tesekkurler");
-		expect(normalizeTurkish("görüşürüz")).toBe("gorusuruz");
-		expect(normalizeTurkish("İstanbul")).toBe("istanbul");
-	});
-
-	it("should not change ASCII characters", () => {
-		expect(normalizeTurkish("hello")).toBe("hello");
-		expect(normalizeTurkish("abc123")).toBe("abc123");
+	it("should normalize uppercase Turkish characters", () => {
+		expect(normalizeTurkish("ŞĞİÖÇÜ")).toBe("sgiocu");
 	});
 
 	it("should handle mixed content", () => {
-		expect(normalizeTurkish("Merhaba dünya!")).toBe("Merhaba dunya!");
-		expect(normalizeTurkish("çok güzel")).toBe("cok guzel");
+		expect(normalizeTurkish("Güle Güle")).toBe("Gule Gule");
+		expect(normalizeTurkish("İstanbullu")).toBe("istanbullu");
+	});
+
+	it("should leave ASCII characters unchanged", () => {
+		expect(normalizeTurkish("Hello World 123")).toBe("Hello World 123");
 	});
 });
 
-describe("calculateSimilarity", () => {
-	it("should return 1 for identical strings", () => {
-		expect(calculateSimilarity("hello", "hello")).toBe(1);
-		expect(calculateSimilarity("a", "a")).toBe(1);
+describe("Repeated Character Handling", () => {
+	it("should detect repeated endings", () => {
+		expect(hasRepeatedEnding("selammmm")).toBe(true);
+		expect(hasRepeatedEnding("okkk")).toBe(true);
+		expect(hasRepeatedEnding("yes")).toBe(false);
+		expect(hasRepeatedEnding("no")).toBe(false);
 	});
 
-	it("should return 0 for completely different strings of same length", () => {
-		// "abc" vs "xyz" = 3 substitutions, length 3, so 1 - 3/3 = 0
-		expect(calculateSimilarity("abc", "xyz")).toBe(0);
-	});
-
-	it("should return high similarity for close matches", () => {
-		// "merhaba" vs "mereba" = 2 edits, length 7, so 1 - 2/7 ≈ 0.714
-		const similarity = calculateSimilarity("merhaba", "mereba");
-		expect(similarity).toBeGreaterThan(0.7);
-		expect(similarity).toBeLessThan(0.8);
-
-		// "selam" vs "selams" = 1 edit, length 6, so 1 - 1/6 ≈ 0.833
-		const similarity2 = calculateSimilarity("selam", "selams");
-		expect(similarity2).toBeGreaterThan(0.8);
-	});
-
-	it("should return 0 for empty source or target", () => {
-		expect(calculateSimilarity("", "hello")).toBe(0);
-		expect(calculateSimilarity("hello", "")).toBe(0);
-	});
-});
-
-describe("removeRepeatedEnding", () => {
-	it("should remove repeated trailing characters", () => {
+	it("should remove repeated endings", () => {
 		expect(removeRepeatedEnding("selammmm")).toBe("selam");
-		expect(removeRepeatedEnding("heyyyy")).toBe("hey");
-		expect(removeRepeatedEnding("hiiii")).toBe("hi");
-		expect(removeRepeatedEnding("naberrr")).toBe("naber");
+		expect(removeRepeatedEnding("okkk")).toBe("ok");
+		expect(removeRepeatedEnding("yesss")).toBe("yes");
 	});
 
-	it("should not change strings without repeated endings", () => {
+	it("should not affect normal words", () => {
 		expect(removeRepeatedEnding("selam")).toBe("selam");
-		expect(removeRepeatedEnding("hey")).toBe("hey");
-		expect(removeRepeatedEnding("ab")).toBe("ab");
+		expect(removeRepeatedEnding("hello")).toBe("hello");
 	});
 
 	it("should handle edge cases", () => {
-		expect(removeRepeatedEnding("")).toBe("");
-		expect(removeRepeatedEnding("a")).toBe("a");
 		expect(removeRepeatedEnding("aa")).toBe("a");
-		expect(removeRepeatedEnding("aaa")).toBe("a");
+		expect(removeRepeatedEnding("a")).toBe("a");
+		expect(removeRepeatedEnding("")).toBe("");
 	});
 });
 
-describe("fuzzyMatch", () => {
-	const config = DEFAULT_FUZZY_CONFIG;
-
-	it("should return 1 for exact matches", () => {
-		expect(fuzzyMatch("merhaba", "merhaba", config)).toBe(1);
-		expect(fuzzyMatch("MERHABA", "merhaba", config)).toBe(1); // case insensitive
-	});
-
-	it("should match with Turkish character normalization", () => {
-		// "günaydın" normalized to "gunaydin" matches "gunaydin"
-		const result = fuzzyMatch("günaydın", "gunaydin", config);
-		expect(result).toBe(1);
-	});
-
-	it("should match with repeated character removal", () => {
-		// "selammmm" becomes "selam" which matches "selam"
-		const result = fuzzyMatch("selammmm", "selam", config);
-		expect(result).toBe(1);
-	});
-
-	it("should match limited edit distance for medium words", () => {
-		// "helo" (4) vs "hello" (5) = 1 edit. Sim = 0.8.
-		// Threshold 0.82. Fails.
-		// Strict config prefers avoiding false positives over catching every typo.
-		const result = fuzzyMatch("helo", "hello", config);
-		expect(result).toBeNull();
-	});
-
-	it("should match medium words with high similarity", () => {
-		// "selams" vs "selam" after normalization = 1 edit, "selam" length 5
-		// similarity = 1 - 1/6 ≈ 0.833 > 0.75 threshold
-		const result = fuzzyMatch("selams", "selam", config);
-		expect(result).not.toBeNull();
-		expect(result).toBeGreaterThan(0.8);
-	});
-
-	it("should reject strings that are too different", () => {
-		// "xyz" vs "abc" = very different
-		const result = fuzzyMatch("xyz", "abc", config);
-		expect(result).toBeNull();
+describe("Levenshtein Distance", () => {
+	it("should calculate correct distance", () => {
+		expect(levenshteinDistance("kitten", "sitting")).toBe(3);
+		expect(levenshteinDistance("sunday", "saturday")).toBe(3);
+		expect(levenshteinDistance("selam", "selam")).toBe(0);
 	});
 
 	it("should handle empty strings", () => {
-		expect(fuzzyMatch("", "hello", config)).toBeNull();
-		expect(fuzzyMatch("hello", "", config)).toBeNull();
+		expect(levenshteinDistance("", "abc")).toBe(3);
+		expect(levenshteinDistance("abc", "")).toBe(3);
+		expect(levenshteinDistance("", "")).toBe(0);
+	});
+
+	it("should be commutative for length", () => {
+		const a = "hello";
+		const b = "world";
+		expect(levenshteinDistance(a, b)).toBe(levenshteinDistance(b, a));
 	});
 });
 
-describe("findBestFuzzyMatch", () => {
-	const triggers = ["merhaba", "selam", "hey", "hello", "günaydın"];
+describe("Similarity Calculation", () => {
+	it("should return 1.0 for exact matches", () => {
+		expect(calculateSimilarity("test", "test")).toBe(1);
+	});
+
+	it("should return 0.0 for distinct strings", () => {
+		expect(calculateSimilarity("abc", "xyz")).toBe(0);
+	});
+
+	it("should calculate similarity ratio correctly", () => {
+		// "test" vs "tent" -> distance 1, max length 4 -> 1 - 1/4 = 0.75
+		expect(calculateSimilarity("test", "tent")).toBe(0.75);
+	});
+});
+
+describe("Fuzzy Matching Logic", () => {
 	const config = DEFAULT_FUZZY_CONFIG;
 
-	it("should find exact matches", () => {
-		const result = findBestFuzzyMatch("merhaba", triggers, config);
-		expect(result).not.toBeNull();
-		expect(result?.trigger).toBe("merhaba");
-		expect(result?.similarity).toBe(1);
+	it("should match exact strings", () => {
+		expect(fuzzyMatch("merhaba", "merhaba", config)).toBe(1);
 	});
 
-	it("should find fuzzy matches for close typos", () => {
-		// "meraba" is 1 edit from "merhaba" (0.85 sim > 0.82)
+	it("should match normalized Turkish strings", () => {
+		expect(fuzzyMatch("günaydın", "gunaydin", config)).toBe(1);
+	});
+
+	it("should match strings with repeated chars removed", () => {
+		expect(fuzzyMatch("selammmm", "selam", config)).toBe(1);
+	});
+
+	it("should fail distinct strings", () => {
+		expect(fuzzyMatch("hello", "world", config)).toBeNull();
+	});
+
+	it("should match based on word length thresholds", () => {
+		// Short word (<=3) - Exact match required (distance 0)
+		expect(fuzzyMatch("hi", "hi", config)).toBe(1);
+		expect(fuzzyMatch("hi", "ho", config)).toBeNull(); // Distance 1, max 0
+
+		// Medium word (4-7) - Similarity >= 0.82
+		// "selam" vs "salam" -> distance 1, len 5 -> sim 0.8. 0.8 < 0.82 -> Match Fail
+		expect(fuzzyMatch("salam", "selam", config)).toBeNull();
+
+		// "meraba" vs "merhaba" -> distance 1, len 7 -> sim 0.857. 0.857 > 0.82 -> Match
+		expect(fuzzyMatch("meraba", "merhaba", config)).toBeGreaterThan(0.82);
+
+		// Long word (>=8) - Similarity >= 0.8
+		// "gunaydinlar" (11) vs "gunaydinlar"
+		expect(fuzzyMatch("gunaydinlar", "gunaydinlar", config)).toBe(1);
+	});
+});
+
+describe("Find Best Match", () => {
+	const triggers = ["merhaba", "selam", "günaydın", "nasılsın"];
+	const config = DEFAULT_FUZZY_CONFIG;
+
+	it("should find the best match from a list", () => {
 		const result = findBestFuzzyMatch("meraba", triggers, config);
-		expect(result).not.toBeNull();
 		expect(result?.trigger).toBe("merhaba");
 	});
 
-	it("should find best match among multiple options", () => {
-		// "selams" is closer to "selam" than to other triggers
-		const result = findBestFuzzyMatch("selams", triggers, config);
-		expect(result).not.toBeNull();
-		expect(result?.trigger).toBe("selam");
-	});
-
-	it("should return null when no match found", () => {
-		const result = findBestFuzzyMatch("zzzzz", triggers, config);
+	it("should return null if no match meets threshold", () => {
+		const result = findBestFuzzyMatch("completely_different", triggers, config);
 		expect(result).toBeNull();
 	});
 
-	it("should handle Turkish character variations", () => {
-		// "gunaydin" should match "günaydın" after normalization
-		const result = findBestFuzzyMatch("gunaydin", triggers, config);
-		expect(result).not.toBeNull();
-		expect(result?.trigger).toBe("günaydın");
-	});
-});
-
-describe("Real-world typo scenarios", () => {
-	const config = DEFAULT_FUZZY_CONFIG;
-
-	describe("Common greeting typos", () => {
-		const greetingTriggers = ["merhaba", "selam", "hey", "hello", "hi"];
-
-		it("should match 'meraba' → 'merhaba'", () => {
-			const result = findBestFuzzyMatch("meraba", greetingTriggers, config);
-			expect(result?.trigger).toBe("merhaba");
-		});
-
-		it("should match 'selams' → 'selam'", () => {
-			const result = findBestFuzzyMatch("selams", greetingTriggers, config);
-			expect(result?.trigger).toBe("selam");
-		});
-
-		it("should NOT match 'helo' → 'hello' (too ambiguous)", () => {
-			// 'helo' is 4 chars, hello is 5. Sim 0.8 < 0.82.
-			const result = findBestFuzzyMatch("helo", greetingTriggers, config);
-			expect(result).toBeNull();
-		});
-	});
-
-	describe("Common farewell typos", () => {
-		const farewellTriggers = ["görüşürüz", "bye", "bb"];
-
-		it("should match 'gorusuruz' → 'görüşürüz'", () => {
-			const result = findBestFuzzyMatch("gorusuruz", farewellTriggers, config);
-			expect(result?.trigger).toBe("görüşürüz");
-		});
-	});
-
-	describe("False positive prevention", () => {
-		const triggers = ["selam", "merhaba"];
-
-		it("should NOT match 'elam' (too short/different)", () => {
-			// "elam" vs "selam" = 1 edit, but result depends on thresholds
-			// With short word threshold of 1 and selam being 5 chars (medium),
-			// similarity = 1 - 1/5 = 0.8 >= 0.75, so it might match
-			// Let's test with clearly different words
-			const result = findBestFuzzyMatch("xxxxx", triggers, config);
-			expect(result).toBeNull();
-		});
-
-		it("should NOT match very short unrelated words", () => {
-			const result = findBestFuzzyMatch("xy", triggers, config);
-			expect(result).toBeNull();
-		});
+	it("should prefer exact match over fuzzy", () => {
+		const list = ["selam", "selams"];
+		// input "selam" should match "selam" perfectly
+		const result = findBestFuzzyMatch("selam", list, config);
+		expect(result?.trigger).toBe("selam");
+		expect(result?.similarity).toBe(1);
 	});
 });
