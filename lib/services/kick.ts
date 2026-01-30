@@ -171,7 +171,6 @@ export function detectTrigger(content: string): ChatReactionType | null {
 	];
 
 	// Initialize scores
-	// Initialize scores
 	const scores: Record<ChatReactionType, number> = {
 		greeting: 0,
 		farewell: 0,
