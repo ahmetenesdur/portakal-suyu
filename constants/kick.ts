@@ -117,6 +117,10 @@ export const CHAT_TRIGGERS = {
 		"merba",
 		"salam",
 		"salamlar",
+		// Slang
+		"merebe",
+		"merebeler",
+		"merebelerrr",
 	],
 	FAREWELL: [
 		// Standard farewells
