@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
-import { ProfileUpdates, UserMetadata } from "@/types/auth";
+import { DiscordUserData, ProfileUpdates } from "@/types/auth";
 
 export async function syncDiscordRoles() {
 	const cookieStore = await cookies();
@@ -79,9 +79,9 @@ export async function syncDiscordRoles() {
 
 		if (!response.ok) {
 			console.error("Discord API Error:", response.status);
-			// If not in guild, set as Guest
+			// If not in guild, set as Guest (no Discord user data available)
 			if (response.status === 404) {
-				await updateUserProfile(supabaseAdmin, user.id, "Misafir", 1, user.user_metadata);
+				await updateUserProfile(supabaseAdmin, user.id, "Misafir", 1);
 				return { role: "Misafir", multiplier: 1 };
 			}
 			return { error: "Failed to fetch Discord roles" };
@@ -90,13 +90,16 @@ export async function syncDiscordRoles() {
 		const memberData = await response.json();
 		const roles = memberData.roles as string[];
 
+		// Extract fresh user data from Discord API response
+		const discordUser = memberData.user as DiscordUserData;
+
 		// 4. Determine Role and Multiplier
 		const isSubscriber = roles.includes(subscriberRoleId);
 		const newRole = isSubscriber ? "Abone" : "Üye";
 		const newMultiplier = isSubscriber ? 2 : 1;
 
-		// 5. Update Supabase Profile
-		await updateUserProfile(supabaseAdmin, user.id, newRole, newMultiplier, user.user_metadata);
+		// 5. Update Supabase Profile with fresh Discord data
+		await updateUserProfile(supabaseAdmin, user.id, newRole, newMultiplier, discordUser);
 
 		return { role: newRole, multiplier: newMultiplier };
 	} catch (error) {
@@ -110,7 +113,7 @@ async function updateUserProfile(
 	userId: string,
 	role: string,
 	multiplier: number,
-	userMetadata?: UserMetadata
+	discordUser?: DiscordUserData
 ) {
 	const updates: ProfileUpdates = {
 		id: userId,
@@ -119,15 +122,13 @@ async function updateUserProfile(
 		last_active_at: new Date().toISOString(),
 	};
 
-	if (userMetadata) {
-		if (typeof userMetadata.full_name === "string" || typeof userMetadata.name === "string") {
-			updates.username = userMetadata.full_name || userMetadata.name;
-		}
-		if (
-			typeof userMetadata.avatar_url === "string" ||
-			typeof userMetadata.picture === "string"
-		) {
-			updates.avatar_url = userMetadata.avatar_url || userMetadata.picture;
+	if (discordUser) {
+		// Prefer global_name (display name), fallback to username
+		updates.username = discordUser.global_name || discordUser.username;
+
+		// Build Discord CDN avatar URL
+		if (discordUser.avatar) {
+			updates.avatar_url = `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`;
 		}
 	}
 
