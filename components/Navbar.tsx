@@ -104,6 +104,19 @@ export default function Navbar() {
 											{user.user_metadata.full_name}
 										</span>
 										<div className="flex items-center gap-1.5">
+											{profile?.role === "Yayıncı" && (
+												<div className="flex items-center gap-1">
+													<Icon
+														icon="lucide:mic"
+														width="12"
+														height="12"
+														className="text-rose-600"
+													/>
+													<span className="text-[10px] font-bold tracking-wide text-rose-700 uppercase">
+														Yayıncı
+													</span>
+												</div>
+											)}
 											{profile?.role === "Abone" && (
 												<div className="flex items-center gap-1">
 													<Icon

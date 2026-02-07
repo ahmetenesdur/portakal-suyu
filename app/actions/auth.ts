@@ -55,6 +55,7 @@ export async function syncDiscordRoles() {
 	const guildId = process.env.DISCORD_GUILD_ID;
 	const botToken = process.env.DISCORD_BOT_TOKEN;
 	const subscriberRoleId = process.env.DISCORD_SUBSCRIBER_ROLE_ID;
+	const broadcasterId = process.env.DISCORD_BROADCASTER_ID;
 
 	if (!guildId || !botToken || !subscriberRoleId) {
 		console.error("Missing Discord configuration");
@@ -95,7 +96,10 @@ export async function syncDiscordRoles() {
 
 		// 4. Determine Role and Multiplier
 		const isSubscriber = roles.includes(subscriberRoleId);
-		const newRole = isSubscriber ? "Abone" : "Üye";
+		const isBroadcaster = discordId === broadcasterId;
+
+		const newRole = isBroadcaster ? "Yayıncı" : isSubscriber ? "Abone" : "Üye";
+
 		const newMultiplier = isSubscriber ? 2 : 1;
 
 		// 5. Update Supabase Profile with fresh Discord data
