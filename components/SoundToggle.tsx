@@ -18,6 +18,7 @@ export default function SoundToggle({ isMuted, toggleMute }: SoundToggleProps) {
 			onClick={toggleMute}
 			className="group fixed bottom-6 left-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white/50 bg-white/80 text-orange-600 shadow-lg backdrop-blur-md transition-colors hover:bg-orange-50"
 			title={isMuted ? "Sesi Aç" : "Sesi Kapat"}
+			aria-pressed={!isMuted}
 		>
 			<div className="relative">
 				<Icon

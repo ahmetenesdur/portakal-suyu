@@ -141,8 +141,16 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 						/>
 					</div>
 
-					<div className="grid grid-cols-3 gap-1 rounded-2xl border border-white/50 bg-white/30 p-1.5 shadow-sm backdrop-blur-md">
+					<div
+						className="grid grid-cols-3 gap-1 rounded-2xl border border-white/50 bg-white/30 p-1.5 shadow-sm backdrop-blur-md"
+						role="tablist"
+						aria-label="Shop Categories"
+					>
 						<button
+							role="tab"
+							aria-selected={activeTab === "upgrade"}
+							aria-controls="panel-upgrade"
+							id="tab-upgrade"
 							onClick={() => setActiveTab("upgrade")}
 							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "upgrade"
@@ -154,6 +162,10 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 							<span>Geliştirmeler</span>
 						</button>
 						<button
+							role="tab"
+							aria-selected={activeTab === "consumable"}
+							aria-controls="panel-consumable"
+							id="tab-consumable"
 							onClick={() => setActiveTab("consumable")}
 							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "consumable"
@@ -165,6 +177,10 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 							<span>Buff&apos;lar</span>
 						</button>
 						<button
+							role="tab"
+							aria-selected={activeTab === "face"}
+							aria-controls="panel-face"
+							id="tab-face"
 							onClick={() => setActiveTab("face")}
 							className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-all sm:flex-row sm:gap-2 sm:text-sm ${
 								activeTab === "face"
@@ -178,7 +194,12 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 					</div>
 				</div>
 
-				<div className="custom-scrollbar flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-6">
+				<div
+					className="custom-scrollbar flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-6"
+					role="tabpanel"
+					id={`panel-${activeTab}`}
+					aria-labelledby={`tab-${activeTab}`}
+				>
 					{loading ? (
 						<div className="flex h-40 items-center justify-center">
 							<div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />

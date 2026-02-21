@@ -116,7 +116,10 @@ export default function Clicker({ onPop, onShowLoginPrompt }: ClickerProps) {
 				<h2 className="mb-2 text-2xl font-bold tracking-widest text-orange-900/60">
 					TOPLAM SIKILAN
 				</h2>
-				<div className="bg-linear-to-b from-orange-500 to-orange-700 bg-clip-text font-mono text-7xl font-black tracking-tight text-transparent drop-shadow-sm">
+				<div
+					className="bg-linear-to-b from-orange-500 to-orange-700 bg-clip-text font-mono text-7xl font-black tracking-tight text-transparent drop-shadow-sm"
+					aria-live="polite"
+				>
 					{isLoading ? (
 						<div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
 					) : (

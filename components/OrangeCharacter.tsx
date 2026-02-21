@@ -46,7 +46,7 @@ export default function OrangeCharacter({ currentFace, onClick }: OrangeCharacte
 				onClick={onClick}
 				className="relative z-10 cursor-pointer outline-none select-none"
 				style={{ touchAction: "manipulation" }}
-				aria-label="Orange Character"
+				aria-label="Portakalı sık"
 			>
 				<div className="relative flex h-72 w-72 items-center justify-center overflow-hidden rounded-full border-4 border-orange-300/50 bg-linear-to-br from-orange-400 via-orange-500 to-orange-700 shadow-[inset_-20px_-20px_60px_rgba(0,0,0,0.3),0_20px_40px_rgba(234,88,12,0.4)]">
 					<div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
