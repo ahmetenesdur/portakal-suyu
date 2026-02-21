@@ -16,8 +16,57 @@ export default function Error({
 	const [face, setFace] = useState(5); // 5: DeadFace
 
 	useEffect(() => {
-		console.error(error);
+		console.error("Uygulama Hatası:", error);
 	}, [error]);
+
+	const getErrorDetails = (msg: string) => {
+		const lowerMsg = msg.toLowerCase();
+		if (
+			lowerMsg.includes("fetch") ||
+			lowerMsg.includes("network") ||
+			lowerMsg.includes("failed to fetch")
+		) {
+			return {
+				title: "Bağlantı Koptu!",
+				message:
+					"Sunucuyla olan sihirli bağımız koptu. Lütfen internetini kontrol et. Birazdan tekrar deneyeceğiz...",
+				icon: "lucide:wifi-off",
+				retryDelay: 5000,
+			};
+		}
+		if (lowerMsg.includes("auth") || lowerMsg.includes("session") || lowerMsg.includes("jwt")) {
+			return {
+				title: "Kimlik Doğrulama Hatası",
+				message: "Oturumun kapanmış veya geçersiz olabilir. Lütfen tekrar giriş yap.",
+				icon: "lucide:user-x",
+			};
+		}
+		if (lowerMsg.includes("rate limit") || lowerMsg.includes("too many requests")) {
+			return {
+				title: "Sakin Ol Şampiyon!",
+				message: "Çok hızlı gidiyorsun. Biraz bekle ve tekrar dene.",
+				icon: "lucide:timer",
+			};
+		}
+		return {
+			title: "Eyvah! Sıkacak Tıkandı!",
+			message:
+				"Görünüşe göre sisteme inatçı bir çekirdek kaçtı. Merak etme, büyücülerimiz bu minik krizi çözmek için iş başında. 🍊✨",
+			icon: "lucide:alert-triangle",
+		};
+	};
+
+	const errorDetails = getErrorDetails(error.message);
+
+	// Auto-retry specifically for connection errors
+	useEffect(() => {
+		if (errorDetails.retryDelay) {
+			const timer = setTimeout(() => {
+				reset();
+			}, errorDetails.retryDelay);
+			return () => clearTimeout(timer);
+		}
+	}, [errorDetails.retryDelay, reset]);
 
 	return (
 		<main className="from-orange-rift-100 to-orange-rift-50 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-br via-white p-4 text-center">
@@ -35,9 +84,12 @@ export default function Error({
 				</div>
 
 				<div className="space-y-4">
-					<h2 className="font-baloo text-orange-rift-900 text-4xl font-black drop-shadow-sm">
-						Eyvah! Sıkacak Tıkandı!
-					</h2>
+					<div className="flex items-center justify-center gap-3">
+						<Icon icon={errorDetails.icon} className="h-8 w-8 text-orange-600" />
+						<h2 className="font-baloo text-orange-rift-900 text-3xl font-black drop-shadow-sm sm:text-4xl">
+							{errorDetails.title}
+						</h2>
+					</div>
 
 					<motion.p
 						initial={{ y: 20, opacity: 0 }}
@@ -45,8 +97,7 @@ export default function Error({
 						transition={{ delay: 0.3 }}
 						className="text-orange-rift-800 mx-auto max-w-md text-lg font-bold"
 					>
-						Görünüşe göre sisteme inatçı bir çekirdek kaçtı. Merak etme, büyücülerimiz
-						bu minik krizi çözmek için iş başında. 🍊✨
+						{errorDetails.message}
 					</motion.p>
 				</div>
 
