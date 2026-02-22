@@ -1,6 +1,6 @@
 import { Baloo_2 } from "next/font/google";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/styles";
 
 const baloo2 = Baloo_2({
 	subsets: ["latin", "latin-ext"],

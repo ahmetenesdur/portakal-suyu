@@ -3,7 +3,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { cacheLife, cacheTag } from "next/cache";
 
-import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils/date";
 import { Profile } from "@/types/game";
 import { LeaderboardDaily, LeaderboardMode, LeaderboardWeekly } from "@/types/leaderboard";
 

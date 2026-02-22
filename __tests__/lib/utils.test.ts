@@ -4,7 +4,8 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { cn, getTurkeyDate, getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { getTurkeyDate, getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils/date";
+import { cn } from "@/lib/utils/styles";
 
 describe("cn (class name utility)", () => {
 	it("should merge class names", () => {

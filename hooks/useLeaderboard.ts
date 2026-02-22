@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { GAME_CONFIG } from "@/constants/game";
 import { createClient } from "@/lib/services/supabase/client";
-import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils";
+import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils/date";
 
 export interface LeaderboardEntry {
 	username: string;
