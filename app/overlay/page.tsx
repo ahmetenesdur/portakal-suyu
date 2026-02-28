@@ -201,8 +201,16 @@ function OverlayContent() {
 										<div className="mb-1 text-sm font-bold tracking-widest text-orange-200 uppercase">
 											Hedefi Tamamlayan
 										</div>
-										<div className="text-3xl font-black text-white drop-shadow-md">
-											{lastMilestoneUser.username}
+										<div className="flex flex-col items-center leading-tight">
+											<div className="text-3xl font-black text-white drop-shadow-md">
+												{lastMilestoneUser.global_name ||
+													lastMilestoneUser.username}
+											</div>
+											{lastMilestoneUser.global_name && (
+												<div className="mt-1 text-sm font-medium text-white/70">
+													@{lastMilestoneUser.username}
+												</div>
+											)}
 										</div>
 									</div>
 								</motion.div>

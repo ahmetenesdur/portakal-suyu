@@ -5,6 +5,7 @@ import { createClient } from "@/lib/services/supabase/client";
 
 export interface MilestoneUser {
 	username: string;
+	global_name?: string | null;
 	avatar_url: string;
 	id: string;
 }

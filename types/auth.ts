@@ -8,6 +8,7 @@ export interface ProfileUpdates {
 	multiplier: number;
 	last_active_at: string;
 	username?: string;
+	global_name?: string | null;
 	avatar_url?: string;
 }
 

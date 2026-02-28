@@ -59,6 +59,7 @@ describe("Game Types (types/game.ts)", () => {
 			const profile: Profile = {
 				id: "user-123",
 				username: "TestPlayer",
+				global_name: null,
 				avatar_url: null,
 				role: "member",
 				multiplier: 1.5,
@@ -77,6 +78,7 @@ describe("Game Types (types/game.ts)", () => {
 			const profile: Profile = {
 				id: "user-123",
 				username: null,
+				global_name: null,
 				avatar_url: null,
 				role: null,
 				multiplier: 1,
@@ -94,6 +96,7 @@ describe("Game Types (types/game.ts)", () => {
 			const profile: Profile = {
 				id: "user-123",
 				username: "Player",
+				global_name: null,
 				avatar_url: null,
 				role: "member",
 				multiplier: 2,

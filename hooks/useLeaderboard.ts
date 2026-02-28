@@ -6,6 +6,7 @@ import { getTurkeyDateString, getTurkeyWeekStart } from "@/lib/utils/date";
 
 export interface LeaderboardEntry {
 	username: string;
+	global_name?: string | null;
 	avatar_url: string;
 	score: number;
 	total_clicks?: number;
@@ -28,17 +29,23 @@ export function useLeaderboard(mode: LeaderboardMode) {
 			if (mode === "daily") {
 				query = supabase
 					.from("leaderboard_daily")
-					.select("score, total_clicks, profiles!inner(id, username, avatar_url, role)")
+					.select(
+						"score, total_clicks, profiles!inner(id, username, global_name, avatar_url, role)"
+					)
 					.eq("date", getTurkeyDateString());
 			} else if (mode === "weekly") {
 				query = supabase
 					.from("leaderboard_weekly")
-					.select("score, total_clicks, profiles!inner(id, username, avatar_url, role)")
+					.select(
+						"score, total_clicks, profiles!inner(id, username, global_name, avatar_url, role)"
+					)
 					.eq("week_start", getTurkeyWeekStart());
 			} else {
 				query = supabase
 					.from("profiles")
-					.select("id, username, avatar_url, lifetime_score, role, total_clicks");
+					.select(
+						"id, username, global_name, avatar_url, lifetime_score, role, total_clicks"
+					);
 			}
 
 			const sortColumn = mode === "all" ? "lifetime_score" : "score";
@@ -63,6 +70,7 @@ export function useLeaderboard(mode: LeaderboardMode) {
 						return {
 							id: raw.id,
 							username: raw.username,
+							global_name: raw.global_name,
 							avatar_url: raw.avatar_url,
 							score: raw.lifetime_score,
 							total_clicks: raw.total_clicks,
@@ -75,6 +83,7 @@ export function useLeaderboard(mode: LeaderboardMode) {
 					return {
 						id: profile.id,
 						username: profile.username,
+						global_name: profile.global_name,
 						avatar_url: profile.avatar_url,
 						score: raw.score,
 						total_clicks: raw.total_clicks,

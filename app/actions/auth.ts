@@ -108,6 +108,7 @@ async function updateUserProfile(
 	if (discordUser) {
 		// Use username instead of global_name to avoid storing display names
 		updates.username = discordUser.username;
+		updates.global_name = discordUser.global_name;
 
 		// Build Discord CDN avatar URL
 		if (discordUser.avatar) {

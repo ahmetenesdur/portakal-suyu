@@ -1,6 +1,7 @@
 export interface Profile {
 	id: string;
 	username: string | null;
+	global_name: string | null;
 	avatar_url: string | null;
 	role: string | null;
 	multiplier: number;
