@@ -208,7 +208,7 @@ function OverlayContent() {
 											</div>
 											{lastMilestoneUser.global_name && (
 												<div className="mt-1 text-sm font-medium text-white/70">
-													@{lastMilestoneUser.username}
+													{lastMilestoneUser.username}
 												</div>
 											)}
 										</div>
