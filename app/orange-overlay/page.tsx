@@ -75,50 +75,46 @@ function OrangeOverlayContent() {
 	return (
 		<div className="flex h-screen w-screen items-center justify-center bg-transparent">
 			{isTestMode && (
-				<div className="fixed top-4 right-4 z-100 flex flex-col gap-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-md">
-					<h3 className="mb-2 text-center font-bold text-orange-400">
-						🍊 Chat Tepki Test
+				<div className="fixed top-4 right-4 z-100 flex w-48 flex-col gap-2 rounded-xl border border-white/10 bg-black/80 p-4 text-white shadow-2xl backdrop-blur-md">
+					<h3 className="mb-2 text-xs font-bold tracking-wider text-gray-400 uppercase">
+						Test Controls
 					</h3>
 
 					<button
 						onClick={() => triggerTestReaction("greeting")}
-						className="flex items-center gap-2 rounded-lg bg-green-600 px-3 py-2 text-sm font-medium transition-colors hover:bg-green-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
-						<span>✨</span>
-						<span>Selamlama</span>
+						Greeting
 					</button>
 
 					<button
 						onClick={() => triggerTestReaction("farewell")}
-						className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium transition-colors hover:bg-blue-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
-						<span>👋</span>
-						<span>Vedalaşma</span>
+						Farewell
 					</button>
 
 					<button
 						onClick={() => triggerTestReaction("cheer")}
-						className="flex items-center gap-2 rounded-lg bg-yellow-600 px-3 py-2 text-sm font-medium transition-colors hover:bg-yellow-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
-						<span>⭐</span>
-						<span>Övgü</span>
+						Cheer
 					</button>
 
 					<button
 						onClick={() => triggerTestReaction("question")}
-						className="flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 text-sm font-medium transition-colors hover:bg-purple-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
-						<span>🍊</span>
-						<span>Soru</span>
+						Question
 					</button>
 
-					<hr className="my-2 border-white/20" />
+					<hr className="my-2 border-white/10" />
 
 					<button
 						onClick={() => setTestReaction(null)}
-						className="rounded-lg bg-gray-600 px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-500"
+						className="rounded-lg bg-red-500/20 px-3 py-2 text-left text-sm font-medium text-red-400 transition-colors hover:bg-red-500/30"
 					>
-						Temizle
+						Clear Reaction
 					</button>
 				</div>
 			)}
@@ -170,8 +166,9 @@ function OrangeOverlayContent() {
 			)}
 
 			{isTestMode && (
-				<div className="fixed bottom-4 left-4 z-50 rounded-full bg-orange-500/30 px-3 py-1.5 text-xs font-medium text-orange-300 backdrop-blur-sm">
-					🧪 Test Modu
+				<div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-xs font-medium text-gray-300 backdrop-blur-sm">
+					<span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+					Test Mode
 				</div>
 			)}
 		</div>

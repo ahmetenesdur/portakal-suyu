@@ -50,23 +50,30 @@ function OverlayContent() {
 			`}</style>
 
 			{isTestMode && (
-				<div className="fixed bottom-4 left-4 z-100 flex flex-col gap-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-md">
-					<h3 className="mb-2 font-bold text-orange-400">Test Controls</h3>
+				<div className="fixed bottom-4 left-4 z-100 flex w-48 flex-col gap-2 rounded-xl border border-white/10 bg-black/80 p-4 text-white shadow-2xl backdrop-blur-md">
+					<h3 className="mb-2 text-xs font-bold tracking-wider text-gray-400 uppercase">
+						Test Controls
+					</h3>
+
 					<button
 						onClick={testActions.testSpill}
-						className="rounded-xl bg-orange-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-orange-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
 						Simulate Spill
 					</button>
+
 					<button
 						onClick={testActions.testAdd}
-						className="rounded-xl bg-blue-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-500"
+						className="rounded-lg bg-white/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-white/20"
 					>
 						Add 10 Liters
 					</button>
+
+					<hr className="my-2 border-white/10" />
+
 					<button
 						onClick={testActions.testReset}
-						className="rounded-xl bg-red-600 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-red-500"
+						className="rounded-lg bg-red-500/20 px-3 py-2 text-left text-sm font-medium text-red-400 transition-colors hover:bg-red-500/30"
 					>
 						Reset
 					</button>
