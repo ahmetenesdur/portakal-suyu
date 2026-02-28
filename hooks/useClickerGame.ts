@@ -28,13 +28,8 @@ export function useClickerGame({
 	const [currentFace, setCurrentFace] = useState(0);
 	const [supabase] = useState(() => createClient());
 
-	// Buff Logic (Lazy Evaluation)
-
-	// Timer State (Single Source of Truth for Time)
 	const [now, setNow] = useState(0);
 
-	// Calculate multiplier based on active buffs
-	// We memoize the calculation to run only when activeBuffs or time changes
 	useEffect(() => {
 		setNow(Date.now());
 		const interval = setInterval(() => {
@@ -44,8 +39,6 @@ export function useClickerGame({
 		return () => clearInterval(interval);
 	}, []);
 
-	// Optimized: Calculate directly in render body (Derived State)
-	// This avoids "Double Render" (Render -> Effect -> SetState -> Render)
 	const currentBuffMultiplier = activeBuffs
 		.filter((b) => Number(b.expires_at) > now)
 		.reduce((acc, b) => acc * (b.multiplier || 1), 1);
@@ -92,30 +85,36 @@ export function useClickerGame({
 
 	const handleGameClick = useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
-			// Instant local update (True Optimistic)
 			setCount((prev) => prev + clickAmount);
 
-			// Change face randomly (but not same as current)
 			let nextFace = unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
-			// Retries if it picks the same face, but with a failsafe count to avoid infinite loops if only 1 face exists
 			let attempts = 0;
+
 			while (nextFace === currentFace && unlockedFaces.length > 1 && attempts < 5) {
 				nextFace = unlockedFaces[Math.floor(Math.random() * unlockedFaces.length)];
 				attempts++;
 			}
 			setCurrentFace(nextFace);
 
-			// Add to batch queue - ONLY if user exists AND is not a guest (Misafir)
 			if (user && role !== "Misafir") {
-				addClick(1); // Send RAW click count, server calculates value
+				addClick({
+					x:
+						e.detail === 0
+							? e.currentTarget.getBoundingClientRect().width / 2
+							: e.clientX,
+					y:
+						e.detail === 0
+							? e.currentTarget.getBoundingClientRect().height / 2
+							: e.clientY,
+					isKeyboard: e.detail === 0,
+					time: Date.now(),
+				});
 			}
 
 			const rect = e.currentTarget.getBoundingClientRect();
 			let clickX, clickY;
 
-			// Check if triggered by keyboard (detail === 0) or if coordinates are 0
 			if (e.detail === 0) {
-				// Center of the element
 				clickX = rect.width / 2;
 				clickY = rect.height / 2;
 			} else {

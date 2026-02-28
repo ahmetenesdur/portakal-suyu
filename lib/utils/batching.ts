@@ -1,11 +1,11 @@
-import { submitClicks } from "@/app/actions/game";
+import { ClickPayload, submitClicks } from "@/app/actions/game";
 
-const BATCH_INTERVAL = 2000; // 2 seconds
+const BATCH_INTERVAL = 2000;
 const MAX_BATCH_SIZE = 50;
 const MAX_RETRIES = 3;
 const MAX_RETRY_DELAY = 16000;
 
-let clickQueue = 0;
+let clickQueue: ClickPayload[] = [];
 let timer: NodeJS.Timeout | null = null;
 let retryCount = 0;
 
@@ -16,10 +16,10 @@ const clearTimer = () => {
 	}
 };
 
-export const addClick = (amount: number = 1) => {
-	clickQueue += amount;
+export const addClick = (clickData: ClickPayload) => {
+	clickQueue.push(clickData);
 
-	if (clickQueue >= MAX_BATCH_SIZE) {
+	if (clickQueue.length >= MAX_BATCH_SIZE) {
 		flushClicks();
 	} else if (!timer) {
 		timer = setTimeout(flushClicks, BATCH_INTERVAL);
@@ -27,27 +27,32 @@ export const addClick = (amount: number = 1) => {
 };
 
 const flushClicks = async () => {
-	if (clickQueue === 0) return;
+	if (clickQueue.length === 0) return;
 
-	const count = clickQueue;
-	clickQueue = 0;
+	// Enforce batch limit (Anti-Cheat Rate Limit)
+	const batchSize = Math.min(clickQueue.length, MAX_BATCH_SIZE);
+	const currentBatch = clickQueue.slice(0, batchSize);
+
+	clickQueue = clickQueue.slice(batchSize);
 	clearTimer();
 
 	try {
-		// Use Server Action instead of API route
-		const result = await submitClicks(count);
+		const result = await submitClicks(currentBatch);
 
 		if (result.error) {
 			console.error("Click sync failed:", result.error);
-			// Logic error (e.g. rate limit, validation). Do not blindly retry.
 			return;
 		}
 
-		// Success resets retry count
 		retryCount = 0;
+
+		if (clickQueue.length > 0) {
+			timer = setTimeout(flushClicks, Math.min(BATCH_INTERVAL, 500));
+		}
 	} catch (error) {
 		console.error("Network error syncing clicks:", error);
-		clickQueue += count; // Add back to queue on network failure
+
+		clickQueue = [...currentBatch, ...clickQueue];
 		retryCount++;
 
 		if (retryCount <= MAX_RETRIES) {
@@ -55,10 +60,14 @@ const flushClicks = async () => {
 			timer = setTimeout(flushClicks, delay);
 		} else {
 			console.warn(
-				`Click sync abandoned after ${MAX_RETRIES} retries. Lost ${clickQueue} clicks.`
+				`Click sync abandoned after ${MAX_RETRIES} retries. Dropping ${currentBatch.length} failed clicks.`
 			);
-			clickQueue = 0;
+			clickQueue = clickQueue.slice(currentBatch.length);
 			retryCount = 0;
+
+			if (clickQueue.length > 0) {
+				timer = setTimeout(flushClicks, BATCH_INTERVAL);
+			}
 		}
 	}
 };
