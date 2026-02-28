@@ -106,8 +106,8 @@ async function updateUserProfile(
 	};
 
 	if (discordUser) {
-		// Prefer global_name (display name), fallback to username
-		updates.username = discordUser.global_name || discordUser.username;
+		// Use username instead of global_name to avoid storing display names
+		updates.username = discordUser.username;
 
 		// Build Discord CDN avatar URL
 		if (discordUser.avatar) {
