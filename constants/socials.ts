@@ -1,4 +1,12 @@
-export const SOCIAL_LINKS = [
+export interface SocialLink {
+	name: string;
+	icon: string;
+	url: string;
+	color: string;
+	username?: string;
+}
+
+export const SOCIAL_LINKS: SocialLink[] = [
 	{
 		name: "Instagram",
 		icon: "simple-icons:instagram",
@@ -10,6 +18,7 @@ export const SOCIAL_LINKS = [
 		icon: "simple-icons:kick",
 		url: "https://kick.com/portakalsuyu0",
 		color: "text-[#53FC18] hover:bg-[#53FC18]/10",
+		username: "portakalsuyu0",
 	},
 	{
 		name: "TikTok",

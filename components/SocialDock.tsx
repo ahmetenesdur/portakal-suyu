@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 
+import KickLiveBadge from "@/components/KickLiveBadge";
 import { SOCIAL_LINKS } from "@/constants/socials";
 
 export default function SocialDock() {
@@ -11,10 +12,13 @@ export default function SocialDock() {
 					href={social.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					className={`flex items-center justify-center rounded-full p-2 transition-all duration-300 hover:scale-110 md:p-3 ${social.color}`}
+					className={`group relative flex items-center justify-center rounded-full p-2 transition-all duration-300 hover:scale-110 md:p-3 ${social.color}`}
 					title={social.name}
 				>
 					<Icon icon={social.icon} width="20" height="20" className="md:h-6 md:w-6" />
+					{social.name === "Kick" && social.username && (
+						<KickLiveBadge username={social.username} />
+					)}
 				</a>
 			))}
 		</div>
