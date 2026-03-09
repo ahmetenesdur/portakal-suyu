@@ -6,11 +6,11 @@ export const MOODS: Mood[] = ["CHILL", "ENERGY", "SILLY"];
 
 export const MOOD_FACES: Record<Mood, number[]> = {
 	CHILL: [0, 3, 7], // Default, Wink, Cool
-	ENERGY: [1, 4, 8, 10], // Happy, Excited, King, Rich
-	SILLY: [2, 6, 9, 11, 5], // Surprised, Dizzy, Love, Ninja, Dead
+	ENERGY: [1, 4, 8, 10, 12, 13, 15], // Happy, Excited, King, Rich, Cyborg, Robot, Pirate
+	SILLY: [2, 6, 9, 11, 5, 14, 17], // Surprised, Dizzy, Love, Ninja, Dead, Devil, Clown
 };
 
-export const AVAILABLE_FACES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+export const AVAILABLE_FACES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17];
 
 // Base Idle Animations (Continuous Loop)
 export const IDLE_ANIMATIONS: Record<number, Variants> = {
@@ -101,6 +101,45 @@ export const IDLE_ANIMATIONS: Record<number, Variants> = {
 		animate: {
 			x: [-10, 10, -10],
 			transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+		},
+	},
+	12: {
+		// Cyborg: Glitch/Tremble
+		animate: {
+			x: [0, -2, 2, -1, 1, 0],
+			y: [0, 1, -1, 0],
+			transition: { duration: 0.2, repeat: Infinity, repeatDelay: 3 },
+		},
+	},
+	13: {
+		// Robot: Mechanical vibration
+		animate: {
+			y: [0, -3, 0, -3, 0],
+			rotate: [0, 1, -1, 0],
+			transition: { duration: 1.5, repeat: Infinity, ease: "linear" },
+		},
+	},
+	14: {
+		// Devil: Mischievous fast sway
+		animate: {
+			rotate: [-8, 8, -8],
+			transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+		},
+	},
+	15: {
+		// Pirate: Sea rock
+		animate: {
+			rotate: [-4, 4, -4],
+			y: [0, -8, 0],
+			transition: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+		},
+	},
+	17: {
+		// Clown: Erratic bounce
+		animate: {
+			y: [0, -15, 0, -5, 0],
+			rotate: [0, -5, 5, 0],
+			transition: { duration: 1.2, repeat: Infinity, ease: "circIn" },
 		},
 	},
 };

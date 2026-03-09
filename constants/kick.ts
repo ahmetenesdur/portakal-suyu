@@ -507,8 +507,8 @@ export const FUZZY_MATCH_CONFIG = {
 
 // Reaction Face Indices
 export const REACTION_FACES = {
-	GREETING: [1, 3, 4], // HappyFace, WinkFace, ExcitedFace
-	FAREWELL: [3, 7], // WinkFace, CoolFace
-	CHEER: [4], // ExcitedFace
-	QUESTION: [1, 2, 3], // HappyFace, SurprisedFace, WinkFace
+	GREETING: [1, 3, 4, 8], // HappyFace, WinkFace, ExcitedFace, KingFace
+	FAREWELL: [3, 7, 11], // WinkFace, CoolFace, NinjaFace
+	CHEER: [4, 14, 17], // ExcitedFace, DevilFace, ClownFace
+	QUESTION: [1, 2, 3, 13], // HappyFace, SurprisedFace, WinkFace, RobotFace
 } as const;

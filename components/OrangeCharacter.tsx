@@ -1,15 +1,20 @@
 import { motion } from "framer-motion";
 
+import ClownFace from "./orange/faces/ClownFace";
 import CoolFace from "./orange/faces/CoolFace";
+import CyborgFace from "./orange/faces/CyborgFace";
 import DeadFace from "./orange/faces/DeadFace";
 import DefaultFace from "./orange/faces/DefaultFace";
+import DevilFace from "./orange/faces/DevilFace";
 import DizzyFace from "./orange/faces/DizzyFace";
 import ExcitedFace from "./orange/faces/ExcitedFace";
 import HappyFace from "./orange/faces/HappyFace";
 import KingFace from "./orange/faces/KingFace";
 import LoveFace from "./orange/faces/LoveFace";
 import NinjaFace from "./orange/faces/NinjaFace";
+import PirateFace from "./orange/faces/PirateFace";
 import RichFace from "./orange/faces/RichFace";
+import RobotFace from "./orange/faces/RobotFace";
 import SurprisedFace from "./orange/faces/SurprisedFace";
 import WinkFace from "./orange/faces/WinkFace";
 
@@ -31,6 +36,11 @@ const FACE_COMPONENTS: Record<number, React.ComponentType> = {
 	9: LoveFace,
 	10: RichFace,
 	11: NinjaFace,
+	12: CyborgFace,
+	13: RobotFace,
+	14: DevilFace,
+	15: PirateFace,
+	17: ClownFace,
 };
 
 export default function OrangeCharacter({ currentFace, onClick }: OrangeCharacterProps) {
