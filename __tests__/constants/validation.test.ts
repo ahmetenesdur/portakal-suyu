@@ -16,11 +16,12 @@ import { AVAILABLE_FACES, IDLE_ANIMATIONS, MOOD_FACES, MOODS } from "@/constants
 
 describe("Orange Constants (constants/orange.ts)", () => {
 	describe("AVAILABLE_FACES", () => {
-		it("should contain faces 0-11", () => {
-			expect(AVAILABLE_FACES).toHaveLength(12);
-			for (let i = 0; i < 12; i++) {
+		it("should contain all registered faces", () => {
+			expect(AVAILABLE_FACES).toHaveLength(17);
+			for (let i = 0; i <= 15; i++) {
 				expect(AVAILABLE_FACES).toContain(i);
 			}
+			expect(AVAILABLE_FACES).toContain(17);
 		});
 	});
 
@@ -45,11 +46,11 @@ describe("Orange Constants (constants/orange.ts)", () => {
 			}
 		});
 
-		it("should only contain valid face indices (0-11)", () => {
+		it("should only contain valid face indices", () => {
 			for (const mood of MOODS) {
 				for (const faceIndex of MOOD_FACES[mood]) {
 					expect(faceIndex).toBeGreaterThanOrEqual(0);
-					expect(faceIndex).toBeLessThanOrEqual(11);
+					expect(AVAILABLE_FACES).toContain(faceIndex);
 				}
 			}
 		});
@@ -181,11 +182,11 @@ describe("Kick Constants (constants/kick.ts)", () => {
 			}
 		});
 
-		it("should only contain valid face indices (0-11)", () => {
+		it("should only contain valid face indices", () => {
 			for (const category of categories) {
 				for (const faceIndex of REACTION_FACES[category]) {
 					expect(faceIndex).toBeGreaterThanOrEqual(0);
-					expect(faceIndex).toBeLessThanOrEqual(11);
+					expect(AVAILABLE_FACES).toContain(faceIndex);
 				}
 			}
 		});
