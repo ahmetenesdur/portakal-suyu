@@ -1,15 +1,20 @@
 import { Icon } from "@iconify/react";
 
+import ClownFace from "@/components/orange/faces/ClownFace";
 import CoolFace from "@/components/orange/faces/CoolFace";
+import CyborgFace from "@/components/orange/faces/CyborgFace";
 import DeadFace from "@/components/orange/faces/DeadFace";
 import DefaultFace from "@/components/orange/faces/DefaultFace";
+import DevilFace from "@/components/orange/faces/DevilFace";
 import DizzyFace from "@/components/orange/faces/DizzyFace";
 import ExcitedFace from "@/components/orange/faces/ExcitedFace";
 import HappyFace from "@/components/orange/faces/HappyFace";
 import KingFace from "@/components/orange/faces/KingFace";
 import LoveFace from "@/components/orange/faces/LoveFace";
 import NinjaFace from "@/components/orange/faces/NinjaFace";
+import PirateFace from "@/components/orange/faces/PirateFace";
 import RichFace from "@/components/orange/faces/RichFace";
+import RobotFace from "@/components/orange/faces/RobotFace";
 import SurprisedFace from "@/components/orange/faces/SurprisedFace";
 import WinkFace from "@/components/orange/faces/WinkFace";
 import { ShopItem, UserStatus } from "@/types/game";
@@ -35,6 +40,11 @@ const FACE_COMPONENTS: Record<number, React.ComponentType> = {
 	9: LoveFace,
 	10: RichFace,
 	11: NinjaFace,
+	12: CyborgFace,
+	13: RobotFace,
+	14: DevilFace,
+	15: PirateFace,
+	17: ClownFace,
 };
 
 export default function ShopItemCard({
