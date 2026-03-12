@@ -86,8 +86,7 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 			} else {
 				toast.error(result.error || "Satın alma işlemi başarısız oldu.");
 			}
-		} catch (error) {
-			console.error("Purchase failed", error);
+		} catch {
 			toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
 		} finally {
 			setPurchasing(null);
