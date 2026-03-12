@@ -69,7 +69,7 @@ function normalizeForTrigger(text: string): string {
  */
 function matchesTrigger(
 	normalizedContent: string,
-	contentWords: string[],
+	contentWordsSet: Set<string>,
 	trigger: string
 ): boolean {
 	// Exact match
@@ -93,7 +93,7 @@ function matchesTrigger(
 	}
 
 	// For single-word triggers, check if it's a complete word
-	return contentWords.includes(trigger);
+	return contentWordsSet.has(trigger);
 }
 
 function getFuzzyConfig(): FuzzyMatchConfig {
@@ -179,6 +179,7 @@ export function detectTrigger(content: string): ChatReactionType | null {
 	};
 
 	const contentWords = normalizedContent.split(" ");
+	const contentWordsSet = new Set(contentWords);
 	const fuzzyConfig = FUZZY_MATCH_CONFIG.ENABLED ? getFuzzyConfig() : null;
 
 	// Helper to add score
@@ -192,7 +193,7 @@ export function detectTrigger(content: string): ChatReactionType | null {
 			let matchScore = 0;
 
 			// Check for exact match first (strongest signal)
-			if (matchesTrigger(normalizedContent, contentWords, trigger)) {
+			if (matchesTrigger(normalizedContent, contentWordsSet, trigger)) {
 				// Base score for exact match is 1.0
 				matchScore = 1.0;
 			}
