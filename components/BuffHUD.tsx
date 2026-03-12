@@ -2,6 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useMemo } from "react";
 
 import { BUFF_DURATIONS, BUFF_ICONS, BUFF_THEMES } from "@/constants/buffs";
 
@@ -87,8 +88,14 @@ function BuffItem({ buff, now }: { buff: Buff; now: number }) {
 }
 
 export default function BuffHUD({ activeBuffs, currentBuffMultiplier, now }: BuffHUDProps) {
+	const displayBuffs = useMemo(() => {
+		return activeBuffs
+			.filter((b) => b.expires_at > now)
+			.sort((a, b) => a.expires_at - b.expires_at);
+	}, [activeBuffs, now]);
+
 	// Don't render anything if no buffs and no multiplier increase
-	if (currentBuffMultiplier <= 1 && activeBuffs.length === 0) return null;
+	if (currentBuffMultiplier <= 1 && displayBuffs.length === 0) return null;
 
 	return (
 		<div className="pointer-events-none absolute -top-12 left-1/2 z-30 flex w-[120%] max-w-100 -translate-x-1/2 items-start justify-between transition-all duration-300 md:top-0 md:right-[-10rem] md:left-auto md:w-32 md:max-w-none md:translate-x-0 md:flex-col md:items-stretch md:justify-start md:gap-3">
@@ -128,12 +135,9 @@ export default function BuffHUD({ activeBuffs, currentBuffMultiplier, now }: Buf
 			{/* Right Side (Mobile) / List (Desktop) - Active Buffs */}
 			<div className="flex flex-col items-end gap-2 md:w-full md:items-stretch md:gap-3">
 				<AnimatePresence mode="popLayout">
-					{activeBuffs
-						.filter((b) => b.expires_at > now)
-						.sort((a, b) => a.expires_at - b.expires_at)
-						.map((buff) => (
-							<BuffItem key={`${buff.id}-${buff.expires_at}`} buff={buff} now={now} />
-						))}
+					{displayBuffs.map((buff) => (
+						<BuffItem key={`${buff.id}-${buff.expires_at}`} buff={buff} now={now} />
+					))}
 				</AnimatePresence>
 			</div>
 		</div>
