@@ -34,7 +34,7 @@ export async function checkKickLiveStatus(username: string): Promise<boolean> {
 		});
 
 		if (!tokenResponse.ok) {
-			console.error("[KickLiveStatus] OAuth token fetch failed:", await tokenResponse.text());
+			console.error(`[KickLiveStatus] OAuth token fetch failed. HTTP ${tokenResponse.status}`);
 			return false;
 		}
 
