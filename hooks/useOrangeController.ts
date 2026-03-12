@@ -88,7 +88,6 @@ export function useOrangeController() {
 		const changeMood = () => {
 			if (!isMounted.current) return;
 			const nextMood = MOODS[Math.floor(Math.random() * MOODS.length)];
-			console.log("[OrangeOverlay] Mood switch:", nextMood);
 			setCurrentMood(nextMood);
 		};
 
