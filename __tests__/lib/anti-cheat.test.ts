@@ -237,4 +237,26 @@ describe("Anti-Cheat Engine v2 (3-Rule Jury Matrix)", () => {
 			expect(mockRpc).not.toHaveBeenCalled();
 		});
 	});
+
+	describe("Error Handling Paths", () => {
+		it("should return error when user is not authenticated", async () => {
+			mockGetUser.mockResolvedValueOnce({ data: { user: null } });
+			const result = await submitClicks(5);
+			expect(result).toEqual({ error: "Giriş yapmalısın" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should handle supabase.rpc returning an error", async () => {
+			const errorMessage = "Database error occurred";
+			mockRpc.mockResolvedValueOnce({ error: { message: errorMessage } });
+			const result = await submitClicks(5);
+			expect(result).toEqual({ error: errorMessage });
+		});
+
+		it("should handle supabase.rpc throwing an exception", async () => {
+			mockRpc.mockRejectedValueOnce(new Error("Network failure"));
+			const result = await submitClicks(5);
+			expect(result).toEqual({ error: "Failed to submit clicks" });
+		});
+	});
 });
