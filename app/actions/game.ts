@@ -34,13 +34,28 @@ export async function submitClicks(payload: number | ClickPayload[]) {
 
 		if (mouseClicks.length >= 10) {
 			// Spatial Standard Deviation (informational)
-			const avgX = mouseClicks.reduce((s, c) => s + c.x, 0) / mouseClicks.length;
-			const avgY = mouseClicks.reduce((s, c) => s + c.y, 0) / mouseClicks.length;
-			const varX =
-				mouseClicks.reduce((s, c) => s + (c.x - avgX) ** 2, 0) / mouseClicks.length;
-			const varY =
-				mouseClicks.reduce((s, c) => s + (c.y - avgY) ** 2, 0) / mouseClicks.length;
-			spatialStdDev = Math.sqrt(varX + varY);
+			let sumX = 0;
+			let sumY = 0;
+			let sumX2 = 0;
+			let sumY2 = 0;
+			const n = mouseClicks.length;
+
+			for (let i = 0; i < n; i++) {
+				const c = mouseClicks[i];
+				sumX += c.x;
+				sumY += c.y;
+				sumX2 += c.x * c.x;
+				sumY2 += c.y * c.y;
+			}
+
+			const avgX = sumX / n;
+			const avgY = sumY / n;
+
+			// Var(X) = E[X^2] - (E[X])^2
+			const varX = sumX2 / n - avgX * avgX;
+			const varY = sumY2 / n - avgY * avgY;
+
+			spatialStdDev = Math.sqrt(Math.max(0, varX) + Math.max(0, varY));
 
 			// Temporal Analysis
 			const clicksWithTime = mouseClicks.filter((c) => c.time !== undefined);
