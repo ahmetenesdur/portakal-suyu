@@ -238,6 +238,96 @@ describe("Anti-Cheat Engine v2 (3-Rule Jury Matrix)", () => {
 		});
 	});
 
+	describe("Input Validation", () => {
+		it("should reject count of 0", async () => {
+			const result = await submitClicks(0);
+			expect(result).toEqual({ error: "Invalid count format" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should reject negative count", async () => {
+			const result = await submitClicks(-5);
+			expect(result).toEqual({ error: "Invalid count format" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should reject decimal count", async () => {
+			const result = await submitClicks(1.5);
+			expect(result).toEqual({ error: "Invalid count format" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should reject batch size > 50 (number payload)", async () => {
+			const result = await submitClicks(51);
+			expect(result).toEqual({ error: "Batch size limit exceeded" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should reject batch size > 50 (array payload)", async () => {
+			const payload = mockPayload(51, { temporalVariance: "natural" });
+			const result = await submitClicks(payload);
+			expect(result).toEqual({ error: "Batch size limit exceeded" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+
+		it("should reject empty array payload", async () => {
+			const result = await submitClicks([]);
+			expect(result).toEqual({ error: "Invalid count format" });
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("Boundary & Edge Cases", () => {
+		it("should activate anti-cheat analysis at exactly 10 mouse clicks", async () => {
+			const payload = mockPayload(10, {
+				spatialVariance: "natural",
+				temporalVariance: "natural",
+			});
+			const result = await submitClicks(payload);
+			expect(result).toEqual({ success: true });
+		});
+
+		it("should handle identical coordinates without NaN (Math.max guard)", async () => {
+			const payload = mockPayload(15, {
+				spatialVariance: "stationary",
+				temporalVariance: "natural",
+			});
+			const result = await submitClicks(payload);
+			// spatialStdDev should be 0 (not NaN from negative sqrt)
+			// Since spatial is informational only, this should pass
+			expect(result).toEqual({ success: true });
+		});
+
+		it("should bypass jury when mouse clicks have no time data", async () => {
+			const payload = mockPayload(15, {
+				spatialVariance: "natural",
+				temporalVariance: "none",
+			});
+			// No time data → clicksWithTime empty → deltaVariance stays null → jury skipped
+			const result = await submitClicks(payload);
+			expect(result).toEqual({ success: true });
+			expect(mockRpc).toHaveBeenCalledWith("secure_increment_clicks", { p_count: 15 });
+		});
+
+		it("should block metronomic CV independently when Rule 1 and Rule 2 pass", async () => {
+			// 50 clicks → 49 deltas: 48 × 100ms + 1 × 113ms (outlier at last click)
+			// deltaVariance = 113 - 100 = 13ms (> 12, Rule 1 passes)
+			// CPS ≈ 50 / 4913 * 1000 ≈ 10.2 (< 22, Rule 2 passes)
+			// CV ≈ 1.84 / 100.27 ≈ 0.018 (< 0.02, Rule 3 catches)
+			const n = 50;
+			const clicks: ClickPayload[] = Array.from({ length: n }, (_, i) => ({
+				x: 500 + (i % 25) * 3,
+				y: 500 + (i % 25) * 2,
+				isKeyboard: false,
+				time: 1000 + i * 100 + (i === n - 1 ? 13 : 0),
+			}));
+			const result = await submitClicks(clicks);
+			expect(result).toHaveProperty("error");
+			expect(result.error).toContain("Metronomik CV");
+			expect(mockRpc).not.toHaveBeenCalled();
+		});
+	});
+
 	describe("Error Handling Paths", () => {
 		it("should return error when user is not authenticated", async () => {
 			mockGetUser.mockResolvedValueOnce({ data: { user: null } });
