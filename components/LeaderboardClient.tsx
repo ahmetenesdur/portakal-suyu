@@ -229,7 +229,9 @@ export default function LeaderboardClient({
 													src={getAvatarSrc(profile)}
 													alt={profile.username || "User"}
 													fill
-													unoptimized={failedAvatars.current.has(profile.id)}
+													unoptimized={failedAvatars.current.has(
+														profile.id
+													)}
 													sizes="(max-width: 768px) 32px, 40px"
 													onError={() => {
 														failedAvatars.current.add(profile.id);
