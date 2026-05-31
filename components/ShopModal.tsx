@@ -18,6 +18,17 @@ interface ShopModalProps {
 	onClose: () => void;
 }
 
+async function loadShopItems(): Promise<ShopItem[]> {
+	const [fetchedItems, inventoryIds] = await Promise.all([getShopItems(), getUserInventory()]);
+
+	return fetchedItems.map((item) => ({
+		...item,
+		is_owned: inventoryIds.includes(item.id),
+		is_locked:
+			item.required_item_id && !inventoryIds.includes(item.required_item_id) ? true : false,
+	}));
+}
+
 export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 	const { profile, signInWithDiscord } = useAuth();
 	const [activeTab, setActiveTab] = useState<"upgrade" | "consumable" | "face">("upgrade");
@@ -26,38 +37,41 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 	const [purchasing, setPurchasing] = useState<number | null>(null);
 	const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 
-	useEffect(() => {
+	const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+	if (isOpen !== prevIsOpen) {
+		setPrevIsOpen(isOpen);
 		if (isOpen) {
-			fetchItems();
+			setLoading(true);
 		}
+	}
+
+	useEffect(() => {
+		if (!isOpen) return;
+
+		let cancelled = false;
+
+		void (async () => {
+			try {
+				const itemsWithOwnership = await loadShopItems();
+				if (!cancelled) {
+					setItems(itemsWithOwnership);
+				}
+			} catch (error) {
+				console.error("Failed to fetch shop items", error);
+				if (!cancelled) {
+					toast.error("Pazar verileri yüklenemedi.");
+				}
+			} finally {
+				if (!cancelled) {
+					setLoading(false);
+				}
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
 	}, [isOpen]);
-
-	const fetchItems = async () => {
-		setLoading(true);
-		try {
-			// Parallel fetch for speed
-			const [fetchedItems, inventoryIds] = await Promise.all([
-				getShopItems(),
-				getUserInventory(),
-			]);
-
-			const itemsWithOwnership = fetchedItems.map((item) => ({
-				...item,
-				is_owned: inventoryIds.includes(item.id),
-				is_locked:
-					item.required_item_id && !inventoryIds.includes(item.required_item_id)
-						? true
-						: false,
-			}));
-
-			setItems(itemsWithOwnership);
-		} catch (error) {
-			console.error("Failed to fetch shop items", error);
-			toast.error("Pazar verileri yüklenemedi.");
-		} finally {
-			setLoading(false);
-		}
-	};
 
 	const handleBuy = async (item: ShopItem) => {
 		if (!profile || profile.role === "Misafir") {
@@ -74,7 +88,8 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
 
 			if (result.success) {
 				// Refresh items to update "owned" status
-				await fetchItems();
+				const itemsWithOwnership = await loadShopItems();
+				setItems(itemsWithOwnership);
 
 				confetti({
 					particleCount: 100,

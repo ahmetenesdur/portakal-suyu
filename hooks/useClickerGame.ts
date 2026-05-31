@@ -28,10 +28,9 @@ export function useClickerGame({
 	const [currentFace, setCurrentFace] = useState(0);
 	const [supabase] = useState(() => createClient());
 
-	const [now, setNow] = useState(0);
+	const [now, setNow] = useState(() => Date.now());
 
 	useEffect(() => {
-		setNow(Date.now());
 		const interval = setInterval(() => {
 			setNow(Date.now());
 		}, 1000);

@@ -99,9 +99,12 @@ export function useLeaderboard(mode: LeaderboardMode) {
 	}, [mode, supabase]);
 
 	useEffect(() => {
-		fetchLeaders();
+		const run = () => {
+			void fetchLeaders();
+		};
 
-		const interval = setInterval(fetchLeaders, GAME_CONFIG.REFRESH_INTERVALS.LEADERBOARD);
+		run();
+		const interval = setInterval(run, GAME_CONFIG.REFRESH_INTERVALS.LEADERBOARD);
 
 		return () => clearInterval(interval);
 	}, [fetchLeaders]);

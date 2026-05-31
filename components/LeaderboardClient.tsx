@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { getCachedLeaderboard } from "@/app/actions/leaderboard";
 import { useAuth } from "@/components/AuthProvider";
@@ -27,24 +27,26 @@ export default function LeaderboardClient({
 	const [loading, setLoading] = useState(false);
 	const [limit, setLimit] = useState(50);
 	const [hasMore, setHasMore] = useState(initialData.length >= 50);
-	const failedAvatars = useRef<Set<string>>(new Set());
+	const [failedAvatarIds, setFailedAvatarIds] = useState<Set<string>>(() => new Set());
+
+	const [prevInitialData, setPrevInitialData] = useState(initialData);
+	if (initialData !== prevInitialData) {
+		setPrevInitialData(initialData);
+		setProfiles(initialData);
+		setLimit(50);
+		setHasMore(initialData.length >= 50);
+		setLoading(false);
+		setFailedAvatarIds(new Set());
+	}
 
 	const getAvatarSrc = (profile: Profile) => {
-		if (failedAvatars.current.has(profile.id) || !profile.avatar_url) {
+		if (failedAvatarIds.has(profile.id) || !profile.avatar_url) {
 			const initial = (profile.username || "?")[0].toUpperCase();
 			const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%23fed7aa"/><stop offset="100%" stop-color="%23fdba74"/></linearGradient></defs><rect width="80" height="80" rx="40" fill="url(%23g)"/><text x="40" y="40" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700" font-size="36" fill="%23c2410c">${initial}</text></svg>`;
 			return `data:image/svg+xml,${svg}`;
 		}
 		return profile.avatar_url;
 	};
-
-	// Reset state when server data changes (navigation)
-	useEffect(() => {
-		setProfiles(initialData);
-		setLimit(50);
-		setHasMore(initialData.length >= 50);
-		setLoading(false);
-	}, [initialData]);
 
 	const { user } = useAuth();
 	// Pass initialTimeframe to local variable for UI consistency,
@@ -229,13 +231,14 @@ export default function LeaderboardClient({
 													src={getAvatarSrc(profile)}
 													alt={profile.username || "User"}
 													fill
-													unoptimized={failedAvatars.current.has(
-														profile.id
-													)}
+													unoptimized={failedAvatarIds.has(profile.id)}
 													sizes="(max-width: 768px) 32px, 40px"
 													onError={() => {
-														failedAvatars.current.add(profile.id);
-														setProfiles((prev) => [...prev]);
+														setFailedAvatarIds((prev) => {
+															const next = new Set(prev);
+															next.add(profile.id);
+															return next;
+														});
 													}}
 													className={`rounded-full border-2 object-cover shadow-sm ${
 														rank === 1
